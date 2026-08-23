@@ -1,4 +1,4 @@
-import { Check, Sparkles, Zap } from 'lucide-react';
+import { ListChecks, ShieldCheck, Timer } from 'lucide-react';
 import { Container, Reveal } from './Primitives';
 import { RevealComparison } from './RevealComparison';
 
@@ -13,9 +13,9 @@ export function Problem() {
             <p className="mt-5 max-w-[450px] font-body text-[16px] leading-relaxed text-paper/65 md:text-[17px]">Arraste o comparador e veja como a Vello transforma uma apresentação improvisada em uma experiência profissional.</p>
 
             <div className="mt-7 grid gap-3">
-              <Highlight icon={<Check size={18} />} title="Mais clareza" description="Seu cliente encontra os imóveis certos sem procurar em dezenas de mensagens." />
-              <Highlight icon={<Sparkles size={18} />} title="Mais confiança" description="Uma apresentação organizada faz o seu trabalho parecer tão bom quanto ele é." />
-              <Highlight icon={<Zap size={18} />} title="Mais velocidade" description="Um link pronto para compartilhar reduz o caminho entre interesse e visita." />
+              <Highlight icon={<ListChecks size={17} />} title="Mais clareza" description="Seu cliente encontra os imóveis certos sem procurar em dezenas de mensagens." />
+              <Highlight icon={<ShieldCheck size={17} />} title="Mais confiança" description="Uma apresentação organizada faz o seu trabalho parecer tão bom quanto ele é." />
+              <Highlight icon={<Timer size={17} />} title="Mais velocidade" description="Um link pronto para compartilhar reduz o caminho entre interesse e visita." />
             </div>
           </Reveal>
 
@@ -35,5 +35,5 @@ export function Problem() {
 }
 
 function Highlight({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
-  return <div className="rounded-[10px] bg-white/[0.1] p-4"><div className="flex items-start gap-3"><span className="mt-0.5 text-paper/65">{icon}</span><div><p className="font-body text-[13px] font-semibold text-paper">{title}</p><p className="mt-1 font-body text-[12px] leading-relaxed text-paper/60">{description}</p></div></div></div>;
+  return <div className="rounded-[10px] bg-white/[0.1] p-4"><div className="flex items-start gap-3"><span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/10 text-paper">{icon}</span><div><p className="font-body text-[13px] font-semibold text-paper">{title}</p><p className="mt-1 font-body text-[12px] leading-relaxed text-paper/60">{description}</p></div></div></div>;
 }
