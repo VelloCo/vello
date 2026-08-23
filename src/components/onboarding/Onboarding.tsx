@@ -18,7 +18,7 @@ const field = 'h-12 w-full rounded-xl border border-line bg-white px-4 font-body
 const label = 'mb-2 block font-mono text-[10px] uppercase tracking-[0.1em] text-ash';
 
 function slugify(value: string) { return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
-function money(value: string) { const digits = value.replace(/\D/g, ''); return digits ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(Number(digits) / 100) : ''; }
+function money(value: string) { const digits = value.replace(/\D/g, ''); return digits ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(Number(digits)) : ''; }
 function number(value: string) { return Number(value.replace(/\D/g, '')) || 0; }
 function publicLink(slug: string) { return `${window.location.origin}${appPath(`/catalogo/${slug}`)}`; }
 
@@ -120,7 +120,7 @@ export function Onboarding({ user }: { user: User }) {
     if (!photos.length || !property.title || !property.type || !property.price || !property.city || !property.neighborhood) { setNotice('Adicione uma foto e preencha título, tipo, preço, cidade e bairro.'); return; }
     setSaving(true); setNotice('Publicando imóvel...');
     const db = requireSupabase();
-    const { data: created, error } = await db.from('properties').insert({ user_id: user.id, title: property.title, description: property.description, transaction_type: property.transaction, property_type: property.type, price: Number(property.price.replace(/\D/g, '')) / 100, city: property.city, neighborhood: property.neighborhood, address: property.address || null, show_full_address: property.showAddress, bedrooms: number(property.bedrooms), suites: number(property.suites), bathrooms: number(property.bathrooms), parking_spaces: number(property.parking), area: number(property.area), features: property.features }).select('id').single();
+    const { data: created, error } = await db.from('properties').insert({ user_id: user.id, title: property.title, description: property.description, transaction_type: property.transaction, property_type: property.type, price: Number(property.price.replace(/\D/g, '')), city: property.city, neighborhood: property.neighborhood, address: property.address || null, show_full_address: property.showAddress, bedrooms: number(property.bedrooms), suites: number(property.suites), bathrooms: number(property.bathrooms), parking_spaces: number(property.parking), area: number(property.area), features: property.features }).select('id').single();
     if (!error && created) {
       const imageError = await db.from('property_images').insert(photos.map((photo, position) => ({ property_id: created.id, image_url: photo.url, position, is_cover: position === 0 })));
       if (!imageError.error) await db.from('profiles').update({ onboarding_step: 3 }).eq('user_id', user.id);
