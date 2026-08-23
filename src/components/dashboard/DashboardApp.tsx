@@ -1204,7 +1204,6 @@ function ProfilePage({
   user,
   profile,
   toast,
-  settings = false,
 }: {
   user: User;
   profile: Profile;
