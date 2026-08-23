@@ -529,7 +529,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-display text-[16px] font-semibold tracking-[-.025em] text-ink">{catalog.profile.professional_name}</p>
-                  <p className="mt-0.5 truncate font-body text-xs text-ash">Corretor de imóveis{catalog.profile.creci ? ` · ${catalog.profile.creci}` : ""}</p>
+                  <p className="mt-0.5 truncate font-body text-xs text-ash">{catalog.profile.creci || "Corretor de imóveis"}</p>
                 </div>
                 {contact && <a href={contact} target="_blank" rel="noreferrer" className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-ink px-3.5 font-body text-xs font-semibold text-paper transition hover:bg-charcoal sm:px-4"><MessageCircle size={15} /><span className="hidden sm:inline">Falar com {catalog.profile.professional_name.split(" ")[0]}</span></a>}
               </motion.div>
