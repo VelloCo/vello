@@ -1,4 +1,6 @@
 import {
+  ArrowDown,
+  ArrowUpRight,
   AtSign,
   Bath,
   BedDouble,
@@ -6,6 +8,7 @@ import {
   ChevronLeft,
   Heart,
   MapPin,
+  MessageCircle,
   Search,
   Share2,
   SlidersHorizontal,
@@ -71,10 +74,22 @@ const initial: Filters = {
   max: "",
   sort: "recent",
 };
-const money = (price: number, rent = false) =>
-  `${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(price)}${rent ? "/mês" : ""}`;
+const money = (price: number, rent = false) => {
+  if (!Number.isFinite(price) || price <= 0) return "Preço sob consulta";
+  return `${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(price)}${rent ? "/mês" : ""}`;
+};
 const phone = (value: string | null) => (value || "").replace(/\D/g, "");
 const propertyImage = (property: Property) => property.images?.[0]?.image_url;
+const propertySpecs = (property: Property) =>
+  [
+    property.bedrooms > 0 && `${property.bedrooms} ${property.bedrooms === 1 ? "quarto" : "quartos"}`,
+    property.parking_spaces > 0 && `${property.parking_spaces} ${property.parking_spaces === 1 ? "vaga" : "vagas"}`,
+    property.area > 0 && `${property.area} m²`,
+  ].filter(Boolean) as string[];
+const propertyLocation = (property: Property) =>
+  [property.neighborhood, property.city].filter(Boolean).join(" · ");
+const propertyHref = (catalog: Catalog, property: Property) =>
+  appPath(`/${catalog.profile.slug}/imovel/${property.slug || property.id}`);
 
 function waLink(catalog: Catalog, property?: Property) {
   const name = catalog.profile.professional_name.split(" ")[0] || "corretor";
@@ -145,69 +160,112 @@ function Favorite({ id }: { id: string }) {
 function PropertyCard({
   property,
   catalog,
-  featured = false,
+  index = 0,
 }: {
   property: Property;
   catalog: Catalog;
-  featured?: boolean;
+  index?: number;
 }) {
-  const href = appPath(
-    `/${catalog.profile.slug}/imovel/${property.slug}`,
-  );
+  const href = propertyHref(catalog, property);
+  const specs = propertySpecs(property);
   return (
-    <motion.a
+    <motion.article
       layout
-      href={href}
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.22 }}
-      className={`group block overflow-hidden rounded-[22px] bg-white outline-none focus-visible:ring-2 focus-visible:ring-ink ${featured ? "border border-line lg:grid lg:max-w-[960px] lg:grid-cols-[1.3fr_.7fr]" : ""}`}
+      transition={{ duration: 0.45, delay: Math.min(index * 0.07, 0.28), ease: [0.22, 1, 0.36, 1] }}
+      className="group relative"
     >
-      <div
-        className={`relative aspect-[4/3] overflow-hidden bg-cream ${featured ? "lg:aspect-auto lg:min-h-[430px]" : ""}`}
-      >
+      <div className="relative aspect-[4/3] overflow-hidden rounded-[18px] bg-cream sm:rounded-[22px]">
+        <a href={href} aria-label={`Conhecer ${property.title}`} className="absolute inset-0 z-10 rounded-[18px] focus-visible:ring-2 focus-visible:ring-ink sm:rounded-[22px]" />
         {propertyImage(property) ? (
           <img
             src={propertyImage(property)}
             alt={property.title}
             loading="lazy"
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.025]"
+            className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.025]"
           />
         ) : (
           <div className="grid h-full place-items-center font-mono text-xs text-stone">
             Vello
           </div>
         )}
-        <span className="absolute left-3 top-3 rounded-full bg-ink/85 px-2.5 py-1 font-mono text-[9px] uppercase tracking-wide text-paper">
+        <span className="pointer-events-none absolute left-3 top-3 z-10 rounded-full bg-ink/90 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[.12em] text-paper">
           {property.transaction_type === "sale" ? "Venda" : "Aluguel"}
         </span>
-        <div className="absolute right-3 top-3">
+        <div className="absolute right-3 top-3 z-20">
           <Favorite id={property.id} />
         </div>
       </div>
-      <div
-        className={`px-1 pb-2 pt-4 ${featured ? "lg:flex lg:flex-col lg:justify-end lg:p-8" : ""}`}
-      >
-        <h2
-          className={`line-clamp-1 font-display font-semibold leading-tight text-ink ${featured ? "text-[26px] sm:text-3xl" : "text-[21px]"}`}
-        >
-          {property.title}
-        </h2>
-        <p className="mt-2 line-clamp-1 font-body text-sm text-ash">
-          {property.neighborhood} · {property.city}
+      <a href={href} className="relative z-20 block pt-4" aria-hidden="true" tabIndex={-1}>
+        <div className="flex items-start justify-between gap-5">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[.14em] text-stone">
+              {property.property_type || "Imóvel"}
+            </p>
+            <h2 className="mt-2 line-clamp-1 font-display text-[25px] font-semibold leading-[.98] tracking-[-.03em] text-ink sm:text-[30px]">
+              {property.title}
+            </h2>
+          </div>
+          <ArrowUpRight
+            size={19}
+            className="mt-1 shrink-0 text-ink opacity-0 transition duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100"
+          />
+        </div>
+        <p className="mt-3 line-clamp-1 font-body text-sm text-ash">
+          {propertyLocation(property)}
         </p>
-        <p
-          className={`font-display font-semibold text-ink ${featured ? "mt-7 text-3xl" : "mt-4 text-xl"}`}
-        >
+        <p className="mt-5 font-display text-2xl font-semibold tracking-[-.025em] text-ink">
           {money(property.price, property.transaction_type === "rent")}
         </p>
-        <p className={`font-body text-sm text-ash ${featured ? "mt-5" : "mt-3"}`}>
-          {property.bedrooms} quartos <span className="px-1 text-stone">·</span>{" "}
-          {property.parking_spaces} vagas{" "}
-          <span className="px-1 text-stone">·</span> {property.area} m²
-        </p>
+        {specs.length > 0 && (
+          <p className="mt-3 font-body text-sm text-ash">{specs.join(" · ")}</p>
+        )}
+      </a>
+    </motion.article>
+  );
+}
+
+function FeaturedProperty({
+  property,
+  catalog,
+}: {
+  property: Property;
+  catalog: Catalog;
+}) {
+  const specs = propertySpecs(property);
+  return (
+    <article className="overflow-hidden rounded-[24px] border border-white/15 bg-[#151513] lg:grid lg:grid-cols-[1.35fr_.65fr] lg:rounded-[30px]">
+      <div className="group relative min-h-[360px] overflow-hidden bg-charcoal sm:min-h-[500px]">
+        <a href={propertyHref(catalog, property)} aria-label={`Conhecer ${property.title}`} className="absolute inset-0 z-10" />
+        {propertyImage(property) ? (
+          <img src={propertyImage(property)} alt={property.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.025]" />
+        ) : (
+          <div className="absolute inset-0 bg-charcoal" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/10" />
+        <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between text-paper sm:bottom-7 sm:left-7 sm:right-7">
+          <span className="font-mono text-[10px] uppercase tracking-[.16em]">01 · Destaque</span>
+          <span className="relative z-20"><Favorite id={property.id} /></span>
+        </div>
       </div>
-    </motion.a>
+      <div className="flex flex-col justify-end p-6 text-paper sm:p-9 lg:min-h-[500px] lg:p-10">
+        <p className="font-mono text-[10px] uppercase tracking-[.16em] text-paper/50">
+          {property.transaction_type === "sale" ? "À venda" : "Para alugar"}
+        </p>
+        <h2 className="mt-5 font-display text-[36px] font-semibold leading-[.94] tracking-[-.045em] sm:text-5xl">
+          {property.title}
+        </h2>
+        <p className="mt-5 font-body text-[15px] text-paper/65">{propertyLocation(property)}</p>
+        <p className="mt-8 font-display text-3xl font-semibold tracking-[-.03em]">
+          {money(property.price, property.transaction_type === "rent")}
+        </p>
+        {specs.length > 0 && <p className="mt-4 font-body text-sm text-paper/65">{specs.join(" · ")}</p>}
+        <a href={propertyHref(catalog, property)} className="mt-10 inline-flex items-center gap-2 font-body text-sm font-semibold text-paper transition hover:gap-3">
+          Conhecer imóvel <ArrowUpRight size={17} />
+        </a>
+      </div>
+    </article>
   );
 }
 
@@ -232,7 +290,13 @@ function FilterControls({
   const reset = () => setFilters(initial);
   return (
     <>
-      <div className="mt-7 flex gap-2 overflow-x-auto pb-1">
+      <div className="flex gap-2 overflow-x-auto pb-1">
+        <button
+          onClick={reset}
+          className={`h-10 whitespace-nowrap rounded-full border px-4 font-body text-sm transition ${filters.transaction === "all" && !filters.type && !filters.bedrooms && !filters.min && !filters.max ? "border-ink bg-ink text-paper" : "border-line bg-transparent text-ash hover:border-ink hover:text-ink"}`}
+        >
+          Todos
+        </button>
         <button
           onClick={() =>
             setFilters((f) => ({
@@ -240,7 +304,7 @@ function FilterControls({
               transaction: f.transaction === "sale" ? "all" : "sale",
             }))
           }
-          className={`h-10 whitespace-nowrap rounded-full border px-4 font-body text-sm ${filters.transaction === "sale" ? "border-ink bg-ink text-paper" : "border-line bg-white text-ash"}`}
+          className={`h-10 whitespace-nowrap rounded-full border px-4 font-body text-sm transition ${filters.transaction === "sale" ? "border-ink bg-ink text-paper" : "border-line bg-transparent text-ash hover:border-ink hover:text-ink"}`}
         >
           Comprar
         </button>
@@ -251,7 +315,7 @@ function FilterControls({
               transaction: f.transaction === "rent" ? "all" : "rent",
             }))
           }
-          className={`h-10 whitespace-nowrap rounded-full border px-4 font-body text-sm ${filters.transaction === "rent" ? "border-ink bg-ink text-paper" : "border-line bg-white text-ash"}`}
+          className={`h-10 whitespace-nowrap rounded-full border px-4 font-body text-sm transition ${filters.transaction === "rent" ? "border-ink bg-ink text-paper" : "border-line bg-transparent text-ash hover:border-ink hover:text-ink"}`}
         >
           Alugar
         </button>
@@ -259,7 +323,7 @@ function FilterControls({
           aria-label="Tipo de imóvel"
           value={filters.type}
           onChange={(e) => setFilters((f) => ({ ...f, type: e.target.value }))}
-          className="h-10 rounded-full border border-line bg-white px-4 font-body text-sm text-ash outline-none"
+          className="h-10 rounded-full border border-line bg-transparent px-4 font-body text-sm text-ash outline-none"
         >
           <option value="">Tipo</option>
           {types.map((type) => (
@@ -272,7 +336,7 @@ function FilterControls({
           onChange={(e) =>
             setFilters((f) => ({ ...f, bedrooms: Number(e.target.value) }))
           }
-          className="h-10 rounded-full border border-line bg-white px-4 font-body text-sm text-ash outline-none"
+          className="h-10 rounded-full border border-line bg-transparent px-4 font-body text-sm text-ash outline-none"
         >
           <option value="0">Quartos</option>
           {[1, 2, 3, 4].map((n) => (
@@ -283,7 +347,7 @@ function FilterControls({
         </select>
         <button
           onClick={() => setSheet(true)}
-          className="inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full border border-line bg-white px-4 font-body text-sm text-ash"
+          className="inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full border border-line bg-transparent px-4 font-body text-sm text-ash transition hover:border-ink hover:text-ink"
         >
           <SlidersHorizontal size={15} /> Mais filtros
         </button>
@@ -368,7 +432,13 @@ function FilterControls({
   );
 }
 
-function CatalogHeader({ catalog }: { catalog: Catalog }) {
+function CatalogHeader({
+  catalog,
+  onHero = false,
+}: {
+  catalog: Catalog;
+  onHero?: boolean;
+}) {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 38);
@@ -379,9 +449,9 @@ function CatalogHeader({ catalog }: { catalog: Catalog }) {
   const contact = catalog.profile.whatsapp ? waLink(catalog) : null;
   return (
     <header
-      className={`sticky top-0 z-40 transition-all duration-300 ${scrolled ? "border-b border-line/70 bg-paper/90 backdrop-blur-md" : "bg-paper/70"}`}
+      className={`sticky top-0 z-40 transition-all duration-500 ${scrolled ? "border-b border-line/70 bg-[#f5f2ec]/90 backdrop-blur-md" : onHero ? "bg-[#f5f2ec]" : "bg-paper"}`}
     >
-      <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between px-5 sm:px-8">
+      <div className="mx-auto flex h-[68px] max-w-[1400px] items-center justify-between px-5 sm:px-8">
         <Logo />
         <div className="flex items-center gap-2">
           <Share catalog={catalog} />
@@ -390,7 +460,7 @@ function CatalogHeader({ catalog }: { catalog: Catalog }) {
               href={contact}
               target="_blank"
               rel="noreferrer"
-              className="hidden h-10 items-center rounded-full bg-ink px-4 font-body text-sm font-semibold text-paper sm:flex"
+              className="hidden h-10 items-center rounded-full bg-ink px-4 font-body text-sm font-semibold text-paper transition hover:bg-charcoal sm:flex"
             >
               Falar com {catalog.profile.professional_name.split(" ")[0]}
             </a>
@@ -432,154 +502,80 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
       );
   }, [catalog.properties, filters]);
   const contact = catalog.profile.whatsapp ? waLink(catalog) : null;
+  const lead = catalog.properties[0];
+  const remaining = properties.filter((property) => property.id !== lead?.id);
+  const totalLabel = `${properties.length} ${properties.length === 1 ? "imóvel" : "imóveis"}`;
+  const profileLocation = [catalog.profile.city, catalog.profile.state]
+    .filter(Boolean)
+    .join(", ");
   return (
     <>
-      <CatalogHeader catalog={catalog} />
-      <main className="pb-28">
-        <section className="mx-auto max-w-[1320px] px-5 pb-8 pt-7 sm:px-8 sm:py-10">
-          <div className="max-w-3xl">
-            <div className="flex items-start gap-4">
-              <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[18px] bg-cream sm:h-20 sm:w-20 sm:rounded-[20px]">
-                {catalog.profile.avatar_url ? (
-                  <img
-                    src={catalog.profile.avatar_url}
-                    alt={`Foto de ${catalog.profile.professional_name}`}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="grid h-full place-items-center font-display text-2xl">
-                    {catalog.profile.professional_name.slice(0, 1)}
-                  </div>
-                )}
-              </div>
+      <CatalogHeader catalog={catalog} onHero />
+      <main className="overflow-hidden bg-[#f5f2ec] pb-28">
+        <section className="relative border-b border-black/10 bg-[#f5f2ec]">
+          <div className="mx-auto grid min-h-[calc(100svh-68px)] max-w-[1400px] lg:grid-cols-[.92fr_1.08fr]">
+            <div className="relative z-10 flex flex-col justify-between px-5 pb-10 pt-14 sm:px-8 sm:pb-14 sm:pt-20 lg:px-12 lg:py-20 xl:px-16">
               <div>
-                <p className="font-mono text-[10px] uppercase tracking-[.14em] text-stone">
-                  Catálogo imobiliário
-                </p>
-                <h1 className="mt-1 font-display text-3xl font-semibold tracking-tight text-ink sm:text-5xl">
-                  {catalog.profile.professional_name}
-                </h1>
-                <p className="mt-1 font-body text-sm text-ash">
-                  Corretor de imóveis
-                  {catalog.profile.creci ? ` · ${catalog.profile.creci}` : ""}
-                </p>
-                <p className="mt-1 flex items-center gap-1 font-body text-sm text-ash">
-                  <MapPin size={14} />
-                  {catalog.profile.city}
-                  {catalog.profile.state ? `, ${catalog.profile.state}` : ""}
-                </p>
+                <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }} className="font-mono text-[10px] uppercase tracking-[.18em] text-ash">
+                  {catalog.profile.professional_name} · {profileLocation || "Brasil"}
+                </motion.p>
+                <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.08, ease: [0.22, 1, 0.36, 1] }} className="mt-7 max-w-[620px] font-display text-[54px] font-semibold leading-[.87] tracking-[-.065em] text-ink sm:text-7xl lg:text-[clamp(72px,7vw,112px)]">
+                  Encontre um lugar que pareça seu.
+                </motion.h1>
+                <motion.p initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.18, ease: [0.22, 1, 0.36, 1] }} className="mt-8 max-w-md font-body text-[17px] leading-relaxed text-ash">
+                  {catalog.profile.bio || "Uma seleção de imóveis escolhidos para morar, investir e viver melhor."}
+                </motion.p>
+                <motion.a initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.26, ease: [0.22, 1, 0.36, 1] }} href="#imoveis" className="mt-9 inline-flex items-center gap-3 rounded-full bg-ink px-5 py-3.5 font-body text-sm font-semibold text-paper transition hover:gap-4">
+                  Explorar imóveis <ArrowDown size={16} />
+                </motion.a>
+              </div>
+              <div className="mt-12 border-t border-black/10 pt-5 sm:flex sm:items-end sm:justify-between sm:gap-6">
+                <div>
+                  <p className="font-display text-2xl font-semibold tracking-[-.035em] text-ink">{catalog.profile.professional_name}</p>
+                  <p className="mt-1 font-body text-sm text-ash">Corretor de imóveis{catalog.profile.creci ? ` · ${catalog.profile.creci}` : ""}</p>
+                  {profileLocation && <p className="mt-1 flex items-center gap-1 font-body text-sm text-ash"><MapPin size={14} />{profileLocation}</p>}
+                </div>
+                {contact && <a href={contact} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 font-body text-sm font-semibold text-ink underline decoration-line underline-offset-4 sm:mt-0"><MessageCircle size={16} /> Falar com {catalog.profile.professional_name.split(" ")[0]}</a>}
               </div>
             </div>
-            {catalog.profile.bio && (
-              <p className="mt-5 max-w-2xl font-display text-2xl leading-snug text-ink sm:text-3xl">
-                {catalog.profile.bio}
-              </p>
-            )}
-            {catalog.profile.instagram && (
-              <div className="mt-5 flex flex-wrap gap-3">
-                <a
-                  href={`https://instagram.com/${catalog.profile.instagram.replace("@", "")}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex h-12 items-center gap-2 rounded-full border border-line bg-white px-5 font-body text-sm text-ink"
-                >
-                  <AtSign size={16} /> Instagram
-                </a>
-              </div>
-            )}
+            <motion.div initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }} className="relative min-h-[480px] overflow-hidden bg-charcoal lg:min-h-full">
+              {lead && propertyImage(lead) ? <img src={propertyImage(lead)} alt={lead.title} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover" /> : <div className="absolute inset-0 bg-charcoal" />}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/10" />
+              {lead && <a href={propertyHref(catalog, lead)} className="group absolute bottom-0 left-0 right-0 p-6 text-paper sm:p-9 lg:p-12"><p className="font-mono text-[10px] uppercase tracking-[.16em] text-paper/60">Imóvel em destaque</p><p className="mt-2 flex items-end justify-between gap-5 font-display text-3xl font-semibold leading-none tracking-[-.035em] sm:text-5xl">{lead.title}<ArrowUpRight size={24} className="mb-1 shrink-0 transition group-hover:-translate-y-1 group-hover:translate-x-1" /></p></a>}
+            </motion.div>
           </div>
         </section>
-        <section className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <div className="border-t border-line pt-7 sm:pt-10">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div>
-                <h2 className="font-display text-[32px] font-semibold tracking-tight text-ink sm:text-5xl">
-                  Imóveis para conhecer
-                </h2>
-                <p className="mt-2 font-body text-ash">
-                  Uma seleção feita para você explorar com calma.
-                </p>
-              </div>
-              <span className="font-mono text-xs text-stone">
-                {properties.length} imóveis
-              </span>
+
+        {lead && <section className="bg-ink px-5 py-18 text-paper sm:px-8 sm:py-24 lg:py-28"><div className="mx-auto max-w-[1400px]"><div className="mb-10 max-w-2xl sm:mb-14"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-paper/45">01 — Curadoria</p><h2 className="mt-5 font-display text-[48px] font-semibold leading-[.87] tracking-[-.06em] sm:text-7xl">Imóveis que valem conhecer.</h2></div><FeaturedProperty property={lead} catalog={catalog} /></div></section>}
+
+        <section id="imoveis" className="scroll-mt-20 px-5 py-16 sm:px-8 sm:py-24">
+          <div className="mx-auto max-w-[1400px]">
+            <div className="flex flex-wrap items-end justify-between gap-5 border-b border-black/10 pb-8">
+              <div><p className="font-mono text-[10px] uppercase tracking-[.18em] text-stone">02 — Disponíveis</p><h2 className="mt-4 font-display text-[44px] font-semibold leading-[.9] tracking-[-.055em] text-ink sm:text-6xl">Explore a seleção.</h2></div>
+              <p className="font-mono text-xs text-stone">{totalLabel}</p>
             </div>
-            <div className="mt-7">
-              <label className="flex h-14 max-w-2xl items-center gap-3 rounded-2xl border border-line bg-white px-4 transition focus-within:border-ink">
-                <Search size={19} className="text-stone" />
-                <input
-                  value={filters.query}
-                  onChange={(e) => {
-                    setFilters((f) => ({ ...f, query: e.target.value }));
-                    setVisible(12);
-                  }}
-                  placeholder="Buscar por bairro, cidade ou imóvel"
-                  className="min-w-0 flex-1 bg-transparent font-body text-[15px] text-ink outline-none placeholder:text-stone"
-                />
-              </label>
-            </div>
-            <FilterControls
-              filters={filters}
-              setFilters={setFilters}
-              total={properties.length}
-            />
-            {properties.length ? (
-              <motion.div
-                layout
-                className={`mt-9 grid gap-x-5 gap-y-9 ${properties.length === 1 ? "" : "md:grid-cols-2 xl:grid-cols-3"}`}
-              >
-                {properties.slice(0, visible).map((property) => (
-                  <PropertyCard
-                    key={property.id}
-                    property={property}
-                    catalog={catalog}
-                    featured={properties.length === 1}
-                  />
-                ))}
-              </motion.div>
-            ) : (
-              <div className="mt-8 rounded-[24px] border border-dashed border-line bg-white p-10 text-center">
-                <h3 className="font-display text-2xl font-semibold">
-                  Nenhum imóvel encontrado.
-                </h3>
-                <p className="mt-2 font-body text-sm text-ash">
-                  Tente alterar os filtros para encontrar outras opções.
-                </p>
-                <button
-                  onClick={() => setFilters(initial)}
-                  className="mt-6 rounded-full bg-ink px-5 py-3 font-body text-sm font-semibold text-paper"
-                >
-                  Limpar filtros
-                </button>
-              </div>
-            )}
-            {visible < properties.length && (
-              <div className="mt-12 text-center">
-                <button
-                  onClick={() => setVisible((v) => v + 12)}
-                  className="rounded-full border border-line bg-white px-6 py-3 font-body text-sm font-semibold text-ink"
-                >
-                  Ver mais imóveis
-                </button>
-              </div>
-            )}
+            <div className="sticky top-[68px] z-30 -mx-5 border-b border-black/10 bg-[#f5f2ec]/95 px-5 py-4 backdrop-blur-md sm:-mx-8 sm:px-8"><div className="mx-auto max-w-[1400px]"><label className="flex h-12 max-w-xl items-center gap-3 border-b border-black/20 font-body text-sm transition focus-within:border-ink"><Search size={18} className="text-stone" /><input value={filters.query} onChange={(e) => { setFilters((filter) => ({ ...filter, query: e.target.value })); setVisible(12); }} placeholder="Onde você quer morar?" className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-stone" /></label><div className="mt-4"><FilterControls filters={filters} setFilters={setFilters} total={properties.length} /></div></div></div>
+            {properties.length > 0 ? <motion.div layout className={`mt-10 grid gap-x-7 gap-y-14 ${properties.length === 1 ? "max-w-[920px]" : "md:grid-cols-2"}`}>
+              {(properties.length === 1 ? properties : remaining).slice(0, visible).map((property, index) => <PropertyCard key={property.id} property={property} catalog={catalog} index={index} />)}
+            </motion.div> : <div className="mt-12 max-w-2xl border-y border-black/10 py-16"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-stone">Sem resultados</p><h3 className="mt-5 font-display text-4xl font-semibold tracking-[-.05em]">Novas oportunidades em breve.</h3><p className="mt-5 max-w-lg font-body leading-relaxed text-ash">No momento não há imóveis que combinem com essa busca. Se você procura algo específico, fale diretamente com {catalog.profile.professional_name}.</p><button onClick={() => setFilters(initial)} className="mt-8 font-body text-sm font-semibold underline underline-offset-4">Limpar filtros</button></div>}
+            {visible < (properties.length === 1 ? properties.length : remaining.length) && <div className="mt-14"><button onClick={() => setVisible((value) => value + 12)} className="rounded-full border border-ink px-6 py-3 font-body text-sm font-semibold transition hover:bg-ink hover:text-paper">Ver mais imóveis</button></div>}
           </div>
         </section>
+
+        {contact && <section className="px-5 pb-16 sm:px-8 sm:pb-24"><div className="mx-auto max-w-[1400px] overflow-hidden rounded-[24px] bg-ink px-6 py-14 text-paper sm:rounded-[30px] sm:px-12 sm:py-20 lg:flex lg:items-end lg:justify-between lg:gap-16"><div><p className="font-mono text-[10px] uppercase tracking-[.18em] text-paper/45">Vamos conversar</p><h2 className="mt-5 max-w-2xl font-display text-[48px] font-semibold leading-[.86] tracking-[-.06em] sm:text-7xl">Gostou de algum?</h2><p className="mt-7 max-w-md font-body text-[17px] leading-relaxed text-paper/60">Fale comigo e eu te conto tudo sobre o imóvel.</p></div><a href={contact} target="_blank" rel="noreferrer" className="mt-10 inline-flex h-14 items-center justify-center gap-3 rounded-full bg-paper px-6 font-body text-sm font-semibold text-ink transition hover:bg-white lg:mt-0"><MessageCircle size={18} /> Falar com {catalog.profile.professional_name.split(" ")[0]}</a></div></section>}
       </main>
       {contact && (
         <a
           href={contact}
           target="_blank"
           rel="noreferrer"
-          className="fixed inset-x-5 bottom-4 z-50 flex h-14 items-center justify-center rounded-full bg-ink font-body text-[15px] font-semibold text-paper shadow-xl sm:hidden"
+          className="fixed inset-x-4 bottom-[max(1rem,env(safe-area-inset-bottom))] z-50 flex h-14 items-center justify-center gap-2 rounded-full bg-ink font-body text-[15px] font-semibold text-paper shadow-2xl sm:hidden"
         >
-          Falar com {catalog.profile.professional_name.split(" ")[0]}
+          <MessageCircle size={17} /> Falar com {catalog.profile.professional_name.split(" ")[0]}
         </a>
       )}
-      <footer className="border-t border-line px-5 py-8 pb-24 text-center font-body text-xs text-stone sm:px-8 sm:pb-8">
-        {catalog.profile.professional_name}
-        {catalog.profile.creci ? ` · ${catalog.profile.creci}` : ""}
-        <span className="px-2">·</span>Catálogo criado com Vello
+      <footer className="border-t border-black/10 bg-[#f5f2ec] px-5 py-8 pb-24 text-center font-body text-xs text-stone sm:px-8 sm:pb-8">
+        {catalog.profile.professional_name}{catalog.profile.creci ? ` · ${catalog.profile.creci}` : ""}{catalog.profile.instagram && <a href={`https://instagram.com/${catalog.profile.instagram.replace("@", "")}`} target="_blank" rel="noreferrer" className="ml-3 inline-flex items-center gap-1 underline underline-offset-4"><AtSign size={12} />Instagram</a>}<span className="px-2">·</span>Criado com Vello
       </footer>
     </>
   );
@@ -594,19 +590,26 @@ function PropertyDetail({
 }) {
   const [image, setImage] = useState(0);
   const contact = catalog.profile.whatsapp ? waLink(catalog, property) : null;
+  const specs = [
+    property.bedrooms > 0 && { icon: BedDouble, label: `${property.bedrooms} ${property.bedrooms === 1 ? "quarto" : "quartos"}` },
+    property.bathrooms > 0 && { icon: Bath, label: `${property.bathrooms} ${property.bathrooms === 1 ? "banheiro" : "banheiros"}` },
+    property.parking_spaces > 0 && { icon: Car, label: `${property.parking_spaces} ${property.parking_spaces === 1 ? "vaga" : "vagas"}` },
+    property.area > 0 && { icon: null, label: `${property.area} m²` },
+  ].filter(Boolean) as { icon: typeof BedDouble | typeof Bath | typeof Car | null; label: string }[];
   return (
     <>
       <CatalogHeader catalog={catalog} />
-      <main className="mx-auto max-w-[1320px] px-5 pb-28 pt-7 sm:px-8 sm:pt-10">
+      <main className="min-h-screen bg-[#f5f2ec] px-5 pb-28 pt-7 sm:px-8 sm:pt-10">
+        <div className="mx-auto max-w-[1400px]">
         <a
           href={appPath(`/${catalog.profile.slug}`)}
           className="inline-flex items-center gap-1 font-body text-sm text-ash"
         >
           <ChevronLeft size={16} /> Voltar ao catálogo
         </a>
-        <div className="mt-7 grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(320px,.7fr)]">
+        <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1.35fr)_minmax(340px,.65fr)] lg:gap-16">
           <section>
-            <div className="aspect-[4/3] overflow-hidden rounded-[26px] bg-cream">
+            <div className="aspect-[4/3] overflow-hidden rounded-[22px] bg-cream sm:rounded-[30px]">
               {property.images[image] ? (
                 <img
                   src={property.images[image].image_url}
@@ -637,42 +640,29 @@ function PropertyDetail({
               </div>
             )}
           </section>
-          <aside>
+          <aside className="lg:pt-10">
             <p className="font-mono text-[10px] uppercase tracking-[.14em] text-stone">
               {property.transaction_type === "sale" ? "À venda" : "Para alugar"}
             </p>
-            <h1 className="mt-3 font-display text-4xl font-semibold leading-tight tracking-tight">
+            <h1 className="mt-5 font-display text-5xl font-semibold leading-[.9] tracking-[-.055em] sm:text-6xl">
               {property.title}
             </h1>
-            <p className="mt-5 font-display text-3xl font-semibold">
+            <p className="mt-8 font-display text-3xl font-semibold tracking-[-.035em]">
               {money(property.price, property.transaction_type === "rent")}
             </p>
-            <p className="mt-5 flex items-center gap-1.5 font-body text-sm text-ash">
+            <p className="mt-6 flex items-center gap-1.5 font-body text-sm text-ash">
               <MapPin size={15} />
               {property.address ||
                 `${property.neighborhood} · ${property.city}`}
             </p>
-            <div className="mt-7 grid grid-cols-3 gap-3 border-y border-line py-5 font-body text-sm text-ash">
-              <span className="flex items-center gap-1">
-                <BedDouble size={16} />
-                {property.bedrooms} quartos
-              </span>
-              <span className="flex items-center gap-1">
-                <Bath size={16} />
-                {property.bathrooms} banheiros
-              </span>
-              <span className="flex items-center gap-1">
-                <Car size={16} />
-                {property.parking_spaces} vagas
-              </span>
-            </div>
+            {specs.length > 0 && <div className="mt-8 flex flex-wrap gap-x-5 gap-y-3 border-y border-line py-5 font-body text-sm text-ash">{specs.map(({ icon: Icon, label }) => <span key={label} className="flex items-center gap-1.5">{Icon && <Icon size={16} />}{label}</span>)}</div>}
             {property.description && (
-              <p className="mt-7 font-body leading-relaxed text-ash">
+              <p className="mt-8 font-body leading-relaxed text-ash">
                 {property.description}
               </p>
             )}
             {property.features.length > 0 && (
-              <div className="mt-7 flex flex-wrap gap-2">
+              <div className="mt-8 flex flex-wrap gap-2">
                 {property.features.map((feature) => (
                   <span
                     key={feature}
@@ -688,12 +678,13 @@ function PropertyDetail({
                 href={contact}
                 target="_blank"
                 rel="noreferrer"
-                className="mt-9 flex h-13 items-center justify-center rounded-full bg-ink font-body text-sm font-semibold text-paper"
+                className="mt-10 flex h-14 items-center justify-center gap-2 rounded-full bg-ink font-body text-sm font-semibold text-paper transition hover:bg-charcoal"
               >
-                Tenho interesse
+                <MessageCircle size={17} /> Tenho interesse
               </a>
             )}
           </aside>
+        </div>
         </div>
       </main>
       {contact && (
