@@ -13,7 +13,7 @@ export function Logo({ variant = 'dark', className = '' }: LogoProps) {
         src={appPath('/vello-logo.png')}
         alt=""
         aria-hidden="true"
-        className={`h-9 w-9 object-contain ${variant === 'light' ? 'brightness-0 invert' : ''}`}
+        className={`h-14 w-14 object-contain ${variant === 'light' ? 'brightness-0 invert' : 'mix-blend-multiply'}`}
       />
       <span className={`font-display text-[22px] font-semibold tracking-[-0.02em] ${color}`}>
         Vello
