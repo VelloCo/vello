@@ -22,7 +22,7 @@ function Dashboard({ user }: { user: User }) {
   return <main className="min-h-screen bg-paper px-6 py-8"><div className="mx-auto max-w-5xl"><div className="flex items-center justify-between"><p className="font-display text-2xl font-semibold text-ink">Olá, {String(name).split(' ')[0] || 'corretor'}.</p><button onClick={async () => { await signOut(); window.location.href = appPath('/login'); }} className="rounded-full border border-line px-4 py-2 font-body text-sm text-ash">Sair</button></div><div className="mt-16 rounded-[24px] border border-line bg-white p-8"><p className="font-mono text-[10px] uppercase tracking-[0.12em] text-stone">Seu espaço Vello</p><h1 className="mt-4 font-display text-4xl font-semibold text-ink">Seu catálogo começa aqui.</h1><p className="mt-3 max-w-lg font-body text-ash">A área de gestão está pronta para receber seus imóveis e o onboarding do corretor.</p></div></div></main>;
 }
 
-function Landing() { return <><Header /><main><Hero /><Problem /><Catalog /><Benefits /><HowItWorks /><Pricing /><FinalCTA /></main><Footer /></>; }
+function Landing() { return <><Header /><main><Hero /><Catalog /><Problem /><Benefits /><HowItWorks /><Pricing /><FinalCTA /></main><Footer /></>; }
 
 export default function App() {
   const [user, setUser] = useState<User | null | undefined>(undefined);
