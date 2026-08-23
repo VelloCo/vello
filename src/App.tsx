@@ -13,6 +13,7 @@ import { Onboarding } from "./components/onboarding/Onboarding";
 import { PublicCatalog } from "./components/catalog/PublicCatalog";
 import { PublicSelection } from "./components/catalog/PublicSelection";
 import { DashboardApp } from "./components/dashboard/DashboardApp";
+import { LoadingScreen } from "./components/LoadingScreen";
 import { appPath } from "./lib/paths";
 import { supabase } from "./lib/supabase";
 
@@ -86,11 +87,7 @@ export default function App() {
     (user === undefined || (user && onboardingDone === undefined)) &&
     (authRoute || privateRoute)
   )
-    return (
-      <main className="grid min-h-screen place-items-center bg-paper">
-        <span className="font-body text-sm text-ash">Carregando…</span>
-      </main>
-    );
+    return <LoadingScreen />;
   if (privateRoute && !user) {
     window.location.replace(appPath("/login"));
     return null;

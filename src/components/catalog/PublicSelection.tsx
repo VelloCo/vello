@@ -1,16 +1,114 @@
-import { BedDouble, MapPin } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { Logo } from '../Logo';
-import { requireSupabase } from '../../lib/supabase';
+import { BedDouble, MapPin } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Logo } from "../Logo";
+import { LoadingScreen } from "../LoadingScreen";
+import { requireSupabase } from "../../lib/supabase";
 
-type SelectionData = { client_name: string; intro_message: string; profile: { professional_name: string; whatsapp: string | null }; properties: Array<{ id: string; title: string; price: number; city: string; neighborhood: string; bedrooms: number; area: number; images: Array<{ image_url: string }> }> };
-const price = (n: number) => new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(n);
+type SelectionData = {
+  client_name: string;
+  intro_message: string;
+  profile: { professional_name: string; whatsapp: string | null };
+  properties: Array<{
+    id: string;
+    title: string;
+    price: number;
+    city: string;
+    neighborhood: string;
+    bedrooms: number;
+    area: number;
+    images: Array<{ image_url: string }>;
+  }>;
+};
+const price = (n: number) =>
+  new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    maximumFractionDigits: 0,
+  }).format(n);
 
 export function PublicSelection({ slug }: { slug: string }) {
-  const [selection, setSelection] = useState<SelectionData | null | undefined>(undefined);
-  useEffect(() => { requireSupabase().rpc('get_selection', { selection_slug: slug }).then(({ data }) => setSelection(data as SelectionData | null)); }, [slug]);
-  if (selection === undefined) return <main className="grid min-h-screen place-items-center bg-paper font-body text-sm text-ash">Carregando seleção…</main>;
-  if (!selection) return <main className="grid min-h-screen place-items-center bg-paper"><div className="text-center"><Logo /><h1 className="mt-8 font-display text-3xl font-semibold">Seleção não encontrada.</h1></div></main>;
+  const [selection, setSelection] = useState<SelectionData | null | undefined>(
+    undefined,
+  );
+  useEffect(() => {
+    requireSupabase()
+      .rpc("get_selection", { selection_slug: slug })
+      .then(({ data }) => setSelection(data as SelectionData | null));
+  }, [slug]);
+  if (selection === undefined) return <LoadingScreen label="Abrindo seleção" />;
+  if (!selection)
+    return (
+      <main className="grid min-h-screen place-items-center bg-paper">
+        <div className="text-center">
+          <Logo />
+          <h1 className="mt-8 font-display text-3xl font-semibold">
+            Seleção não encontrada.
+          </h1>
+        </div>
+      </main>
+    );
   const message = `Oi ${selection.profile.professional_name}! Vi a seleção na Vello e gostaria de saber mais.`;
-  return <main className="min-h-screen bg-paper"><header className="border-b border-line bg-white"><div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5"><Logo /><span className="font-mono text-[10px] uppercase tracking-wide text-stone">Seleção Vello</span></div></header><section className="mx-auto max-w-5xl px-5 py-14"><p className="font-mono text-[10px] uppercase tracking-[.12em] text-stone">Seleção especial</p><h1 className="mt-4 max-w-2xl font-display text-4xl font-semibold tracking-tight sm:text-5xl">{selection.client_name}, separei algumas opções para você.</h1><p className="mt-5 max-w-xl font-body text-[16px] leading-relaxed text-ash">{selection.intro_message}</p><div className="mt-12 grid gap-5 md:grid-cols-2">{selection.properties.map(property => <article key={property.id} className="overflow-hidden rounded-[24px] border border-line bg-white"><div className="aspect-[16/10] bg-cream">{property.images[0] && <img src={property.images[0].image_url} alt={property.title} className="h-full w-full object-cover" />}</div><div className="p-5"><h2 className="font-display text-2xl font-semibold">{property.title}</h2><p className="mt-2 font-mono text-lg">{price(property.price)}</p><p className="mt-3 flex items-center gap-1.5 font-body text-sm text-ash"><MapPin size={14}/>{property.neighborhood} · {property.city}</p><p className="mt-3 flex items-center gap-1.5 font-body text-sm text-ash"><BedDouble size={15}/>{property.bedrooms} quartos · {property.area} m²</p><a href={`https://wa.me/${(selection.profile.whatsapp || '').replace(/\D/g,'')}?text=${encodeURIComponent(`${message} ${property.title}`)}`} className="mt-6 inline-flex rounded-full bg-ink px-4 py-2.5 font-body text-sm font-semibold text-paper">Tenho interesse</a></div></article>)}</div></section></main>;
+  return (
+    <main className="min-h-screen bg-paper">
+      <header className="border-b border-line bg-white">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5">
+          <Logo />
+          <span className="font-mono text-[10px] uppercase tracking-wide text-stone">
+            Seleção Vello
+          </span>
+        </div>
+      </header>
+      <section className="mx-auto max-w-5xl px-5 py-14">
+        <p className="font-mono text-[10px] uppercase tracking-[.12em] text-stone">
+          Seleção especial
+        </p>
+        <h1 className="mt-4 max-w-2xl font-display text-4xl font-semibold tracking-tight sm:text-5xl">
+          {selection.client_name}, separei algumas opções para você.
+        </h1>
+        <p className="mt-5 max-w-xl font-body text-[16px] leading-relaxed text-ash">
+          {selection.intro_message}
+        </p>
+        <div className="mt-12 grid gap-5 md:grid-cols-2">
+          {selection.properties.map((property) => (
+            <article
+              key={property.id}
+              className="overflow-hidden rounded-[24px] border border-line bg-white"
+            >
+              <div className="aspect-[16/10] bg-cream">
+                {property.images[0] && (
+                  <img
+                    src={property.images[0].image_url}
+                    alt={property.title}
+                    className="h-full w-full object-cover"
+                  />
+                )}
+              </div>
+              <div className="p-5">
+                <h2 className="font-display text-2xl font-semibold">
+                  {property.title}
+                </h2>
+                <p className="mt-2 font-mono text-lg">
+                  {price(property.price)}
+                </p>
+                <p className="mt-3 flex items-center gap-1.5 font-body text-sm text-ash">
+                  <MapPin size={14} />
+                  {property.neighborhood} · {property.city}
+                </p>
+                <p className="mt-3 flex items-center gap-1.5 font-body text-sm text-ash">
+                  <BedDouble size={15} />
+                  {property.bedrooms} quartos · {property.area} m²
+                </p>
+                <a
+                  href={`https://wa.me/${(selection.profile.whatsapp || "").replace(/\D/g, "")}?text=${encodeURIComponent(`${message} ${property.title}`)}`}
+                  className="mt-6 inline-flex rounded-full bg-ink px-4 py-2.5 font-body text-sm font-semibold text-paper"
+                >
+                  Tenho interesse
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
+  );
 }

@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { appPath } from "../../lib/paths";
+import { LoadingScreen } from "../LoadingScreen";
 import { signOut } from "../../lib/auth";
 import {
   brl,
@@ -1400,12 +1401,7 @@ export function DashboardApp({ user, route }: Props) {
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
   }, []);
-  if (loading || !profile)
-    return (
-      <main className="grid min-h-screen place-items-center bg-paper">
-        <LoaderCircle className="animate-spin text-ink" />
-      </main>
-    );
+  if (loading || !profile) return <LoadingScreen label="Organizando seus imóveis" />;
   let page: React.ReactNode;
   if (route === "/dashboard")
     page = (
