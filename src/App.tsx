@@ -108,9 +108,13 @@ export default function App() {
   if (path === "/esqueci-senha") return <AuthPage mode="forgot" />;
   if (path === "/redefinir-senha") return <AuthPage mode="reset" />;
   if (path === "/verificar-email") return <AuthPage mode="verify" />;
-  if (path.startsWith("/catalogo/"))
-    return <PublicCatalog slug={path.replace("/catalogo/", "")} />;
+  const catalogRoute = path.match(/^\/catalogo\/([^/]+)(?:\/imovel\/([^/]+))?$/);
+  if (catalogRoute)
+    return <PublicCatalog slug={catalogRoute[1]} propertySlug={catalogRoute[2]} />;
   if (path.startsWith("/selecao/"))
     return <PublicSelection slug={path.replace("/selecao/", "")} />;
+  const publicRoute = path.match(/^\/([^/]+)(?:\/imovel\/([^/]+))?$/);
+  if (publicRoute)
+    return <PublicCatalog slug={publicRoute[1]} propertySlug={publicRoute[2]} />;
   return <Landing />;
 }
