@@ -505,9 +505,6 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
   const lead = catalog.properties[0];
   const remaining = properties.filter((property) => property.id !== lead?.id);
   const totalLabel = `${properties.length} ${properties.length === 1 ? "imóvel" : "imóveis"}`;
-  const profileLocation = [catalog.profile.city, catalog.profile.state]
-    .filter(Boolean)
-    .join(", ");
   return (
     <>
       <CatalogHeader catalog={catalog} onHero />
@@ -516,10 +513,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
           <div className="mx-auto grid min-h-[calc(100svh-68px)] max-w-[1400px] lg:grid-cols-[.92fr_1.08fr]">
             <div className="relative z-10 flex flex-col justify-between px-5 pb-10 pt-14 sm:px-8 sm:pb-14 sm:pt-20 lg:px-12 lg:py-20 xl:px-16">
               <div>
-                <motion.p initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }} className="font-mono text-[10px] uppercase tracking-[.18em] text-ash">
-                  {catalog.profile.professional_name} · {profileLocation || "Brasil"}
-                </motion.p>
-                <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.08, ease: [0.22, 1, 0.36, 1] }} className="mt-7 max-w-[620px] font-display text-[54px] font-semibold leading-[.87] tracking-[-.065em] text-ink sm:text-7xl lg:text-[clamp(72px,7vw,112px)]">
+                <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.08, ease: [0.22, 1, 0.36, 1] }} className="max-w-[620px] font-display text-[54px] font-semibold leading-[.87] tracking-[-.065em] text-ink sm:text-7xl lg:text-[clamp(72px,7vw,112px)]">
                   Encontre um lugar que pareça seu.
                 </motion.h1>
                 <motion.p initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.18, ease: [0.22, 1, 0.36, 1] }} className="mt-8 max-w-md font-body text-[17px] leading-relaxed text-ash">
