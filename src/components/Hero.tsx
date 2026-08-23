@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { appPath } from '../lib/paths';
 
 export function Hero() {
@@ -16,13 +16,7 @@ export function Hero() {
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 mx-auto flex max-w-[850px] flex-col items-center px-5 text-center"
       >
-        <div className="inline-flex items-center gap-2 rounded-full border border-line bg-paper/80 px-4 py-2 font-mono text-[10px] uppercase tracking-[0.1em] text-ash backdrop-blur-sm">
-          <Sparkles size={13} strokeWidth={1.7} />
-          A nova forma de apresentar imóveis
-          <ArrowRight size={15} strokeWidth={1.8} />
-        </div>
-
-        <h1 className="balance mx-auto mt-8 max-w-[850px] font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-7xl">
+        <h1 className="balance mx-auto max-w-[850px] font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-7xl">
           Apresente seus imóveis.
           <br />
           <span className="text-ash">Venda com mais facilidade.</span>
