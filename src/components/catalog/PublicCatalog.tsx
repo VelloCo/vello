@@ -230,34 +230,27 @@ function FeaturedProperty({
 }) {
   const specs = propertySpecs(property);
   return (
-    <article className="overflow-hidden rounded-[24px] border border-white/15 bg-[#151513] lg:grid lg:grid-cols-[1.35fr_.65fr] lg:rounded-[30px]">
-      <div className="group relative min-h-[360px] overflow-hidden bg-charcoal sm:min-h-[500px]">
+    <article className="lg:grid lg:grid-cols-[1.32fr_.68fr] lg:items-stretch">
+      <div className="group relative min-h-[360px] overflow-hidden rounded-[22px] bg-cream sm:min-h-[500px] sm:rounded-[28px]">
         <a href={propertyHref(catalog, property)} aria-label={`Conhecer ${property.title}`} className="absolute inset-0 z-10" />
         {propertyImage(property) ? (
           <img src={propertyImage(property)} alt={property.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.025]" />
         ) : (
-          <div className="absolute inset-0 bg-charcoal" />
+          <div className="absolute inset-0 bg-cream" />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/10" />
-        <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between text-paper sm:bottom-7 sm:left-7 sm:right-7">
-          <span className="font-mono text-[10px] uppercase tracking-[.16em]">01 · Destaque</span>
-          <span className="relative z-20"><Favorite id={property.id} /></span>
-        </div>
+        <div className="absolute right-5 top-5 z-20"><Favorite id={property.id} /></div>
       </div>
-      <div className="flex flex-col justify-end p-6 text-paper sm:p-9 lg:min-h-[500px] lg:p-10">
-        <p className="font-mono text-[10px] uppercase tracking-[.16em] text-paper/50">
-          {property.transaction_type === "sale" ? "À venda" : "Para alugar"}
-        </p>
-        <h2 className="mt-5 font-display text-[36px] font-semibold leading-[.94] tracking-[-.045em] sm:text-5xl">
+      <div className="flex flex-col justify-center py-8 sm:py-10 lg:pl-12 lg:pr-5">
+        <h2 className="font-display text-[38px] font-medium leading-[.94] tracking-[-.05em] text-ink sm:text-5xl">
           {property.title}
         </h2>
-        <p className="mt-5 font-body text-[15px] text-paper/65">{propertyLocation(property)}</p>
-        <p className="mt-8 font-display text-3xl font-semibold tracking-[-.03em]">
+        <p className="mt-5 font-body text-[15px] text-ash">{propertyLocation(property)}</p>
+        <p className="mt-9 font-display text-3xl font-semibold tracking-[-.035em] text-ink">
           {money(property.price, property.transaction_type === "rent")}
         </p>
-        {specs.length > 0 && <p className="mt-4 font-body text-sm text-paper/65">{specs.join(" · ")}</p>}
-        <a href={propertyHref(catalog, property)} className="mt-10 inline-flex items-center gap-2 font-body text-sm font-semibold text-paper transition hover:gap-3">
-          Conhecer imóvel <ArrowUpRight size={17} />
+        {specs.length > 0 && <p className="mt-4 font-body text-sm text-ash">{specs.join(" · ")}</p>}
+        <a href={propertyHref(catalog, property)} className="mt-10 inline-flex items-center gap-2 font-body text-sm font-semibold text-ink transition hover:gap-3">
+          Ver imóvel <ArrowUpRight size={17} />
         </a>
       </div>
     </article>
@@ -537,12 +530,12 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
           </div>
         </section>
 
-        {lead && <section className="-mt-px bg-ink px-5 py-20 text-paper sm:px-8 sm:py-24 lg:py-28"><div className="mx-auto max-w-[1400px]"><div className="mb-10 max-w-2xl sm:mb-14"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-paper/45">01 — Curadoria</p><h2 className="mt-5 font-display text-[48px] font-semibold leading-[.87] tracking-[-.06em] sm:text-7xl">Imóveis que valem conhecer.</h2></div><FeaturedProperty property={lead} catalog={catalog} /></div></section>}
+        {lead && <section className="px-5 py-16 sm:px-8 sm:py-24"><div className="mx-auto max-w-[1400px]"><div className="mb-10 max-w-xl sm:mb-14"><h2 className="font-display text-[42px] font-medium leading-[.92] tracking-[-.05em] text-ink sm:text-6xl">Imóveis em destaque</h2><p className="mt-5 font-body text-[16px] leading-relaxed text-ash">Uma seleção de imóveis que merecem sua atenção.</p></div><FeaturedProperty property={lead} catalog={catalog} /></div></section>}
 
         <section id="imoveis" className="scroll-mt-20 px-5 py-16 sm:px-8 sm:py-24">
           <div className="mx-auto max-w-[1400px]">
             <div className="flex flex-wrap items-end justify-between gap-5 border-b border-black/10 pb-8">
-              <div><p className="font-mono text-[10px] uppercase tracking-[.18em] text-stone">02 — Disponíveis</p><h2 className="mt-4 font-display text-[44px] font-semibold leading-[.9] tracking-[-.055em] text-ink sm:text-6xl">Explore a seleção.</h2></div>
+              <div><h2 className="font-display text-[42px] font-medium leading-[.92] tracking-[-.05em] text-ink sm:text-6xl">Todos os imóveis</h2><p className="mt-4 font-body text-[16px] text-ash">Explore todas as opções disponíveis.</p></div>
               <p className="font-mono text-xs text-stone">{totalLabel}</p>
             </div>
             <div className="sticky top-[68px] z-30 -mx-5 border-b border-black/10 bg-[#f5f2ec]/95 px-5 py-4 backdrop-blur-md sm:-mx-8 sm:px-8"><div className="mx-auto max-w-[1400px]"><label className="flex h-12 max-w-xl items-center gap-3 border-b border-black/20 font-body text-sm transition focus-within:border-ink"><Search size={18} className="text-stone" /><input value={filters.query} onChange={(e) => { setFilters((filter) => ({ ...filter, query: e.target.value })); setVisible(12); }} placeholder="Onde você quer morar?" className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-stone" /></label><div className="mt-4"><FilterControls filters={filters} setFilters={setFilters} total={properties.length} /></div></div></div>
