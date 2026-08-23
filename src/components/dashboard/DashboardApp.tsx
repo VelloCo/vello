@@ -14,7 +14,6 @@ import {
   MoreHorizontal,
   Plus,
   Search,
-  Settings,
   Share2,
   UserRound,
   X,
@@ -45,7 +44,6 @@ const nav = [
   { href: "/dashboard/selecoes", label: "Seleções", icon: FolderHeart },
   { href: "/dashboard/catalogo", label: "Meu catálogo", icon: ExternalLink },
   { href: "/dashboard/perfil", label: "Perfil", icon: UserRound },
-  { href: "/dashboard/configuracoes", label: "Configurações", icon: Settings },
 ];
 const go = (href: string) => (window.location.href = appPath(href));
 const cover = (p: Property) =>
@@ -262,12 +260,6 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
               className="block rounded-lg px-3 py-2 font-body text-sm hover:bg-cream"
             >
               Perfil
-            </a>
-            <a
-              href={appPath("/dashboard/configuracoes")}
-              className="block rounded-lg px-3 py-2 font-body text-sm hover:bg-cream"
-            >
-              Configurações
             </a>
             <button
               onClick={async () => {
@@ -1217,7 +1209,6 @@ function ProfilePage({
   user: User;
   profile: Profile;
   toast: (s: string) => void;
-  settings?: boolean;
 }) {
   const [form, setForm] = useState(profile);
   const save = async () => {
@@ -1232,12 +1223,10 @@ function ProfilePage({
     <>
       <header>
         <h1 className="font-display text-4xl font-semibold">
-          {settings ? "Configurações" : "Perfil"}
+          Perfil
         </h1>
         <p className="mt-2 font-body text-ash">
-          {settings
-            ? "Conta, segurança e preferências do catálogo."
-            : "Os dados que aparecem no seu catálogo público."}
+          Seus dados e as preferências de exibição do catálogo.
         </p>
       </header>
       <section className="mt-9 max-w-2xl rounded-[24px] border border-line bg-white p-5 sm:p-7">
@@ -1284,8 +1273,7 @@ function ProfilePage({
             placeholder="Especialista em imóveis residenciais..."
           />
         </label>
-        {settings && (
-          <div className="mt-6 border-t border-line pt-6">
+        <div className="mt-6 border-t border-line pt-6">
             <p className="font-display text-lg font-semibold">
               Exibição do catálogo
             </p>
@@ -1315,8 +1303,7 @@ function ProfilePage({
             <div className="mt-8 rounded-xl bg-cream p-4 font-body text-sm text-ash">
               Plano atual: <b className="text-ink">Acesso de teste</b>
             </div>
-          </div>
-        )}
+        </div>
         <Button onClick={save} className="mt-7">
           Salvar alterações
         </Button>
@@ -1452,8 +1439,7 @@ export function DashboardApp({ user, route }: Props) {
     );
   else if (route === "/dashboard/perfil")
     page = <ProfilePage user={user} profile={profile} toast={say} />;
-  else
-    page = <ProfilePage user={user} profile={profile} toast={say} settings />;
+  else page = <ProfilePage user={user} profile={profile} toast={say} />;
   return (
     <div className="min-h-screen bg-paper">
       <Sidebar profile={profile} route={route} />
