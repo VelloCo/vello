@@ -20,6 +20,7 @@ const label = 'mb-2 block font-mono text-[10px] uppercase tracking-[0.1em] text-
 function slugify(value: string) { return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
 function money(value: string) { const digits = value.replace(/\D/g, ''); return digits ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(Number(digits)) : ''; }
 function creci(value: string) { const digits = value.replace(/\D/g, '').slice(0, 8); return digits ? `CRECI ${digits}${digits.length >= 5 ? '-F' : ''}` : ''; }
+function whatsapp(value: string) { const digits = value.replace(/\D/g, '').slice(0, 11); if (digits.length <= 2) return digits ? `(${digits}` : ''; if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`; return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`; }
 function number(value: string) { return Number(value.replace(/\D/g, '')) || 0; }
 function publicLink(slug: string) { return `${window.location.origin}${appPath(`/catalogo/${slug}`)}`; }
 
@@ -77,7 +78,7 @@ export function Onboarding({ user }: { user: User }) {
     return () => window.clearTimeout(timer);
   }, [profile.slug]);
 
-  const updateProfile = (key: keyof Profile, value: string) => setProfile((old) => ({ ...old, [key]: value }));
+  const updateProfile = (key: keyof Profile, value: string) => setProfile((old) => ({ ...old, [key]: key === 'whatsapp' ? whatsapp(value) : value }));
   const updateProperty = (key: keyof Property, value: string | boolean | string[]) => setProperty((old) => ({ ...old, [key]: value }));
 
   async function uploadAvatar(file: File) {
