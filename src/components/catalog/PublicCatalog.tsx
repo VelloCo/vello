@@ -500,13 +500,13 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
                   <p className="truncate font-display text-[16px] font-semibold tracking-[-.025em] text-ink">{catalog.profile.professional_name}</p>
                   <p className="mt-0.5 truncate font-body text-xs text-ash">{catalog.profile.creci || "Corretor de imóveis"}</p>
                 </div>
-                {contact && <a href={contact} target="_blank" rel="noreferrer" className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-ink px-3.5 font-body text-xs font-semibold text-paper transition hover:bg-charcoal sm:px-4"><MessageCircle size={15} /><span className="hidden sm:inline">Falar com {catalog.profile.professional_name.split(" ")[0]}</span></a>}
+                {contact && <a href={contact} target="_blank" rel="noreferrer" className="hidden h-10 shrink-0 items-center gap-2 rounded-full bg-ink px-4 font-body text-xs font-semibold text-paper transition hover:bg-charcoal sm:inline-flex"><MessageCircle size={15} />Falar com {catalog.profile.professional_name.split(" ")[0]}</a>}
               </motion.div>
             </div>
-            <motion.div initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }} className="relative min-h-[480px] overflow-hidden bg-charcoal lg:min-h-full">
+            <motion.div initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }} className="relative mx-5 mb-6 min-h-[410px] overflow-hidden rounded-[24px] bg-charcoal sm:min-h-[480px] lg:mx-0 lg:mb-0 lg:min-h-full lg:rounded-none">
               {lead && propertyImage(lead) ? <img src={propertyImage(lead)} alt={lead.title} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover" /> : <div className="absolute inset-0 bg-charcoal" />}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/10" />
-              {lead && <a href={propertyHref(catalog, lead)} className="group absolute bottom-0 left-0 right-0 p-6 text-paper sm:p-9 lg:p-12"><p className="font-mono text-[10px] uppercase tracking-[.16em] text-paper/60">Imóvel em destaque</p><p className="mt-2 flex items-end justify-between gap-5 font-display text-3xl font-semibold leading-none tracking-[-.035em] sm:text-5xl">{lead.title}<ArrowUpRight size={24} className="mb-1 shrink-0 transition group-hover:-translate-y-1 group-hover:translate-x-1" /></p></a>}
+              {lead && <a href={propertyHref(catalog, lead)} className="group absolute bottom-0 left-0 right-0 p-6 text-paper sm:p-9 lg:p-12"><p className="flex items-end justify-between gap-5 font-display text-3xl font-semibold leading-none tracking-[-.035em] sm:text-5xl">{displayTitle(lead.title)}<ArrowUpRight size={24} className="mb-1 shrink-0 transition group-hover:-translate-y-1 group-hover:translate-x-1" /></p></a>}
             </motion.div>
           </div>
         </section>
