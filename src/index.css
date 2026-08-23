@@ -71,3 +71,8 @@ textarea:focus-visible {
 .balance {
   text-wrap: balance;
 }
+
+/* The onboarding starts directly with its main heading. */
+main.min-h-screen.bg-paper.pb-10 section > p:first-child.font-mono {
+  display: none;
+}
