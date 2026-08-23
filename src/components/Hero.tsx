@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative w-full overflow-hidden bg-paper pb-44 pt-[166px] text-sm md:pt-[190px]"
+      className="relative w-full overflow-hidden bg-paper pb-24 pt-[166px] text-sm md:pb-32 md:pt-[190px]"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(250,249,246,0.35)_0%,rgba(250,249,246,0.82)_58%,#faf9f6_100%)]" />
 
