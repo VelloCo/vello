@@ -84,7 +84,7 @@ const propertySpecs = (property: Property) =>
   [
     property.bedrooms > 0 && `${property.bedrooms} ${property.bedrooms === 1 ? "quarto" : "quartos"}`,
     property.parking_spaces > 0 && `${property.parking_spaces} ${property.parking_spaces === 1 ? "vaga" : "vagas"}`,
-    property.area > 0 && `${property.area} m²`,
+    property.area >= 10 && `${property.area} m²`,
   ].filter(Boolean) as string[];
 const propertyLocation = (property: Property) =>
   [property.neighborhood, property.city].filter(Boolean).join(" · ");
@@ -147,13 +147,16 @@ function Favorite({ id }: { id: string }) {
     setSaved(!saved);
   };
   return (
-    <button
+    <motion.button
       onClick={toggle}
       aria-label={saved ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-      className="grid h-10 w-10 place-items-center rounded-full bg-white/90 text-ink shadow-sm transition hover:scale-105"
+      whileTap={{ scale: 0.9 }}
+      animate={{ scale: saved ? 1.06 : 1 }}
+      transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+      className="grid h-10 w-10 place-items-center rounded-full border border-black/5 bg-[#f5f2ec]/95 text-ink shadow-[0_4px_16px_rgba(0,0,0,.08)] transition hover:scale-105"
     >
       <Heart size={18} fill={saved ? "currentColor" : "none"} />
-    </button>
+    </motion.button>
   );
 }
 
@@ -190,38 +193,29 @@ function PropertyCard({
             Vello
           </div>
         )}
-        <span className="pointer-events-none absolute left-3 top-3 z-10 rounded-full bg-ink/90 px-2.5 py-1 font-mono text-[9px] uppercase tracking-[.12em] text-paper">
+        <span className="pointer-events-none absolute left-3 top-3 z-10 rounded-full bg-black/70 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[.16em] text-paper backdrop-blur-sm">
           {property.transaction_type === "sale" ? "Venda" : "Aluguel"}
         </span>
         <div className="absolute right-3 top-3 z-20">
           <Favorite id={property.id} />
         </div>
       </div>
-      <a href={href} className="relative z-20 mt-3 block rounded-[18px] border border-black/10 bg-white/65 p-5 transition duration-300 group-hover:border-black/20 group-hover:bg-white/90" aria-hidden="true" tabIndex={-1}>
+      <a href={href} className="relative z-20 -mt-5 ml-4 block bg-[#f5f2ec] px-5 pb-1 pt-5 sm:ml-5 sm:px-6" aria-hidden="true" tabIndex={-1}>
         <div className="flex items-start justify-between gap-5">
           <div>
-            <h2 className="line-clamp-1 font-display text-[27px] font-semibold leading-[.96] tracking-[-.04em] text-ink sm:text-[33px]">
+            <h2 className="line-clamp-2 font-display text-[27px] font-medium leading-[.98] tracking-[-.04em] text-ink sm:text-[32px]">
               {property.title}
             </h2>
           </div>
-          <ArrowUpRight
-            size={19}
-            className="mt-1 shrink-0 text-ink opacity-0 transition duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100"
-          />
+          <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-black/15 text-ink transition duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:bg-ink group-hover:text-paper"><ArrowUpRight size={17} /></span>
         </div>
         <p className="mt-3 line-clamp-1 font-body text-sm text-ash">
           {propertyLocation(property)}
         </p>
-        <div className="mt-6 flex items-end justify-between gap-5 border-t border-black/10 pt-5">
-          <p className="font-display text-[27px] font-semibold leading-none tracking-[-.04em] text-ink">
+        <p className="mt-7 font-display text-[28px] font-semibold leading-none tracking-[-.045em] text-ink">
           {money(property.price, property.transaction_type === "rent")}
-          </p>
-          <span className="font-mono text-[10px] uppercase tracking-[.14em] text-stone">{property.property_type || "Imóvel"}</span>
-        </div>
-        <div className="mt-4 flex items-center justify-between gap-4">
-          {specs.length > 0 ? <p className="font-body text-sm text-ash">{specs.join(" · ")}</p> : <span />}
-          <span className="shrink-0 font-body text-sm font-semibold text-ink">Conhecer <span aria-hidden="true">→</span></span>
-        </div>
+        </p>
+        {specs.length > 0 && <p className="mt-4 font-body text-sm text-ash">{specs.join(" · ")}</p>}
       </a>
     </motion.article>
   );
