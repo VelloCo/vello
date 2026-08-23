@@ -34,6 +34,9 @@ async function optimizeImage(file: File) {
 }
 
 export function Onboarding({ user }: { user: User }) {
+  const params = new URLSearchParams(window.location.search);
+  const preview = params.get('preview') === '1';
+  const requestedStep = Number(params.get('step')) as 1 | 2 | 3;
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [profile, setProfile] = useState<Profile>(blankProfile);
   const [property, setProperty] = useState<Property>(blankProperty);
@@ -50,8 +53,8 @@ export function Onboarding({ user }: { user: User }) {
       const saved = localStorage.getItem(`vello-onboarding-property-${user.id}`);
       if (saved) setProperty({ ...blankProperty, ...JSON.parse(saved) });
       if (data) {
-        if (data.onboarding_completed) { window.location.replace(appPath('/dashboard')); return; }
-        setStep(data.onboarding_step as 1 | 2 | 3);
+        if (data.onboarding_completed && !preview) { window.location.replace(appPath('/dashboard')); return; }
+        setStep([1, 2, 3].includes(requestedStep) ? requestedStep : data.onboarding_step as 1 | 2 | 3);
         setProfile({ fullName: data.full_name ?? '', professionalName: data.professional_name ?? '', creci: data.creci ?? '', whatsapp: data.whatsapp ?? '', city: data.city ?? '', state: data.state ?? 'RS', instagram: data.instagram ?? '', slug: data.slug ?? '', avatarUrl: data.avatar_url ?? '' });
       } else {
         const name = String(user.user_metadata.full_name ?? '').trim();
@@ -60,7 +63,7 @@ export function Onboarding({ user }: { user: User }) {
       setLoading(false);
     };
     restore().catch(() => { setNotice('Não foi possível carregar seu progresso. Tente novamente.'); setLoading(false); });
-  }, [user.id, user.user_metadata.full_name]);
+  }, [user.id, user.user_metadata.full_name, preview, requestedStep]);
 
   useEffect(() => { if (!loading) localStorage.setItem(`vello-onboarding-property-${user.id}`, JSON.stringify(property)); }, [property, user.id, loading]);
   useEffect(() => {
@@ -140,7 +143,7 @@ export function Onboarding({ user }: { user: User }) {
   const page = useMemo(() => step === 1 ? <ProfileStep profile={profile} update={updateProfile} saving={saving} slugStatus={slugStatus} onAvatar={uploadAvatar} onContinue={saveProfile} /> : step === 2 ? <PropertyStep property={property} update={updateProperty} photos={photos} setPhotos={setPhotos} saving={saving} onUpload={uploadPhotos} onBack={() => setStep(1)} onPublish={publish} /> : <SuccessStep profile={profile} property={property} photos={photos} link={link} onDashboard={finish} />, [step, profile, property, photos, saving, slugStatus]);
 
   if (loading) return <div className="grid min-h-screen place-items-center bg-paper"><LoaderCircle className="animate-spin text-ink" /></div>;
-  return <main className="min-h-screen bg-paper pb-10"><div className="mx-auto max-w-[900px] px-5 py-7 sm:px-8 lg:py-10"><div className="flex items-center justify-between"><a href={appPath('/')}><Logo /></a><button onClick={() => window.location.href = appPath('/dashboard')} className="font-body text-sm text-ash hover:text-ink">Sair</button></div><Progress step={step} onSelect={(nextStep) => { if (step === 2 && nextStep === 1) setStep(1); }} /><AnimatePresence mode="wait"><motion.div key={step} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.28 }}>{page}</motion.div></AnimatePresence>{notice && <p className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink px-5 py-3 font-body text-sm text-paper shadow-lg">{notice}</p>}</div></main>;
+  return <main className="min-h-screen bg-paper pb-10"><div className="mx-auto max-w-[900px] px-5 py-7 sm:px-8 lg:py-10"><div className="flex items-center justify-between"><a href={appPath('/')}><Logo /></a><button onClick={() => window.location.href = appPath('/dashboard')} className="font-body text-sm text-ash hover:text-ink">Sair</button></div>{preview && <p className="mt-8 rounded-xl border border-line bg-white px-4 py-3 font-body text-sm text-ash">Modo de visualização — seus dados não serão redefinidos.</p>}<Progress step={step} onSelect={(nextStep) => { if ((step === 2 || preview) && nextStep < step) setStep(nextStep as 1 | 2 | 3); }} /><AnimatePresence mode="wait"><motion.div key={step} initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.28 }}>{page}</motion.div></AnimatePresence>{notice && <p className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2 rounded-full bg-ink px-5 py-3 font-body text-sm text-paper shadow-lg">{notice}</p>}</div></main>;
 }
 
 function Progress({ step, onSelect }: { step: number; onSelect: (step: number) => void }) {
