@@ -1306,6 +1306,15 @@ function ProfilePage({
         <Button onClick={save} className="mt-7">
           Salvar alterações
         </Button>
+        <button
+          onClick={async () => {
+            await signOut();
+            go("/login");
+          }}
+          className="mt-8 flex h-11 w-full items-center justify-center gap-2 rounded-full border border-red-200 font-body text-sm font-medium text-red-700 md:hidden"
+        >
+          <LogOut size={16} /> Sair da conta
+        </button>
       </section>
     </>
   );
