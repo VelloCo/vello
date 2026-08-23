@@ -95,7 +95,7 @@ export function Header() {
         </div>
       )}
 
-      {!open && <a href={appPath('/cadastro')} className="fixed bottom-5 left-5 right-5 z-40 flex h-13 items-center justify-center rounded-full bg-ink px-5 font-body text-[15px] font-semibold text-paper shadow-[0_14px_32px_rgba(11,11,10,0.22)] transition-transform active:scale-[0.98] md:hidden">Criar meu catálogo</a>}
+      {!open && <a href={appPath('/cadastro')} className="fixed bottom-4 left-1/2 z-40 flex h-14 w-[calc(100%-2.5rem)] max-w-sm -translate-x-1/2 items-center justify-center overflow-hidden rounded-full border border-line bg-white px-5 font-body text-[15px] font-semibold text-ink shadow-[0_14px_32px_rgba(11,11,10,0.16)] transition-transform active:scale-[0.98] md:hidden"><span aria-hidden="true" className="absolute -bottom-9 -left-[12%] h-14 w-[72%] rounded-[50%] bg-ink" /><span aria-hidden="true" className="absolute -bottom-10 left-[43%] h-14 w-[70%] rounded-[50%] bg-ink" /><span className="relative -translate-y-1">Criar meu catálogo</span></a>}
     </header>
   );
 }
