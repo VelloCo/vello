@@ -200,7 +200,7 @@ function PropertyCard({
           <Favorite id={property.id} />
         </div>
       </div>
-      <a href={href} className="relative z-20 -mt-5 ml-4 block bg-[#f5f2ec] px-5 pb-1 pt-5 sm:ml-5 sm:px-6" aria-hidden="true" tabIndex={-1}>
+      <a href={href} className="relative z-20 -mt-5 ml-4 block rounded-[20px] bg-[#f5f2ec] px-5 pb-5 pt-5 shadow-[0_14px_30px_rgba(11,11,10,.05)] transition duration-300 group-hover:-translate-y-0.5 sm:ml-5 sm:px-6" aria-hidden="true" tabIndex={-1}>
         <div className="flex items-start justify-between gap-5">
           <div>
             <h2 className="line-clamp-2 font-display text-[27px] font-medium leading-[.98] tracking-[-.04em] text-ink sm:text-[32px]">
