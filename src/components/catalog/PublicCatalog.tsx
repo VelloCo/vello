@@ -88,6 +88,10 @@ const propertySpecs = (property: Property) =>
   ].filter(Boolean) as string[];
 const propertyLocation = (property: Property) =>
   [property.neighborhood, property.city].filter(Boolean).join(" · ");
+const displayTitle = (title: string) =>
+  title === title.toUpperCase()
+    ? title.toLocaleLowerCase("pt-BR").replace(/^\S/, (letter) => letter.toUpperCase())
+    : title;
 const propertyHref = (catalog: Catalog, property: Property) =>
   appPath(`/${catalog.profile.slug}/imovel/${property.slug || property.id}`);
 
@@ -171,6 +175,8 @@ function PropertyCard({
 }) {
   const href = propertyHref(catalog, property);
   const specs = propertySpecs(property);
+  const hasBedrooms = property.bedrooms > 0;
+  const hasParking = property.parking_spaces > 0;
   return (
     <motion.article
       layout
@@ -204,18 +210,14 @@ function PropertyCard({
         <div className="flex items-start justify-between gap-5">
           <div>
             <h2 className="line-clamp-2 font-display text-[27px] font-medium leading-[.98] tracking-[-.04em] text-ink sm:text-[32px]">
-              {property.title}
+              {displayTitle(property.title)}
             </h2>
           </div>
           <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-black/15 text-ink transition duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:bg-ink group-hover:text-paper"><ArrowUpRight size={17} /></span>
         </div>
-        <p className="mt-3 line-clamp-1 font-body text-sm text-ash">
-          {propertyLocation(property)}
-        </p>
-        <p className="mt-7 font-display text-[28px] font-semibold leading-none tracking-[-.045em] text-ink">
-          {money(property.price, property.transaction_type === "rent")}
-        </p>
-        {specs.length > 0 && <p className="mt-4 font-body text-sm text-ash">{specs.join(" · ")}</p>}
+        {propertyLocation(property) && <p className="mt-3 flex items-center gap-1.5 font-body text-sm text-ash"><MapPin size={15} strokeWidth={1.7} />{propertyLocation(property)}</p>}
+        <div className="mt-7"><p className="font-mono text-[9px] uppercase tracking-[.16em] text-stone">Valor do imóvel</p><p className="mt-2 font-display text-[28px] font-semibold leading-none tracking-[-.045em] text-ink">{money(property.price, property.transaction_type === "rent")}</p></div>
+        {specs.length > 0 && <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 font-body text-sm text-ash">{hasBedrooms && <span className="inline-flex items-center gap-1.5"><BedDouble size={15} strokeWidth={1.7} />{property.bedrooms} {property.bedrooms === 1 ? "quarto" : "quartos"}</span>}{hasParking && <span className="inline-flex items-center gap-1.5"><Car size={15} strokeWidth={1.7} />{property.parking_spaces} {property.parking_spaces === 1 ? "vaga" : "vagas"}</span>}{property.area >= 10 && <span>{property.area} m²</span>}</div>}
       </a>
     </motion.article>
   );
