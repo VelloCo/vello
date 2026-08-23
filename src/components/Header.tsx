@@ -71,8 +71,8 @@ export function Header() {
       </Container>
 
       {open && (
-        <div className="md:hidden bg-paper border-t border-line/60 px-6 py-6">
-          <div className="flex flex-col gap-5">
+        <div className="fixed inset-x-0 bottom-0 top-[72px] overflow-y-auto border-t border-line/60 bg-paper px-6 py-8 md:hidden">
+          <div className="flex min-h-full flex-col gap-6">
             {NAV.map((n) => (
               <button
                 key={n.href}
@@ -82,7 +82,7 @@ export function Header() {
                 {n.label}
               </button>
             ))}
-            <div className="mt-2 flex flex-col gap-3">
+            <div className="mt-4 flex flex-col gap-3">
               <a href={appPath('/login')} className="font-body text-[15px] text-ash">Entrar</a>
               <a
                 href={appPath('/cadastro')}
