@@ -512,7 +512,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
     <>
       <CatalogHeader catalog={catalog} onHero />
       <main className="overflow-hidden bg-[#f5f2ec] pb-28">
-        <section className="relative border-b border-black/10 bg-[#f5f2ec]">
+        <section className="relative bg-[#f5f2ec]">
           <div className="mx-auto grid min-h-[calc(100svh-68px)] max-w-[1400px] lg:grid-cols-[.92fr_1.08fr]">
             <div className="relative z-10 flex flex-col justify-between px-5 pb-10 pt-14 sm:px-8 sm:pb-14 sm:pt-20 lg:px-12 lg:py-20 xl:px-16">
               <div>
@@ -546,7 +546,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
           </div>
         </section>
 
-        {lead && <section className="bg-ink px-5 py-18 text-paper sm:px-8 sm:py-24 lg:py-28"><div className="mx-auto max-w-[1400px]"><div className="mb-10 max-w-2xl sm:mb-14"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-paper/45">01 — Curadoria</p><h2 className="mt-5 font-display text-[48px] font-semibold leading-[.87] tracking-[-.06em] sm:text-7xl">Imóveis que valem conhecer.</h2></div><FeaturedProperty property={lead} catalog={catalog} /></div></section>}
+        {lead && <section className="-mt-px bg-ink px-5 py-20 text-paper sm:px-8 sm:py-24 lg:py-28"><div className="mx-auto max-w-[1400px]"><div className="mb-10 max-w-2xl sm:mb-14"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-paper/45">01 — Curadoria</p><h2 className="mt-5 font-display text-[48px] font-semibold leading-[.87] tracking-[-.06em] sm:text-7xl">Imóveis que valem conhecer.</h2></div><FeaturedProperty property={lead} catalog={catalog} /></div></section>}
 
         <section id="imoveis" className="scroll-mt-20 px-5 py-16 sm:px-8 sm:py-24">
           <div className="mx-auto max-w-[1400px]">
