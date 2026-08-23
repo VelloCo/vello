@@ -244,7 +244,7 @@ function FilterControls({
   const reset = () => setFilters(initial);
   return (
     <>
-      <div className="flex gap-2 overflow-x-auto pb-1">
+      <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <button
           onClick={reset}
           className={`h-10 whitespace-nowrap rounded-full border px-4 font-body text-sm transition ${filters.transaction === "all" && !filters.type && !filters.bedrooms && !filters.min && !filters.max ? "border-ink bg-ink text-paper" : "border-line bg-transparent text-ash hover:border-ink hover:text-ink"}`}
@@ -277,7 +277,7 @@ function FilterControls({
           aria-label="Tipo de imóvel"
           value={filters.type}
           onChange={(e) => setFilters((f) => ({ ...f, type: e.target.value }))}
-          className="h-10 rounded-full border border-line bg-transparent px-4 font-body text-sm text-ash outline-none"
+          className="hidden h-10 rounded-full border border-line bg-transparent px-4 font-body text-sm text-ash outline-none sm:block"
         >
           <option value="">Tipo</option>
           {types.map((type) => (
@@ -290,7 +290,7 @@ function FilterControls({
           onChange={(e) =>
             setFilters((f) => ({ ...f, bedrooms: Number(e.target.value) }))
           }
-          className="h-10 rounded-full border border-line bg-transparent px-4 font-body text-sm text-ash outline-none"
+          className="hidden h-10 rounded-full border border-line bg-transparent px-4 font-body text-sm text-ash outline-none sm:block"
         >
           <option value="0">Quartos</option>
           {[1, 2, 3, 4].map((n) => (
@@ -303,7 +303,7 @@ function FilterControls({
           onClick={() => setSheet(true)}
           className="inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full border border-line bg-transparent px-4 font-body text-sm text-ash transition hover:border-ink hover:text-ink"
         >
-          <SlidersHorizontal size={15} /> Mais filtros
+          <SlidersHorizontal size={15} /> Filtros
         </button>
       </div>
       <AnimatePresence>
@@ -362,6 +362,22 @@ function FilterControls({
                     placeholder="Sem limite"
                     className="mt-2 h-12 w-full rounded-xl border border-line bg-white px-3 outline-none"
                   />
+                </label>
+              </div>
+              <div className="mt-4 grid grid-cols-2 gap-4 sm:hidden">
+                <label className="font-body text-sm">
+                  Tipo
+                  <select value={filters.type} onChange={(e) => setFilters((f) => ({ ...f, type: e.target.value }))} className="mt-2 h-12 w-full rounded-xl border border-line bg-white px-3 text-ash outline-none">
+                    <option value="">Todos</option>
+                    {types.map((type) => <option key={type}>{type}</option>)}
+                  </select>
+                </label>
+                <label className="font-body text-sm">
+                  Quartos
+                  <select value={filters.bedrooms} onChange={(e) => setFilters((f) => ({ ...f, bedrooms: Number(e.target.value) }))} className="mt-2 h-12 w-full rounded-xl border border-line bg-white px-3 text-ash outline-none">
+                    <option value="0">Todos</option>
+                    {[1, 2, 3, 4].map((n) => <option key={n} value={n}>{n}+ quartos</option>)}
+                  </select>
                 </label>
               </div>
               <div className="mt-7 flex items-center justify-between">
@@ -501,7 +517,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
               <div><h2 className="font-display text-[42px] font-medium leading-[.92] tracking-[-.05em] text-ink sm:text-6xl">Todos os imóveis</h2><p className="mt-4 font-body text-[16px] text-ash">Explore todas as opções disponíveis.</p></div>
               <p className="font-mono text-xs text-stone">{totalLabel}</p>
             </div>
-            <div className="sticky top-[68px] z-30 -mx-5 border-b border-black/10 bg-[#f5f2ec]/95 px-5 py-4 backdrop-blur-md sm:-mx-8 sm:px-8"><div className="mx-auto max-w-[1400px]"><label className="flex h-12 max-w-xl items-center gap-3 border-b border-black/20 font-body text-sm transition focus-within:border-ink"><Search size={18} className="text-stone" /><input value={filters.query} onChange={(e) => { setFilters((filter) => ({ ...filter, query: e.target.value })); setVisible(12); }} placeholder="Onde você quer morar?" className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-stone" /></label><div className="mt-4"><FilterControls filters={filters} setFilters={setFilters} total={properties.length} /></div></div></div>
+            <div className="sticky top-[68px] z-30 -mx-5 bg-[#f5f2ec]/95 px-5 py-4 shadow-[0_8px_18px_rgba(11,11,10,.035)] backdrop-blur-md sm:-mx-8 sm:px-8"><div className="mx-auto max-w-[1400px]"><label className="flex h-12 max-w-xl items-center gap-3 rounded-full border border-black/10 bg-white/65 px-4 font-body text-sm transition focus-within:border-black/40 focus-within:bg-white"><Search size={18} className="text-stone" /><input value={filters.query} onChange={(e) => { setFilters((filter) => ({ ...filter, query: e.target.value })); setVisible(12); }} placeholder="Onde você quer morar?" className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-stone" /></label><div className="mt-3"><FilterControls filters={filters} setFilters={setFilters} total={properties.length} /></div></div></div>
             {properties.length > 0 ? <motion.div layout className={`mt-10 grid gap-x-7 gap-y-14 ${properties.length === 1 ? "max-w-[920px]" : "md:grid-cols-2"}`}>
               {properties.slice(0, visible).map((property, index) => <PropertyCard key={property.id} property={property} catalog={catalog} index={index} />)}
             </motion.div> : <div className="mt-12 max-w-2xl border-y border-black/10 py-16"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-stone">Sem resultados</p><h3 className="mt-5 font-display text-4xl font-semibold tracking-[-.05em]">Novas oportunidades em breve.</h3><p className="mt-5 max-w-lg font-body leading-relaxed text-ash">No momento não há imóveis que combinem com essa busca. Se você procura algo específico, fale diretamente com {catalog.profile.professional_name}.</p><button onClick={() => setFilters(initial)} className="mt-8 font-body text-sm font-semibold underline underline-offset-4">Limpar filtros</button></div>}
