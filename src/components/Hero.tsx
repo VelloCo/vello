@@ -6,7 +6,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative min-h-[100svh] w-full overflow-hidden bg-paper pb-24 pt-[166px] text-sm md:pb-32 md:pt-[190px]"
+      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-paper px-0 pb-16 pt-[72px] text-sm md:pb-24 md:pt-[96px]"
     >
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(250,249,246,0.35)_0%,rgba(250,249,246,0.82)_58%,#faf9f6_100%)]" />
 
@@ -14,7 +14,7 @@ export function Hero() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 mx-auto flex max-w-[850px] flex-col items-center px-5 text-center"
+        className="relative z-10 mx-auto flex max-w-[850px] -translate-y-5 flex-col items-center px-5 text-center md:translate-y-0"
       >
         <p className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-stone"><span className="h-px w-6 bg-line" />Feito para corretores imobiliários<span className="h-px w-6 bg-line" /></p>
 
