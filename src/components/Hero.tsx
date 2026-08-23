@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
+import { appPath } from '../lib/paths';
 
 export function Hero() {
   return (
@@ -40,7 +41,7 @@ export function Hero() {
 
         <div className="mx-auto mt-5 flex w-full items-center justify-center gap-3">
           <a
-            href="/cadastro"
+            href={appPath('/cadastro')}
             className="rounded-full bg-ink px-6 py-3 font-body text-[14px] font-medium text-paper transition hover:bg-charcoal"
           >
             Criar meu catálogo

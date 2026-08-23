@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Logo } from './Logo';
 import { Container } from './Primitives';
+import { appPath } from '../lib/paths';
 
 const NAV = [
   { label: 'Produto', href: '#produto' },
@@ -49,11 +50,11 @@ export function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-5">
-          <a href="/login" className="font-body text-[14.5px] text-ink/80 hover:text-ink transition-colors">
+          <a href={appPath('/login')} className="font-body text-[14.5px] text-ink/80 hover:text-ink transition-colors">
             Entrar
           </a>
           <a
-            href="/cadastro"
+            href={appPath('/cadastro')}
             className="rounded-full bg-ink px-5 py-2.5 font-body text-[14px] font-medium text-paper transition-transform hover:scale-[1.03] active:scale-[0.98]"
           >
             Criar meu catálogo
@@ -82,9 +83,9 @@ export function Header() {
               </button>
             ))}
             <div className="mt-2 flex flex-col gap-3">
-              <a href="/login" className="font-body text-[15px] text-ash">Entrar</a>
+              <a href={appPath('/login')} className="font-body text-[15px] text-ash">Entrar</a>
               <a
-                href="/cadastro"
+                href={appPath('/cadastro')}
                 className="rounded-full bg-ink px-5 py-3 text-center font-body text-[15px] font-medium text-paper"
               >
                 Criar meu catálogo

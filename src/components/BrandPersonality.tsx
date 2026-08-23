@@ -1,4 +1,5 @@
 import { Container, Reveal } from './Primitives';
+import { appPath } from '../lib/paths';
 
 export function BrandPersonality() {
   return (
@@ -19,7 +20,7 @@ export function BrandPersonality() {
         <Reveal delay={0.1} className="relative flex justify-center md:justify-end">
           <div className="relative h-[320px] w-[320px] overflow-hidden rounded-[28px] bg-paper md:h-[380px] md:w-[380px] md:translate-x-10">
             <img
-              src="/vello-logo.png"
+              src={appPath('/vello-logo.png')}
               alt="Mascote da Vello"
               className="h-full w-full object-cover"
             />

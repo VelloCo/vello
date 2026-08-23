@@ -1,4 +1,5 @@
 import { ArrowRight } from 'lucide-react';
+import { appPath } from '../lib/paths';
 import { Container, Reveal } from './Primitives';
 
 /**
@@ -22,7 +23,7 @@ export function FinalCTA() {
 
         <Reveal delay={0.12}>
           <a
-            href="/cadastro"
+            href={appPath('/cadastro')}
             className="group mt-10 inline-flex items-center gap-2.5 rounded-full bg-paper px-8 py-4 font-body text-[16px] font-medium text-ink transition-transform hover:scale-[1.03] active:scale-[0.98]"
           >
             Criar meu catálogo

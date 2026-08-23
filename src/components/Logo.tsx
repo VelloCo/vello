@@ -1,3 +1,5 @@
+import { appPath } from '../lib/paths';
+
 interface LogoProps {
   variant?: 'dark' | 'light';
   className?: string;
@@ -8,7 +10,7 @@ export function Logo({ variant = 'dark', className = '' }: LogoProps) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <img
-        src="/vello-logo.png"
+        src={appPath('/vello-logo.png')}
         alt=""
         aria-hidden="true"
         className="h-9 w-9 object-contain"
