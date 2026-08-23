@@ -16,7 +16,9 @@ export function Hero() {
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 mx-auto flex max-w-[850px] flex-col items-center px-5 text-center"
       >
-        <h1 className="balance mx-auto max-w-[850px] font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-7xl">
+        <p className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-stone"><span className="h-px w-6 bg-line" />Feito para corretores imobiliários<span className="h-px w-6 bg-line" /></p>
+
+        <h1 className="balance mx-auto mt-7 max-w-[850px] font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-7xl">
           Apresente seus imóveis.
           <br />
           <span className="text-ash">Venda com mais facilidade.</span>
