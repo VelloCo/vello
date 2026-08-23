@@ -1,17 +1,18 @@
+import { motion } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
-import { useState } from 'react';
-import type { InputHTMLAttributes } from 'react';
+import { useEffect, useState } from 'react';
+import type { ChangeEvent, InputHTMLAttributes } from 'react';
 
-export function PasswordInput({ label, error, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string }) {
+type PasswordProps = InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string };
+
+export function PasswordInput({ label, error, ...props }: PasswordProps) {
   const [visible, setVisible] = useState(false);
-  return (
-    <label className="block">
-      <span className="mb-2 block font-body text-[13px] font-medium text-ink">{label}</span>
-      <span className="relative block">
-        <input {...props} type={visible ? 'text' : 'password'} className={`h-12 w-full rounded-[10px] border bg-white px-4 pr-12 font-body text-[14px] text-ink outline-none transition placeholder:text-stone/70 focus:border-ink focus:ring-2 focus:ring-ink/10 ${error ? 'border-red-400' : 'border-line'}`} />
-        <button type="button" onClick={() => setVisible((value) => !value)} aria-label={visible ? 'Esconder senha' : 'Mostrar senha'} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone transition hover:text-ink">{visible ? <EyeOff size={17} /> : <Eye size={17} />}</button>
-      </span>
-      {error && <span className="mt-1.5 block font-body text-[12px] text-red-600">{error}</span>}
-    </label>
-  );
+  return <label className="block"><span className="mb-2 block font-body text-[13px] font-medium text-ink">{label}</span><span className="relative block"><input {...props} type={visible ? 'text' : 'password'} className={`h-12 w-full rounded-[10px] border bg-white px-4 pr-12 font-body text-[14px] text-ink outline-none transition placeholder:text-stone/70 focus:border-ink focus:ring-2 focus:ring-ink/10 ${error ? 'border-red-400' : 'border-line'}`} /><button type="button" onClick={() => setVisible((value) => !value)} aria-label={visible ? 'Esconder senha' : 'Mostrar senha'} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone transition hover:text-ink">{visible ? <EyeOff size={17} /> : <Eye size={17} />}</button></span>{error && <span className="mt-1.5 block font-body text-[12px] text-red-600">{error}</span>}</label>;
+}
+
+export function PasswordConfirmationInput({ password, label, error, onChange, value, ...props }: PasswordProps & { password: string }) {
+  const [visible, setVisible] = useState(false); const [shake, setShake] = useState(false); const confirmation = String(value ?? ''); const matches = password.length > 0 && password === confirmation;
+  useEffect(() => { if (!shake) return; const timer = window.setTimeout(() => setShake(false), 450); return () => window.clearTimeout(timer); }, [shake]);
+  const change = (event: ChangeEvent<HTMLInputElement>) => { if (confirmation.length >= password.length && event.target.value.length > confirmation.length) { setShake(true); return; } onChange?.(event); };
+  return <label className="block"><span className="mb-2 block font-body text-[13px] font-medium text-ink">{label}</span>{password && <motion.div className={`mb-2 flex h-9 items-center overflow-hidden rounded-[9px] border bg-white px-3 ${matches ? 'border-emerald-500' : 'border-line'}`} animate={{ x: shake ? [-7, 7, -5, 5, 0] : 0, scale: matches ? [1, 1.015, 1] : 1 }} transition={{ duration: 0.35 }}><div className="flex h-full items-center gap-1">{password.split('').map((letter, index) => <span key={`${letter}-${index}`} className={`h-2 w-2 rounded-full transition-colors ${confirmation[index] ? confirmation[index] === letter ? 'bg-emerald-500' : 'bg-red-500' : 'bg-stone/30'}`} />)}</div><span className={`ml-3 font-body text-[11px] ${matches ? 'text-emerald-700' : 'text-stone'}`}>{matches ? 'Senhas iguais' : 'Confira os caracteres'}</span></motion.div>}<span className="relative block"><motion.span className="block" animate={{ x: shake ? [-7, 7, -5, 5, 0] : 0 }} transition={{ duration: 0.35 }}><input {...props} value={value} onChange={change} type={visible ? 'text' : 'password'} className={`h-12 w-full rounded-[10px] border bg-white px-4 pr-12 font-body text-[14px] text-ink outline-none transition placeholder:text-stone/70 focus:border-ink focus:ring-2 focus:ring-ink/10 ${error ? 'border-red-400' : matches ? 'border-emerald-500' : 'border-line'}`} /></motion.span><button type="button" onClick={() => setVisible((current) => !current)} aria-label={visible ? 'Esconder senha' : 'Mostrar senha'} className="absolute right-3 top-1/2 -translate-y-1/2 text-stone transition hover:text-ink">{visible ? <EyeOff size={17} /> : <Eye size={17} />}</button></span>{error && <span className="mt-1.5 block font-body text-[12px] text-red-600">{error}</span>}</label>;
 }
