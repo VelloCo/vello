@@ -1,42 +1,48 @@
-export interface AuthUser {
-  name: string;
-  email: string;
+import type { User } from '@supabase/supabase-js';
+import { appPath } from './paths';
+import { requireSupabase } from './supabase';
+
+function redirectUrl(path: string) {
+  return `${window.location.origin}${appPath(path)}`;
 }
 
-const SESSION_KEY = 'vello_demo_session';
-
-const wait = (ms = 500) => new Promise((resolve) => setTimeout(resolve, ms));
-
-export function getSession(): AuthUser | null {
-  try {
-    const value = localStorage.getItem(SESSION_KEY);
-    return value ? JSON.parse(value) as AuthUser : null;
-  } catch {
-    return null;
-  }
+export async function signIn(email: string, password: string) {
+  const { data, error } = await requireSupabase().auth.signInWithPassword({ email, password });
+  if (error) throw error;
+  return data.user;
 }
 
-export async function login(email: string, _password: string): Promise<AuthUser> {
-  await wait();
-  const user = { name: email.split('@')[0] || 'Corretor', email };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-  return user;
+export async function signUp(name: string, email: string, password: string) {
+  const { data, error } = await requireSupabase().auth.signUp({
+    email,
+    password,
+    options: { data: { full_name: name }, emailRedirectTo: redirectUrl('/onboarding') },
+  });
+  if (error) throw error;
+  return data;
 }
 
-export async function register(name: string, email: string, _password: string): Promise<AuthUser> {
-  await wait(700);
-  const user = { name, email };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-  return user;
+export async function signInWithGoogle() {
+  const { data, error } = await requireSupabase().auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: redirectUrl('/onboarding') },
+  });
+  if (error) throw error;
+  if (data.url) window.location.assign(data.url);
 }
 
-export async function continueWithGoogle(): Promise<AuthUser> {
-  await wait(700);
-  const user = { name: 'Corretor Vello', email: 'corretor@vello.app' };
-  localStorage.setItem(SESSION_KEY, JSON.stringify(user));
-  return user;
+export async function signOut() {
+  const { error } = await requireSupabase().auth.signOut();
+  if (error) throw error;
 }
 
-export function logout() {
-  localStorage.removeItem(SESSION_KEY);
+export async function getCurrentUser(): Promise<User | null> {
+  const { data, error } = await requireSupabase().auth.getUser();
+  if (error) return null;
+  return data.user;
 }
+
+// Compatibility aliases for the existing authentication screens.
+export const login = signIn;
+export const register = signUp;
+export const continueWithGoogle = signInWithGoogle;
