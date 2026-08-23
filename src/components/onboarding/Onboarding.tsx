@@ -15,7 +15,7 @@ const blankProperty: Property = { transaction: 'sale', type: 'Apartamento', titl
 const features = ['Sacada', 'Churrasqueira', 'Piscina', 'Academia', 'Elevador', 'Portaria', 'Mobiliado', 'Aceita pets', 'Condomínio fechado', 'Vista panorâmica'];
 
 const field = 'h-12 w-full rounded-xl border border-line bg-white px-4 font-body text-[14px] text-ink outline-none transition placeholder:text-stone focus:border-ink';
-const label = 'mb-2 block font-mono text-[10px] uppercase tracking-[0.1em] text-ash';
+const label = 'mb-2 block font-display text-[12px] font-extrabold uppercase tracking-[-0.01em] text-ink';
 
 function slugify(value: string) { return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, ''); }
 function money(value: string) { const digits = value.replace(/\D/g, ''); return digits ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(Number(digits)) : ''; }
