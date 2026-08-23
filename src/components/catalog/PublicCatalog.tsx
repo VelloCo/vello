@@ -176,7 +176,7 @@ function PropertyCard({
       transition={{ duration: 0.45, delay: Math.min(index * 0.07, 0.28), ease: [0.22, 1, 0.36, 1] }}
       className="group relative"
     >
-      <div className="relative aspect-[4/3] overflow-hidden rounded-[18px] bg-cream sm:rounded-[22px]">
+      <div className="relative aspect-[5/4] overflow-hidden rounded-[18px] bg-cream sm:rounded-[22px]">
         <a href={href} aria-label={`Conhecer ${property.title}`} className="absolute inset-0 z-10 rounded-[18px] focus-visible:ring-2 focus-visible:ring-ink sm:rounded-[22px]" />
         {propertyImage(property) ? (
           <img
@@ -197,13 +197,10 @@ function PropertyCard({
           <Favorite id={property.id} />
         </div>
       </div>
-      <a href={href} className="relative z-20 block pt-4" aria-hidden="true" tabIndex={-1}>
+      <a href={href} className="relative z-20 block pt-5" aria-hidden="true" tabIndex={-1}>
         <div className="flex items-start justify-between gap-5">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[.14em] text-stone">
-              {property.property_type || "Imóvel"}
-            </p>
-            <h2 className="mt-2 line-clamp-1 font-display text-[25px] font-semibold leading-[.98] tracking-[-.03em] text-ink sm:text-[30px]">
+            <h2 className="line-clamp-1 font-display text-[27px] font-semibold leading-[.96] tracking-[-.04em] text-ink sm:text-[33px]">
               {property.title}
             </h2>
           </div>
@@ -215,12 +212,16 @@ function PropertyCard({
         <p className="mt-3 line-clamp-1 font-body text-sm text-ash">
           {propertyLocation(property)}
         </p>
-        <p className="mt-5 font-display text-2xl font-semibold tracking-[-.025em] text-ink">
+        <div className="mt-6 flex items-end justify-between gap-5 border-t border-black/10 pt-5">
+          <p className="font-display text-[27px] font-semibold leading-none tracking-[-.04em] text-ink">
           {money(property.price, property.transaction_type === "rent")}
-        </p>
-        {specs.length > 0 && (
-          <p className="mt-3 font-body text-sm text-ash">{specs.join(" · ")}</p>
-        )}
+          </p>
+          <span className="font-mono text-[10px] uppercase tracking-[.14em] text-stone">{property.property_type || "Imóvel"}</span>
+        </div>
+        <div className="mt-4 flex items-center justify-between gap-4">
+          {specs.length > 0 ? <p className="font-body text-sm text-ash">{specs.join(" · ")}</p> : <span />}
+          <span className="shrink-0 font-body text-sm font-semibold text-ink">Conhecer <span aria-hidden="true">→</span></span>
+        </div>
       </a>
     </motion.article>
   );
