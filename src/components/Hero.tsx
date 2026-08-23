@@ -5,9 +5,9 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative min-h-[128svh] overflow-hidden bg-ink pt-[220px] text-sm text-paper md:min-h-[120svh] md:pt-[172px]"
+      className="relative min-h-[132svh] overflow-hidden bg-ink pt-[172px] text-sm text-paper md:min-h-[124svh] md:pt-[172px]"
     >
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[72svh] overflow-hidden md:h-[68svh]">
+      <div className="pointer-events-none absolute inset-x-0 bottom-[13svh] h-[70svh] overflow-hidden md:bottom-[12svh] md:h-[66svh]">
         <picture className="absolute bottom-[-8%] left-1/2 h-[74svh] w-full max-w-[980px] -translate-x-1/2 opacity-75 grayscale md:bottom-0 md:h-[66svh]">
           <source
             media="(min-width: 768px)"
@@ -63,7 +63,6 @@ export function Hero() {
           </button>
         </div>
       </motion.div>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-20 bg-gradient-to-b from-ink via-[#302f2d] to-paper md:h-24" />
     </section>
   );
 }
