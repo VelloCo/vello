@@ -1,50 +1,6 @@
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
 import { appPath } from '../lib/paths';
 
 export function Hero() {
-  return (
-    <section
-      id="top"
-      className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-paper px-0 pb-16 pt-[72px] text-sm md:pb-24 md:pt-[96px]"
-    >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(250,249,246,0.35)_0%,rgba(250,249,246,0.82)_58%,#faf9f6_100%)]" />
-
-      <motion.div
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 mx-auto flex max-w-[850px] -translate-y-5 flex-col items-center px-5 text-center md:translate-y-0"
-      >
-        <p className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.16em] text-stone"><span className="h-px w-6 bg-line" />Feito para corretores imobiliários<span className="h-px w-6 bg-line" /></p>
-
-        <h1 className="balance mx-auto mt-7 max-w-[850px] font-display text-4xl font-semibold leading-[1.04] tracking-[-0.045em] text-ink md:text-7xl">
-          Apresente seus imóveis.
-          <br />
-          <span className="text-ash">Venda com mais facilidade.</span>
-        </h1>
-
-        <p className="mx-auto mt-6 max-w-2xl px-2 font-body text-[15px] leading-relaxed text-ash md:text-base">
-          Crie um catálogo digital bonito, organizado e fácil de compartilhar.
-          A Vello cuida da apresentação para você focar no próximo negócio.
-        </p>
-
-        <div className="mx-auto mt-5 flex w-full items-center justify-center gap-3">
-          <a
-            href={appPath('/cadastro')}
-            className="rounded-full bg-ink px-6 py-3 font-body text-[14px] font-medium text-paper transition hover:bg-charcoal"
-          >
-            Criar meu catálogo
-          </a>
-          <button
-            onClick={() => document.querySelector('#como-funciona')?.scrollIntoView({ behavior: 'smooth' })}
-            className="flex items-center gap-2 rounded-full border border-line bg-paper/60 px-6 py-3 font-body text-[14px] font-medium text-ink transition hover:bg-paper"
-          >
-            <span>Ver como funciona</span>
-            <ArrowRight size={15} strokeWidth={1.8} />
-          </button>
-        </div>
-      </motion.div>
-    </section>
-  );
+  return <section id="top" className="relative min-h-[100svh] overflow-hidden bg-ink pt-[152px] text-sm text-paper md:pt-[172px]"><div className="pointer-events-none absolute inset-x-0 bottom-0 h-[58svh] overflow-hidden"><img src={appPath('/hero-vello-house.png')} alt="" aria-hidden="true" className="absolute bottom-[-12%] left-1/2 h-[68svh] w-full max-w-[980px] -translate-x-1/2 object-cover object-[center_58%] opacity-75 grayscale" style={{ WebkitMaskImage: 'radial-gradient(ellipse 76% 68% at 50% 54%, black 38%, transparent 76%)', maskImage: 'radial-gradient(ellipse 76% 68% at 50% 54%, black 38%, transparent 76%)' }} /><div className="absolute inset-0 bg-gradient-to-b from-ink via-ink/15 to-ink" /></div><motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }} className="relative z-10 mx-auto flex max-w-[720px] flex-col items-center px-5 text-center"><h1 className="max-w-[660px] font-display text-[39px] font-semibold leading-[1.02] tracking-[-0.045em] text-paper sm:text-5xl md:text-7xl">Apresente imóveis que merecem ser vistos.</h1><p className="mt-6 max-w-[500px] font-body text-[15px] leading-relaxed text-paper/60 md:text-[17px]">Transforme seus imóveis em um catálogo profissional, bonito e pronto para compartilhar.</p><div className="mt-6 flex items-center justify-center gap-5"><a href={appPath('/cadastro')} className="rounded-full bg-paper px-6 py-3 font-body text-[14px] font-semibold text-ink transition hover:bg-white">Criar meu catálogo</a><button onClick={() => document.querySelector('#como-funciona')?.scrollIntoView({ behavior: 'smooth' })} className="font-body text-[14px] font-medium text-paper/80 transition hover:text-paper">Ver como funciona</button></div></motion.div></section>;
 }

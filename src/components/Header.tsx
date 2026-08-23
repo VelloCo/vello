@@ -15,7 +15,7 @@ export function Header() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > window.innerHeight - 96);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -35,7 +35,7 @@ export function Header() {
     >
       <Container className="flex h-[72px] items-center justify-between">
         <a href="#top" className="flex items-center" onClick={(e) => { e.preventDefault(); scrollTo('#top'); }}>
-          <Logo />
+          <Logo variant={scrolled ? 'dark' : 'light'} />
         </a>
 
         <nav className="hidden md:flex items-center gap-9">
@@ -43,7 +43,7 @@ export function Header() {
             <button
               key={n.href}
               onClick={() => scrollTo(n.href)}
-              className="font-body text-[14.5px] text-ash hover:text-ink transition-colors"
+              className={`font-body text-[14.5px] transition-colors ${scrolled ? 'text-ash hover:text-ink' : 'text-paper/70 hover:text-paper'}`}
             >
               {n.label}
             </button>
@@ -51,19 +51,19 @@ export function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-5">
-          <a href={appPath('/login')} className="font-body text-[14.5px] text-ink/80 hover:text-ink transition-colors">
+          <a href={appPath('/login')} className={`font-body text-[14.5px] transition-colors ${scrolled ? 'text-ink/80 hover:text-ink' : 'text-paper/80 hover:text-paper'}`}>
             Entrar
           </a>
           <a
             href={appPath('/cadastro')}
-            className="rounded-full bg-ink px-5 py-2.5 font-body text-[14px] font-medium text-paper transition-transform hover:scale-[1.03] active:scale-[0.98]"
+            className={`rounded-full px-5 py-2.5 font-body text-[14px] font-medium transition-transform hover:scale-[1.03] active:scale-[0.98] ${scrolled ? 'bg-ink text-paper' : 'bg-paper text-ink'}`}
           >
             Criar meu catálogo
           </a>
         </div>
 
         <button
-          className="md:hidden flex h-10 w-10 items-center justify-center text-ink"
+          className={`md:hidden flex h-10 w-10 items-center justify-center ${scrolled ? 'text-ink' : 'text-paper'}`}
           onClick={() => setOpen((v) => !v)}
           aria-label="Abrir menu"
         >
