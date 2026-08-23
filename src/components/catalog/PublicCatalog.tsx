@@ -145,9 +145,11 @@ function Favorite({ id }: { id: string }) {
 function PropertyCard({
   property,
   catalog,
+  featured = false,
 }: {
   property: Property;
   catalog: Catalog;
+  featured?: boolean;
 }) {
   const href = appPath(
     `/${catalog.profile.slug}/imovel/${property.slug}`,
@@ -159,9 +161,11 @@ function PropertyCard({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.22 }}
-      className="group block overflow-hidden rounded-[22px] bg-white outline-none focus-visible:ring-2 focus-visible:ring-ink"
+      className={`group block overflow-hidden rounded-[22px] bg-white outline-none focus-visible:ring-2 focus-visible:ring-ink ${featured ? "border border-line lg:grid lg:max-w-[960px] lg:grid-cols-[1.3fr_.7fr]" : ""}`}
     >
-      <div className="relative aspect-[4/3] overflow-hidden bg-cream">
+      <div
+        className={`relative aspect-[4/3] overflow-hidden bg-cream ${featured ? "lg:aspect-auto lg:min-h-[430px]" : ""}`}
+      >
         {propertyImage(property) ? (
           <img
             src={propertyImage(property)}
@@ -181,17 +185,23 @@ function PropertyCard({
           <Favorite id={property.id} />
         </div>
       </div>
-      <div className="px-1 pb-2 pt-4">
-        <h2 className="line-clamp-1 font-display text-[21px] font-semibold leading-tight text-ink">
+      <div
+        className={`px-1 pb-2 pt-4 ${featured ? "lg:flex lg:flex-col lg:justify-end lg:p-8" : ""}`}
+      >
+        <h2
+          className={`line-clamp-1 font-display font-semibold leading-tight text-ink ${featured ? "text-[26px] sm:text-3xl" : "text-[21px]"}`}
+        >
           {property.title}
         </h2>
         <p className="mt-2 line-clamp-1 font-body text-sm text-ash">
           {property.neighborhood} · {property.city}
         </p>
-        <p className="mt-4 font-display text-xl font-semibold text-ink">
+        <p
+          className={`font-display font-semibold text-ink ${featured ? "mt-7 text-3xl" : "mt-4 text-xl"}`}
+        >
           {money(property.price, property.transaction_type === "rent")}
         </p>
-        <p className="mt-3 font-body text-sm text-ash">
+        <p className={`font-body text-sm text-ash ${featured ? "mt-5" : "mt-3"}`}>
           {property.bedrooms} quartos <span className="px-1 text-stone">·</span>{" "}
           {property.parking_spaces} vagas{" "}
           <span className="px-1 text-stone">·</span> {property.area} m²
@@ -483,28 +493,30 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
           <div className="border-t border-line pt-7 sm:pt-10">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="font-display text-4xl font-semibold tracking-tight text-ink">
-                  Imóveis disponíveis
+                <h2 className="font-display text-[32px] font-semibold tracking-tight text-ink sm:text-5xl">
+                  Imóveis para conhecer
                 </h2>
                 <p className="mt-2 font-body text-ash">
-                  Encontre uma opção que combine com você.
+                  Uma seleção feita para você explorar com calma.
                 </p>
               </div>
               <span className="font-mono text-xs text-stone">
                 {properties.length} imóveis
               </span>
             </div>
-            <label className="mt-8 flex h-14 items-center gap-3 rounded-2xl border border-line bg-white px-4 transition focus-within:border-ink">
-              <Search size={19} className="text-stone" />
-              <input
-                value={filters.query}
-                onChange={(e) => {
-                  setFilters((f) => ({ ...f, query: e.target.value }));
-                  setVisible(12);
-                }}
-                placeholder="Buscar por bairro, cidade ou imóvel"
-                className="min-w-0 flex-1 bg-transparent font-body text-[15px] text-ink outline-none placeholder:text-stone"
-              />
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <label className="flex h-14 max-w-2xl flex-1 items-center gap-3 rounded-2xl border border-line bg-white px-4 transition focus-within:border-ink">
+                <Search size={19} className="text-stone" />
+                <input
+                  value={filters.query}
+                  onChange={(e) => {
+                    setFilters((f) => ({ ...f, query: e.target.value }));
+                    setVisible(12);
+                  }}
+                  placeholder="Buscar por bairro, cidade ou imóvel"
+                  className="min-w-0 flex-1 bg-transparent font-body text-[15px] text-ink outline-none placeholder:text-stone"
+                />
+              </label>
               <select
                 value={filters.sort}
                 aria-label="Ordenar imóveis"
@@ -514,13 +526,13 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
                     sort: e.target.value as Filters["sort"],
                   }))
                 }
-                className="hidden bg-transparent font-body text-sm text-ash outline-none sm:block"
+                className="h-14 rounded-2xl border border-line bg-white px-4 font-body text-sm text-ash outline-none"
               >
                 <option value="recent">Mais recentes</option>
                 <option value="low">Menor preço</option>
                 <option value="high">Maior preço</option>
               </select>
-            </label>
+            </div>
             <FilterControls
               filters={filters}
               setFilters={setFilters}
@@ -529,13 +541,14 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
             {properties.length ? (
               <motion.div
                 layout
-                className="mt-8 grid gap-x-5 gap-y-9 md:grid-cols-2 xl:grid-cols-3"
+                className={`mt-9 grid gap-x-5 gap-y-9 ${properties.length === 1 ? "" : "md:grid-cols-2 xl:grid-cols-3"}`}
               >
                 {properties.slice(0, visible).map((property) => (
                   <PropertyCard
                     key={property.id}
                     property={property}
                     catalog={catalog}
+                    featured={properties.length === 1}
                   />
                 ))}
               </motion.div>
