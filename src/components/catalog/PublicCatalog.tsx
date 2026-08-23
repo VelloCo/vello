@@ -529,14 +529,16 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
                   Explorar imóveis <ArrowDown size={16} />
                 </motion.a>
               </div>
-              <div className="mt-12 border-t border-black/10 pt-5 sm:flex sm:items-end sm:justify-between sm:gap-6">
-                <div>
-                  <p className="font-display text-2xl font-semibold tracking-[-.035em] text-ink">{catalog.profile.professional_name}</p>
-                  <p className="mt-1 font-body text-sm text-ash">Corretor de imóveis{catalog.profile.creci ? ` · ${catalog.profile.creci}` : ""}</p>
-                  {profileLocation && <p className="mt-1 flex items-center gap-1 font-body text-sm text-ash"><MapPin size={14} />{profileLocation}</p>}
+              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.34, ease: [0.22, 1, 0.36, 1] }} className="mt-12 flex max-w-[520px] items-center gap-3 rounded-[22px] border border-black/10 bg-white/75 p-2.5 shadow-[0_12px_35px_rgba(11,11,10,.06)] backdrop-blur-sm sm:rounded-full">
+                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-cream">
+                  {catalog.profile.avatar_url ? <img src={catalog.profile.avatar_url} alt={`Foto de ${catalog.profile.professional_name}`} className="h-full w-full object-cover" /> : <span className="grid h-full w-full place-items-center font-display text-lg font-semibold text-ink">{catalog.profile.professional_name.slice(0, 1)}</span>}
                 </div>
-                {contact && <a href={contact} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-2 font-body text-sm font-semibold text-ink underline decoration-line underline-offset-4 sm:mt-0"><MessageCircle size={16} /> Falar com {catalog.profile.professional_name.split(" ")[0]}</a>}
-              </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-display text-[16px] font-semibold tracking-[-.025em] text-ink">{catalog.profile.professional_name}</p>
+                  <p className="mt-0.5 truncate font-body text-xs text-ash">Corretor de imóveis{catalog.profile.creci ? ` · ${catalog.profile.creci}` : ""}</p>
+                </div>
+                {contact && <a href={contact} target="_blank" rel="noreferrer" className="inline-flex h-10 shrink-0 items-center gap-2 rounded-full bg-ink px-3.5 font-body text-xs font-semibold text-paper transition hover:bg-charcoal sm:px-4"><MessageCircle size={15} /><span className="hidden sm:inline">Falar com {catalog.profile.professional_name.split(" ")[0]}</span></a>}
+              </motion.div>
             </div>
             <motion.div initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }} className="relative min-h-[480px] overflow-hidden bg-charcoal lg:min-h-full">
               {lead && propertyImage(lead) ? <img src={propertyImage(lead)} alt={lead.title} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover" /> : <div className="absolute inset-0 bg-charcoal" />}
