@@ -504,8 +504,8 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
                 {properties.length} imóveis
               </span>
             </div>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <label className="flex h-14 max-w-2xl flex-1 items-center gap-3 rounded-2xl border border-line bg-white px-4 transition focus-within:border-ink">
+            <div className="mt-7">
+              <label className="flex h-14 max-w-2xl items-center gap-3 rounded-2xl border border-line bg-white px-4 transition focus-within:border-ink">
                 <Search size={19} className="text-stone" />
                 <input
                   value={filters.query}
@@ -517,21 +517,6 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
                   className="min-w-0 flex-1 bg-transparent font-body text-[15px] text-ink outline-none placeholder:text-stone"
                 />
               </label>
-              <select
-                value={filters.sort}
-                aria-label="Ordenar imóveis"
-                onChange={(e) =>
-                  setFilters((f) => ({
-                    ...f,
-                    sort: e.target.value as Filters["sort"],
-                  }))
-                }
-                className="h-14 rounded-2xl border border-line bg-white px-4 font-body text-sm text-ash outline-none"
-              >
-                <option value="recent">Mais recentes</option>
-                <option value="low">Menor preço</option>
-                <option value="high">Maior preço</option>
-              </select>
             </div>
             <FilterControls
               filters={filters}
