@@ -426,10 +426,10 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
     <>
       <CatalogHeader catalog={catalog} />
       <main className="pb-28">
-        <section className="mx-auto max-w-[1320px] px-5 pb-14 pt-10 sm:px-8 sm:pb-20 sm:pt-16">
+        <section className="mx-auto max-w-[1320px] px-5 pb-8 pt-7 sm:px-8 sm:py-10">
           <div className="max-w-3xl">
-            <div className="flex items-start gap-5">
-              <div className="h-20 w-20 shrink-0 overflow-hidden rounded-[24px] bg-cream sm:h-28 sm:w-28">
+            <div className="flex items-start gap-4">
+              <div className="h-16 w-16 shrink-0 overflow-hidden rounded-[18px] bg-cream sm:h-20 sm:w-20 sm:rounded-[20px]">
                 {catalog.profile.avatar_url ? (
                   <img
                     src={catalog.profile.avatar_url}
@@ -446,10 +446,10 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
                 <p className="font-mono text-[10px] uppercase tracking-[.14em] text-stone">
                   Catálogo imobiliário
                 </p>
-                <h1 className="mt-2 font-display text-4xl font-semibold tracking-tight text-ink sm:text-6xl">
+                <h1 className="mt-1 font-display text-3xl font-semibold tracking-tight text-ink sm:text-5xl">
                   {catalog.profile.professional_name}
                 </h1>
-                <p className="mt-2 font-body text-sm text-ash">
+                <p className="mt-1 font-body text-sm text-ash">
                   Corretor de imóveis
                   {catalog.profile.creci ? ` · ${catalog.profile.creci}` : ""}
                 </p>
@@ -461,12 +461,12 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
               </div>
             </div>
             {catalog.profile.bio && (
-              <p className="mt-8 max-w-2xl font-display text-2xl leading-snug text-ink sm:text-3xl">
+              <p className="mt-5 max-w-2xl font-display text-2xl leading-snug text-ink sm:text-3xl">
                 {catalog.profile.bio}
               </p>
             )}
             {catalog.profile.instagram && (
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div className="mt-5 flex flex-wrap gap-3">
                 <a
                   href={`https://instagram.com/${catalog.profile.instagram.replace("@", "")}`}
                   target="_blank"
@@ -480,7 +480,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
           </div>
         </section>
         <section className="mx-auto max-w-[1320px] px-5 sm:px-8">
-          <div className="border-t border-line pt-10 sm:pt-14">
+          <div className="border-t border-line pt-7 sm:pt-10">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
                 <h2 className="font-display text-4xl font-semibold tracking-tight text-ink">
