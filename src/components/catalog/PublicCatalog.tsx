@@ -465,18 +465,8 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
                 {catalog.profile.bio}
               </p>
             )}
-            <div className="mt-7 flex flex-wrap gap-3">
-              {contact && (
-                <a
-                  href={contact}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex h-12 items-center rounded-full bg-ink px-5 font-body text-sm font-semibold text-paper"
-                >
-                  Falar com {catalog.profile.professional_name.split(" ")[0]}
-                </a>
-              )}
-              {catalog.profile.instagram && (
+            {catalog.profile.instagram && (
+              <div className="mt-7 flex flex-wrap gap-3">
                 <a
                   href={`https://instagram.com/${catalog.profile.instagram.replace("@", "")}`}
                   target="_blank"
@@ -485,8 +475,8 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
                 >
                   <AtSign size={16} /> Instagram
                 </a>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </section>
         <section className="mx-auto max-w-[1320px] px-5 sm:px-8">
