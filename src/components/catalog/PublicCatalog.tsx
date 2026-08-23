@@ -223,42 +223,6 @@ function PropertyCard({
   );
 }
 
-function FeaturedProperty({
-  property,
-  catalog,
-}: {
-  property: Property;
-  catalog: Catalog;
-}) {
-  const specs = propertySpecs(property);
-  return (
-    <article className="lg:grid lg:grid-cols-[1.32fr_.68fr] lg:items-stretch">
-      <div className="group relative min-h-[360px] overflow-hidden rounded-[22px] bg-cream sm:min-h-[500px] sm:rounded-[28px]">
-        <a href={propertyHref(catalog, property)} aria-label={`Conhecer ${property.title}`} className="absolute inset-0 z-10" />
-        {propertyImage(property) ? (
-          <img src={propertyImage(property)} alt={property.title} className="absolute inset-0 h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.025]" />
-        ) : (
-          <div className="absolute inset-0 bg-cream" />
-        )}
-        <div className="absolute right-5 top-5 z-20"><Favorite id={property.id} /></div>
-      </div>
-      <div className="flex flex-col justify-center py-8 sm:py-10 lg:pl-12 lg:pr-5">
-        <h2 className="font-display text-[38px] font-medium leading-[.94] tracking-[-.05em] text-ink sm:text-5xl">
-          {property.title}
-        </h2>
-        <p className="mt-5 font-body text-[15px] text-ash">{propertyLocation(property)}</p>
-        <p className="mt-9 font-display text-3xl font-semibold tracking-[-.035em] text-ink">
-          {money(property.price, property.transaction_type === "rent")}
-        </p>
-        {specs.length > 0 && <p className="mt-4 font-body text-sm text-ash">{specs.join(" · ")}</p>}
-        <a href={propertyHref(catalog, property)} className="mt-10 inline-flex items-center gap-2 font-body text-sm font-semibold text-ink transition hover:gap-3">
-          Ver imóvel <ArrowUpRight size={17} />
-        </a>
-      </div>
-    </article>
-  );
-}
-
 function FilterControls({
   filters,
   setFilters,
@@ -493,7 +457,6 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
   }, [catalog.properties, filters]);
   const contact = catalog.profile.whatsapp ? waLink(catalog) : null;
   const lead = catalog.properties[0];
-  const remaining = properties.filter((property) => property.id !== lead?.id);
   const totalLabel = `${properties.length} ${properties.length === 1 ? "imóvel" : "imóveis"}`;
   return (
     <>
@@ -532,8 +495,6 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
           </div>
         </section>
 
-        {lead && <section className="px-5 py-16 sm:px-8 sm:py-24"><div className="mx-auto max-w-[1400px]"><div className="mb-10 max-w-xl sm:mb-14"><h2 className="font-display text-[42px] font-medium leading-[.92] tracking-[-.05em] text-ink sm:text-6xl">Imóveis em destaque</h2><p className="mt-5 font-body text-[16px] leading-relaxed text-ash">Uma seleção de imóveis que merecem sua atenção.</p></div><FeaturedProperty property={lead} catalog={catalog} /></div></section>}
-
         <section id="imoveis" className="scroll-mt-20 px-5 py-16 sm:px-8 sm:py-24">
           <div className="mx-auto max-w-[1400px]">
             <div className="flex flex-wrap items-end justify-between gap-5 border-b border-black/10 pb-8">
@@ -542,9 +503,9 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
             </div>
             <div className="sticky top-[68px] z-30 -mx-5 border-b border-black/10 bg-[#f5f2ec]/95 px-5 py-4 backdrop-blur-md sm:-mx-8 sm:px-8"><div className="mx-auto max-w-[1400px]"><label className="flex h-12 max-w-xl items-center gap-3 border-b border-black/20 font-body text-sm transition focus-within:border-ink"><Search size={18} className="text-stone" /><input value={filters.query} onChange={(e) => { setFilters((filter) => ({ ...filter, query: e.target.value })); setVisible(12); }} placeholder="Onde você quer morar?" className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-stone" /></label><div className="mt-4"><FilterControls filters={filters} setFilters={setFilters} total={properties.length} /></div></div></div>
             {properties.length > 0 ? <motion.div layout className={`mt-10 grid gap-x-7 gap-y-14 ${properties.length === 1 ? "max-w-[920px]" : "md:grid-cols-2"}`}>
-              {(properties.length === 1 ? properties : remaining).slice(0, visible).map((property, index) => <PropertyCard key={property.id} property={property} catalog={catalog} index={index} />)}
+              {properties.slice(0, visible).map((property, index) => <PropertyCard key={property.id} property={property} catalog={catalog} index={index} />)}
             </motion.div> : <div className="mt-12 max-w-2xl border-y border-black/10 py-16"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-stone">Sem resultados</p><h3 className="mt-5 font-display text-4xl font-semibold tracking-[-.05em]">Novas oportunidades em breve.</h3><p className="mt-5 max-w-lg font-body leading-relaxed text-ash">No momento não há imóveis que combinem com essa busca. Se você procura algo específico, fale diretamente com {catalog.profile.professional_name}.</p><button onClick={() => setFilters(initial)} className="mt-8 font-body text-sm font-semibold underline underline-offset-4">Limpar filtros</button></div>}
-            {visible < (properties.length === 1 ? properties.length : remaining.length) && <div className="mt-14"><button onClick={() => setVisible((value) => value + 12)} className="rounded-full border border-ink px-6 py-3 font-body text-sm font-semibold transition hover:bg-ink hover:text-paper">Ver mais imóveis</button></div>}
+            {visible < properties.length && <div className="mt-14"><button onClick={() => setVisible((value) => value + 12)} className="rounded-full border border-ink px-6 py-3 font-body text-sm font-semibold transition hover:bg-ink hover:text-paper">Ver mais imóveis</button></div>}
           </div>
         </section>
 
