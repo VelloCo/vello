@@ -1,0 +1,98 @@
+import { useEffect, useState } from 'react';
+import { Menu, X } from 'lucide-react';
+import { Logo } from './Logo';
+import { Container } from './Primitives';
+
+const NAV = [
+  { label: 'Produto', href: '#produto' },
+  { label: 'Como funciona', href: '#como-funciona' },
+  { label: 'Preços', href: '#precos' },
+];
+
+export function Header() {
+  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  const scrollTo = (href: string) => {
+    setOpen(false);
+    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <header
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+        scrolled ? 'bg-paper/80 backdrop-blur-md border-b border-line/60' : 'bg-transparent border-b border-transparent'
+      }`}
+    >
+      <Container className="flex h-[72px] items-center justify-between">
+        <a href="#top" className="flex items-center" onClick={(e) => { e.preventDefault(); scrollTo('#top'); }}>
+          <Logo />
+        </a>
+
+        <nav className="hidden md:flex items-center gap-9">
+          {NAV.map((n) => (
+            <button
+              key={n.href}
+              onClick={() => scrollTo(n.href)}
+              className="font-body text-[14.5px] text-ash hover:text-ink transition-colors"
+            >
+              {n.label}
+            </button>
+          ))}
+        </nav>
+
+        <div className="hidden md:flex items-center gap-5">
+          <a href="/login" className="font-body text-[14.5px] text-ink/80 hover:text-ink transition-colors">
+            Entrar
+          </a>
+          <a
+            href="/cadastro"
+            className="rounded-full bg-ink px-5 py-2.5 font-body text-[14px] font-medium text-paper transition-transform hover:scale-[1.03] active:scale-[0.98]"
+          >
+            Criar meu catálogo
+          </a>
+        </div>
+
+        <button
+          className="md:hidden flex h-10 w-10 items-center justify-center text-ink"
+          onClick={() => setOpen((v) => !v)}
+          aria-label="Abrir menu"
+        >
+          {open ? <X size={22} /> : <Menu size={22} />}
+        </button>
+      </Container>
+
+      {open && (
+        <div className="md:hidden bg-paper border-t border-line/60 px-6 py-6">
+          <div className="flex flex-col gap-5">
+            {NAV.map((n) => (
+              <button
+                key={n.href}
+                onClick={() => scrollTo(n.href)}
+                className="text-left font-display text-[17px] text-ink"
+              >
+                {n.label}
+              </button>
+            ))}
+            <div className="mt-2 flex flex-col gap-3">
+              <a href="/login" className="font-body text-[15px] text-ash">Entrar</a>
+              <a
+                href="/cadastro"
+                className="rounded-full bg-ink px-5 py-3 text-center font-body text-[15px] font-medium text-paper"
+              >
+                Criar meu catálogo
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}

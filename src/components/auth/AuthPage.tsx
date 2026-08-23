@@ -1,0 +1,49 @@
+import { AlertCircle, ArrowLeft, CheckCircle2, LoaderCircle, Mail, ShieldCheck } from 'lucide-react';
+import { useState } from 'react';
+import type { FormEvent } from 'react';
+import { AuthLayout } from './AuthLayout';
+import { AuthInput } from './AuthInput';
+import { GoogleAuthButton } from './GoogleAuthButton';
+import { PasswordInput } from './PasswordInput';
+import { continueWithGoogle, login, register } from '../../lib/auth';
+
+type AuthMode = 'login' | 'signup' | 'forgot' | 'reset' | 'verify';
+
+export function AuthPage({ mode }: { mode: AuthMode }) {
+  if (mode === 'login') return <Login />;
+  if (mode === 'signup') return <Signup />;
+  if (mode === 'forgot') return <ForgotPassword />;
+  if (mode === 'reset') return <ResetPassword />;
+  return <VerifyEmail />;
+}
+
+function Shell({ children }: { children: React.ReactNode }) {
+  return <AuthLayout><div className="w-full">{children}</div></AuthLayout>;
+}
+
+function Header({ title, description }: { title: string; description: string }) { return <div className="mb-8"><h1 className="font-display text-[36px] font-semibold leading-[1.02] tracking-[-0.035em] text-ink">{title}</h1><p className="mt-4 font-body text-[15px] leading-relaxed text-ash">{description}</p></div>; }
+function Divider() { return <div className="my-6 flex items-center gap-3"><span className="h-px flex-1 bg-line" /><span className="font-mono text-[10px] uppercase tracking-[0.1em] text-stone">ou</span><span className="h-px flex-1 bg-line" /></div>; }
+function ErrorMessage({ text }: { text: string }) { return <div className="mb-5 flex items-start gap-2.5 rounded-[10px] border border-red-200 bg-red-50 px-3.5 py-3 text-[13px] text-red-700"><AlertCircle size={16} className="mt-0.5 shrink-0" />{text}</div>; }
+function LoadingButton({ loading, children }: { loading: boolean; children: React.ReactNode }) { return <button disabled={loading} className="flex h-12 w-full items-center justify-center gap-2 rounded-[10px] bg-ink font-body text-[14px] font-semibold text-paper transition hover:bg-charcoal disabled:cursor-wait disabled:opacity-70">{loading && <LoaderCircle size={16} className="animate-spin" />}{loading ? 'Aguarde...' : children}</button>; }
+
+function Login() {
+  const [loading, setLoading] = useState(false); const [googleLoading, setGoogleLoading] = useState(false); const [error, setError] = useState(''); const [email, setEmail] = useState(''); const [password, setPassword] = useState('');
+  const submit = async (event: FormEvent) => { event.preventDefault(); setError(''); if (!email.includes('@') || password.length < 8) { setError('E-mail ou senha incorretos.'); return; } setLoading(true); await login(email, password); window.location.href = '/dashboard'; };
+  const google = async () => { setGoogleLoading(true); await continueWithGoogle(); window.location.href = '/dashboard'; };
+  return <Shell><Header title="Bem-vindo de volta." description="Entre para continuar gerenciando seus imóveis e seu catálogo." />{error && <ErrorMessage text={error} />}<form onSubmit={submit} className="space-y-4"><AuthInput label="E-mail" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="seu@email.com" autoComplete="email" required /><div><PasswordInput label="Senha" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="••••••••" autoComplete="current-password" required /><div className="mt-2 text-right"><a href="/esqueci-senha" className="font-body text-[12px] text-ash underline-offset-4 hover:text-ink hover:underline">Esqueci minha senha</a></div></div><LoadingButton loading={loading}>Entrar</LoadingButton></form><Divider /><GoogleAuthButton onClick={google} loading={googleLoading} /><p className="mt-7 text-center font-body text-[13px] text-ash">Ainda não tem uma conta? <a href="/cadastro" className="font-medium text-ink underline underline-offset-4">Criar conta</a></p></Shell>;
+}
+
+function Signup() {
+  const [loading, setLoading] = useState(false); const [googleLoading, setGoogleLoading] = useState(false); const [error, setError] = useState(''); const [form, setForm] = useState({ name: '', email: '', whatsapp: '', password: '', confirm: '', terms: false });
+  const update = (key: keyof typeof form, value: string | boolean) => setForm((current) => ({ ...current, [key]: value }));
+  const submit = async (event: FormEvent) => { event.preventDefault(); setError(''); if (form.password.length < 8 || !/[A-Za-z]/.test(form.password) || !/\d/.test(form.password)) { setError('A senha precisa ter no mínimo 8 caracteres, uma letra e um número.'); return; } if (form.password !== form.confirm) { setError('As senhas não coincidem.'); return; } if (!form.terms) { setError('Aceite os termos para continuar.'); return; } setLoading(true); await register(form.name, form.email, form.password); window.location.href = '/verificar-email'; };
+  const google = async () => { setGoogleLoading(true); await continueWithGoogle(); window.location.href = '/dashboard'; };
+  return <Shell><Header title="Crie sua conta." description="Comece a montar seu catálogo profissional em poucos minutos." />{error && <ErrorMessage text={error} />}<form onSubmit={submit} className="space-y-3.5"><AuthInput label="Nome completo" value={form.name} onChange={(event) => update('name', event.target.value)} placeholder="Seu nome" autoComplete="name" required /><AuthInput label="E-mail" type="email" value={form.email} onChange={(event) => update('email', event.target.value)} placeholder="seu@email.com" autoComplete="email" required /><AuthInput label="WhatsApp" type="tel" value={form.whatsapp} onChange={(event) => update('whatsapp', event.target.value)} placeholder="(00) 00000-0000" autoComplete="tel" required /><PasswordInput label="Senha" value={form.password} onChange={(event) => update('password', event.target.value)} placeholder="Crie uma senha segura" autoComplete="new-password" required /><PasswordInput label="Confirmar senha" value={form.confirm} onChange={(event) => update('confirm', event.target.value)} placeholder="Repita sua senha" autoComplete="new-password" required /><div className="flex items-start gap-2 pt-1"><input id="terms" type="checkbox" checked={form.terms} onChange={(event) => update('terms', event.target.checked)} className="mt-0.5 h-4 w-4 accent-ink" /><label htmlFor="terms" className="font-body text-[12px] leading-relaxed text-ash">Li e aceito os <a href="#termos" className="text-ink underline">Termos de Uso</a> e a <a href="#privacidade" className="text-ink underline">Política de Privacidade</a>.</label></div><LoadingButton loading={loading}>Criar minha conta</LoadingButton></form><Divider /><GoogleAuthButton onClick={google} loading={googleLoading} /><p className="mt-7 text-center font-body text-[13px] text-ash">Já tem uma conta? <a href="/login" className="font-medium text-ink underline underline-offset-4">Entrar</a></p></Shell>;
+}
+
+function ForgotPassword() { const [sent, setSent] = useState(false); const [email, setEmail] = useState(''); if (sent) return <Shell><SuccessIcon icon={<Mail size={22} />} /><Header title="Confira seu e-mail." description={`Enviamos um link de recuperação para ${email}.`} /><a href="/login" className="flex h-12 w-full items-center justify-center rounded-[10px] bg-ink font-body text-[14px] font-semibold text-paper">Voltar para o login</a></Shell>; return <Shell><a href="/login" className="mb-8 inline-flex items-center gap-2 font-body text-[13px] text-ash hover:text-ink"><ArrowLeft size={15} /> Voltar para o login</a><Header title="Esqueceu sua senha?" description="Sem problema. Digite seu e-mail e enviaremos um link para criar uma nova senha." /><form onSubmit={(event) => { event.preventDefault(); setSent(true); }} className="space-y-4"><AuthInput label="E-mail" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="seu@email.com" autoComplete="email" required /><LoadingButton loading={false}>Enviar link</LoadingButton></form></Shell>; }
+
+function ResetPassword() { const [saved, setSaved] = useState(false); if (saved) return <Shell><SuccessIcon icon={<CheckCircle2 size={22} />} /><Header title="Senha alterada." description="Sua senha foi atualizada com sucesso." /><a href="/login" className="flex h-12 w-full items-center justify-center rounded-[10px] bg-ink font-body text-[14px] font-semibold text-paper">Entrar na Vello</a></Shell>; return <Shell><Header title="Crie uma nova senha." description="Escolha uma senha segura para continuar usando a Vello." /><form onSubmit={(event) => { event.preventDefault(); setSaved(true); }} className="space-y-4"><PasswordInput label="Nova senha" placeholder="••••••••" autoComplete="new-password" required /><PasswordInput label="Confirmar nova senha" placeholder="••••••••" autoComplete="new-password" required /><LoadingButton loading={false}>Salvar nova senha</LoadingButton></form></Shell>; }
+
+function VerifyEmail() { return <Shell><SuccessIcon icon={<ShieldCheck size={22} />} /><Header title="Só falta confirmar seu e-mail." description="Enviamos um link para seu endereço de e-mail. Clique nele para ativar sua conta." /><button type="button" className="flex h-12 w-full items-center justify-center rounded-[10px] bg-ink font-body text-[14px] font-semibold text-paper">Reenviar e-mail</button><a href="/login" className="mt-4 flex h-12 w-full items-center justify-center rounded-[10px] border border-line font-body text-[14px] font-medium text-ink">Voltar para o login</a></Shell>; }
+function SuccessIcon({ icon }: { icon: React.ReactNode }) { return <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full bg-ink text-paper">{icon}</div>; }
