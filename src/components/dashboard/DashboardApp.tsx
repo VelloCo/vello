@@ -1334,6 +1334,25 @@ function ProfilePage({
               {([['light', 'Leve', 'bg-white text-ink'], ['contrast', 'Areia', 'bg-[#e9e4da] text-ink'], ['dark', 'Escura', 'bg-ink text-paper']] as const).map(([value, label, appearance]) => <button key={value} type="button" onClick={() => updateTheme('profile_band', value)} className={`rounded-xl border p-2 text-left transition ${theme.profile_band === value ? 'border-ink ring-1 ring-ink' : 'border-line hover:border-stone'}`}><span className={`block h-8 rounded-lg ${appearance}`} /><span className="mt-2 block font-body text-xs font-medium">{label}</span></button>)}
             </div>
           </div>
+          <div className="mt-7 border-t border-line pt-6">
+            <div className="flex items-center justify-between gap-4">
+              <p className="font-display text-base font-semibold">Pré-visualização</p>
+              <span className="font-mono text-[10px] uppercase tracking-[.14em] text-stone">Ao vivo</span>
+            </div>
+            <div className={`mt-3 overflow-hidden rounded-[20px] border p-3 transition-colors duration-300 ${theme.palette === 'charcoal' ? 'border-white/10 bg-[#1b1b19]' : theme.palette === 'paper' ? 'border-line bg-white' : 'border-[#e1dbd1] bg-[#f5f2ec]'}`}>
+              <div className={`flex items-center gap-2 rounded-full border p-2.5 transition-colors duration-300 ${theme.profile_band === 'dark' ? 'border-white/10 bg-ink text-paper' : theme.profile_band === 'contrast' ? 'border-[#d7d0c4] bg-[#e9e4da] text-ink' : 'border-black/10 bg-white text-ink'}`}>
+                <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full font-display text-xs ${theme.profile_band === 'dark' ? 'bg-paper/15' : 'bg-cream'}`}>{(form.professional_name || 'V').slice(0, 1)}</span>
+                <span className="min-w-0"><b className="block truncate font-body text-[11px]">{form.professional_name || 'Seu nome profissional'}</b><small className="block truncate font-body text-[9px] opacity-60">CRECI {form.creci || '000000'}</small></span>
+              </div>
+              <div className={`mx-auto mt-4 max-w-[310px] ${theme.property_style === 'compact' ? 'grid grid-cols-2 gap-2' : ''}`}>
+                <div className={`${theme.property_style === 'classic' ? 'rounded-[10px] bg-white pb-3' : theme.property_style === 'compact' ? 'rounded-[12px] bg-white p-2' : ''}`}>
+                  <div className={`aspect-[5/3] bg-[linear-gradient(135deg,#a9a39a,#e5ded1_45%,#81796f)] ${theme.property_style === 'classic' ? 'rounded-t-[10px]' : theme.property_style === 'compact' ? 'rounded-[8px]' : 'rounded-[14px]'}`} />
+                  <div className={`${theme.property_style === 'editorial' ? '-mt-3 ml-3 rounded-[12px] bg-white p-3 shadow-sm' : theme.property_style === 'classic' ? 'px-3 pt-3' : 'pt-2'}`}><p className="font-display text-sm font-semibold leading-none text-ink">Seu imóvel</p><p className="mt-1 font-body text-[10px] text-ash">Preço sob consulta</p></div>
+                </div>
+                {theme.property_style === 'compact' && <div className="rounded-[12px] bg-white p-2"><div className="aspect-[5/3] rounded-[8px] bg-[linear-gradient(135deg,#7c756d,#cfc7bc)]" /><div className="pt-2"><p className="font-display text-sm font-semibold leading-none text-ink">Outro imóvel</p><p className="mt-1 font-body text-[10px] text-ash">Ver detalhes</p></div></div>}
+              </div>
+            </div>
+          </div>
         </div>
         <Button onClick={save} className="mt-7">
           Salvar alterações
