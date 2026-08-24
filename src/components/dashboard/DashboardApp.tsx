@@ -12,6 +12,7 @@ import {
   LoaderCircle,
   LogOut,
   MoreHorizontal,
+  Palette,
   Plus,
   Search,
   Share2,
@@ -43,6 +44,7 @@ const nav = [
   { href: "/dashboard/imoveis", label: "Imóveis", icon: Building2 },
   { href: "/dashboard/selecoes", label: "Seleções", icon: FolderHeart },
   { href: "/dashboard/catalogo", label: "Meu catálogo", icon: ExternalLink },
+  { href: "/dashboard/personalizar", label: "Personalizar", icon: Palette },
   { href: "/dashboard/perfil", label: "Perfil", icon: UserRound },
 ];
 const go = (href: string) => (window.location.href = appPath(href));
@@ -211,7 +213,7 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
         </span>
       </a>
       <nav className="mt-12 space-y-1">
-        {nav.slice(0, 4).map((item) => (
+        {nav.slice(0, 5).map((item) => (
           <NavItem
             key={item.href}
             item={item}
@@ -225,7 +227,7 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
           />
         ))}
         <div className="h-6" />
-        {nav.slice(4).map((item) => (
+        {nav.slice(5).map((item) => (
           <NavItem key={item.href} item={item} active={route === item.href} />
         ))}
       </nav>
@@ -295,7 +297,7 @@ function NavItem({
   );
 }
 function MobileNav({ route }: { route: string }) {
-  const items = [nav[0], nav[1], nav[2], nav[4]];
+  const items = [nav[0], nav[1], nav[2], nav[5]];
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 flex h-[72px] items-center justify-around border-t border-line bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
       {items.slice(0, 2).map((i) => (
@@ -1210,16 +1212,6 @@ function ProfilePage({
   toast: (s: string) => void;
 }) {
   const [form, setForm] = useState(profile);
-  const theme: CatalogTheme = form.catalog_theme || {
-    palette: "warm",
-    property_style: "editorial",
-    profile_band: "light",
-  };
-  const updateTheme = <K extends keyof CatalogTheme>(key: K, value: CatalogTheme[K]) =>
-    setForm((current) => ({
-      ...current,
-      catalog_theme: { ...theme, [key]: value },
-    }));
   const save = async () => {
     try {
       await saveProfile(user.id, form);
@@ -1313,47 +1305,9 @@ function ProfilePage({
               Plano atual: <b className="text-ink">Acesso de teste</b>
             </div>
         </div>
-        <div className="mt-8 border-t border-line pt-7">
-          <p className="font-display text-lg font-semibold">Personalize seu catálogo</p>
-          <p className="mt-1 font-body text-sm leading-relaxed text-ash">Defina a atmosfera da página pública sem precisar editar seus imóveis.</p>
-          <div className="mt-6">
-            <p className="font-mono text-[10px] uppercase tracking-[.15em] text-stone">Cores do catálogo</p>
-            <div className="mt-3 grid grid-cols-3 gap-2">
-              {([['warm', 'Areia', 'bg-[#f5f2ec]'], ['paper', 'Claro', 'bg-white'], ['charcoal', 'Noite', 'bg-ink']] as const).map(([value, label, color]) => <button key={value} type="button" onClick={() => updateTheme('palette', value)} className={`rounded-xl border p-2 text-left transition ${theme.palette === value ? 'border-ink ring-1 ring-ink' : 'border-line hover:border-stone'}`}><span className={`block h-8 rounded-lg border border-black/10 ${color}`} /><span className="mt-2 block font-body text-xs font-medium">{label}</span></button>)}
-            </div>
-          </div>
-          <div className="mt-6">
-            <p className="font-mono text-[10px] uppercase tracking-[.15em] text-stone">Estilo dos imóveis</p>
-            <div className="mt-3 grid gap-2 sm:grid-cols-3">
-              {([['editorial', 'Editorial', 'Fotos protagonistas e informações sobrepostas.'], ['classic', 'Clássico', 'Card tradicional, com leitura mais direta.'], ['compact', 'Compacto', 'Mais imóveis visíveis de uma só vez.']] as const).map(([value, label, description]) => <button key={value} type="button" onClick={() => updateTheme('property_style', value)} className={`rounded-xl border p-3 text-left transition ${theme.property_style === value ? 'border-ink bg-cream ring-1 ring-ink' : 'border-line hover:border-stone'}`}><span className="block font-body text-sm font-semibold">{label}</span><span className="mt-1 block font-body text-xs leading-relaxed text-ash">{description}</span></button>)}
-            </div>
-          </div>
-          <div className="mt-6">
-            <p className="font-mono text-[10px] uppercase tracking-[.15em] text-stone">Faixa do seu perfil</p>
-            <div className="mt-3 grid grid-cols-3 gap-2">
-              {([['light', 'Leve', 'bg-white text-ink'], ['contrast', 'Areia', 'bg-[#e9e4da] text-ink'], ['dark', 'Escura', 'bg-ink text-paper']] as const).map(([value, label, appearance]) => <button key={value} type="button" onClick={() => updateTheme('profile_band', value)} className={`rounded-xl border p-2 text-left transition ${theme.profile_band === value ? 'border-ink ring-1 ring-ink' : 'border-line hover:border-stone'}`}><span className={`block h-8 rounded-lg ${appearance}`} /><span className="mt-2 block font-body text-xs font-medium">{label}</span></button>)}
-            </div>
-          </div>
-          <div className="mt-7 border-t border-line pt-6">
-            <div className="flex items-center justify-between gap-4">
-              <p className="font-display text-base font-semibold">Pré-visualização</p>
-              <span className="font-mono text-[10px] uppercase tracking-[.14em] text-stone">Ao vivo</span>
-            </div>
-            <div className={`mt-3 overflow-hidden rounded-[20px] border p-3 transition-colors duration-300 ${theme.palette === 'charcoal' ? 'border-white/10 bg-[#1b1b19]' : theme.palette === 'paper' ? 'border-line bg-white' : 'border-[#e1dbd1] bg-[#f5f2ec]'}`}>
-              <div className={`flex items-center gap-2 rounded-full border p-2.5 transition-colors duration-300 ${theme.profile_band === 'dark' ? 'border-white/10 bg-ink text-paper' : theme.profile_band === 'contrast' ? 'border-[#d7d0c4] bg-[#e9e4da] text-ink' : 'border-black/10 bg-white text-ink'}`}>
-                <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-full font-display text-xs ${theme.profile_band === 'dark' ? 'bg-paper/15' : 'bg-cream'}`}>{(form.professional_name || 'V').slice(0, 1)}</span>
-                <span className="min-w-0"><b className="block truncate font-body text-[11px]">{form.professional_name || 'Seu nome profissional'}</b><small className="block truncate font-body text-[9px] opacity-60">CRECI {form.creci || '000000'}</small></span>
-              </div>
-              <div className={`mx-auto mt-4 max-w-[310px] ${theme.property_style === 'compact' ? 'grid grid-cols-2 gap-2' : ''}`}>
-                <div className={`${theme.property_style === 'classic' ? 'rounded-[10px] bg-white pb-3' : theme.property_style === 'compact' ? 'rounded-[12px] bg-white p-2' : ''}`}>
-                  <div className={`aspect-[5/3] bg-[linear-gradient(135deg,#a9a39a,#e5ded1_45%,#81796f)] ${theme.property_style === 'classic' ? 'rounded-t-[10px]' : theme.property_style === 'compact' ? 'rounded-[8px]' : 'rounded-[14px]'}`} />
-                  <div className={`${theme.property_style === 'editorial' ? '-mt-3 ml-3 rounded-[12px] bg-white p-3 shadow-sm' : theme.property_style === 'classic' ? 'px-3 pt-3' : 'pt-2'}`}><p className="font-display text-sm font-semibold leading-none text-ink">Seu imóvel</p><p className="mt-1 font-body text-[10px] text-ash">Preço sob consulta</p></div>
-                </div>
-                {theme.property_style === 'compact' && <div className="rounded-[12px] bg-white p-2"><div className="aspect-[5/3] rounded-[8px] bg-[linear-gradient(135deg,#7c756d,#cfc7bc)]" /><div className="pt-2"><p className="font-display text-sm font-semibold leading-none text-ink">Outro imóvel</p><p className="mt-1 font-body text-[10px] text-ash">Ver detalhes</p></div></div>}
-              </div>
-            </div>
-          </div>
-        </div>
+        <a href={appPath("/dashboard/personalizar")} className="mt-8 flex items-center justify-between rounded-2xl border border-line bg-cream p-5 transition hover:border-ink">
+          <span><b className="block font-display text-lg">Personalize seu catálogo</b><span className="mt-1 block font-body text-sm text-ash">Escolha cores, faixa de perfil e estilo dos imóveis.</span></span><Palette size={20} />
+        </a>
         <Button onClick={save} className="mt-7">
           Salvar alterações
         </Button>
@@ -1369,6 +1323,28 @@ function ProfilePage({
       </section>
     </>
   );
+}
+function CatalogCustomizationPage({ user, profile, properties, toast }: { user: User; profile: Profile; properties: Property[]; toast: (value: string) => void }) {
+  const [theme, setTheme] = useState<CatalogTheme>(profile.catalog_theme || { palette: "warm", property_style: "editorial", profile_band: "light" });
+  const [saving, setSaving] = useState(false);
+  const update = <K extends keyof CatalogTheme>(key: K, value: CatalogTheme[K]) => setTheme((current) => ({ ...current, [key]: value }));
+  const save = async () => { setSaving(true); try { await saveProfile(user.id, { catalog_theme: theme }); toast("Personalização salva"); } catch { toast("Não foi possível salvar."); } finally { setSaving(false); } };
+  const property = properties[0];
+  const surface = theme.palette === "charcoal" ? "bg-[#191918] text-paper" : theme.palette === "paper" ? "bg-white text-ink" : "bg-[#f5f2ec] text-ink";
+  const band = theme.profile_band === "dark" ? "bg-ink text-paper border-white/10" : theme.profile_band === "contrast" ? "bg-[#e9e4da] text-ink border-[#d7d0c4]" : "bg-white text-ink border-black/10";
+  const cardMode = theme.property_style;
+  return <>
+    <header className="flex flex-wrap items-end justify-between gap-5"><div><p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">Seu catálogo</p><h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">Personalizar</h1><p className="mt-2 max-w-xl font-body text-ash">Deixe o seu catálogo com a sua cara. A prévia muda enquanto você escolhe.</p></div><a href={appPath(`/${profile.slug || ''}`)} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-white px-5 font-body text-sm font-medium hover:border-ink"><ExternalLink size={16} />Abrir catálogo</a></header>
+    <div className="mt-9 grid items-start gap-8 xl:grid-cols-[minmax(0,.9fr)_minmax(430px,1.1fr)]">
+      <div className="space-y-5">
+        <section className="rounded-[24px] border border-line bg-white p-5 sm:p-7"><p className="font-display text-xl font-semibold">1. Escolha a atmosfera</p><p className="mt-1 font-body text-sm text-ash">A cor de fundo define a primeira sensação do seu catálogo.</p><div className="mt-5 grid grid-cols-3 gap-3">{([['warm','Areia','O equilíbrio quente da Vello.','bg-[#f5f2ec]'],['paper','Claro','Minimalista e luminoso.','bg-white'],['charcoal','Noite','Sofisticado e marcante.','bg-ink']] as const).map(([value,label,description,swatch]) => <button key={value} type="button" onClick={() => update('palette',value)} className={`rounded-2xl border p-3 text-left transition ${theme.palette === value ? 'border-ink ring-1 ring-ink' : 'border-line hover:border-stone'}`}><span className={`block h-14 rounded-xl border border-black/10 ${swatch}`} /><b className="mt-3 block font-body text-sm">{label}</b><span className="mt-1 block font-body text-[11px] leading-relaxed text-ash">{description}</span></button>)}</div></section>
+        <section className="rounded-[24px] border border-line bg-white p-5 sm:p-7"><p className="font-display text-xl font-semibold">2. Apresente os imóveis</p><p className="mt-1 font-body text-sm text-ash">Escolha o ritmo da lista que seus clientes vão navegar.</p><div className="mt-5 space-y-2">{([['editorial','Editorial','Fotos grandes e informações em camadas.'],['classic','Clássico','Leitura organizada, imagem e texto separados.'],['compact','Compacto','Mais opções na tela, sem perder clareza.']] as const).map(([value,label,description]) => <button key={value} type="button" onClick={() => update('property_style',value)} className={`flex w-full items-center gap-4 rounded-2xl border p-3 text-left transition ${theme.property_style === value ? 'border-ink bg-cream ring-1 ring-ink' : 'border-line hover:border-stone'}`}><span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl font-mono text-xs ${theme.property_style === value ? 'bg-ink text-paper' : 'bg-cream text-stone'}`}>0{value === 'editorial' ? '1' : value === 'classic' ? '2' : '3'}</span><span className="min-w-0"><b className="block font-body text-sm">{label}</b><span className="mt-1 block font-body text-xs text-ash">{description}</span></span><Check size={16} className={`ml-auto shrink-0 ${theme.property_style === value ? 'text-ink' : 'text-transparent'}`} /></button>)}</div></section>
+        <section className="rounded-[24px] border border-line bg-white p-5 sm:p-7"><p className="font-display text-xl font-semibold">3. Faixa do seu perfil</p><p className="mt-1 font-body text-sm text-ash">O primeiro contato visual entre você e quem visita seu catálogo.</p><div className="mt-5 grid grid-cols-3 gap-3">{([['light','Leve','bg-white text-ink'],['contrast','Areia','bg-[#e9e4da] text-ink'],['dark','Escura','bg-ink text-paper']] as const).map(([value,label,appearance]) => <button key={value} type="button" onClick={() => update('profile_band',value)} className={`rounded-2xl border p-3 text-left transition ${theme.profile_band === value ? 'border-ink ring-1 ring-ink' : 'border-line hover:border-stone'}`}><span className={`flex h-12 items-center rounded-xl px-3 font-body text-[10px] font-semibold ${appearance}`}>{profile.professional_name || 'Seu perfil'}</span><b className="mt-3 block font-body text-sm">{label}</b></button>)}</div></section>
+        <div className="flex gap-3"><Button onClick={save} disabled={saving}>{saving ? 'Salvando...' : 'Salvar personalização'}</Button><button type="button" onClick={() => setTheme(profile.catalog_theme || { palette: 'warm', property_style: 'editorial', profile_band: 'light' })} className="h-11 rounded-full px-4 font-body text-sm text-ash hover:text-ink">Desfazer alterações</button></div>
+      </div>
+      <aside className="xl:sticky xl:top-10"><div className="rounded-[28px] border border-line bg-white p-4 shadow-[0_18px_50px_rgba(11,11,10,.06)] sm:p-5"><div className="flex items-center justify-between"><p className="font-display text-lg font-semibold">Pré-visualização</p><span className="rounded-full bg-cream px-3 py-1 font-mono text-[9px] uppercase tracking-[.12em] text-stone">Ao vivo</span></div><div className={`mt-4 min-h-[540px] overflow-hidden rounded-[22px] p-3 transition-colors duration-300 sm:p-5 ${surface}`}><div className={`flex items-center gap-3 rounded-full border p-3 transition-colors duration-300 ${band}`}><span className={`grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full font-display text-sm ${theme.profile_band === 'dark' ? 'bg-paper/15' : 'bg-cream'}`}>{profile.avatar_url ? <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" /> : (profile.professional_name || 'V').slice(0,1)}</span><span className="min-w-0"><b className="block truncate font-body text-sm">{profile.professional_name || 'Seu nome profissional'}</b><small className="block truncate font-body text-[10px] opacity-60">CRECI {profile.creci || '000000'}</small></span></div><div className={`mt-8 grid gap-4 ${cardMode === 'compact' ? 'grid-cols-2' : ''}`}><div className={cardMode === 'classic' ? 'overflow-hidden rounded-[15px] bg-white text-ink' : ''}><div className={`overflow-hidden bg-cream ${cardMode === 'classic' ? 'aspect-[4/3]' : cardMode === 'compact' ? 'aspect-[4/3] rounded-[14px]' : 'aspect-[5/4] rounded-[18px]'}`}>{property && cover(property) ? <img src={cover(property)} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[linear-gradient(135deg,#8f887e,#dbd2c5_45%,#6f6961)]" />}</div><div className={`${cardMode === 'editorial' ? '-mt-5 ml-4 rounded-[17px] bg-white p-4 text-ink shadow-lg' : cardMode === 'classic' ? 'p-4' : 'pt-2 text-paper'}`}><p className="font-display text-xl font-semibold leading-none">{property?.title || 'Seu próximo imóvel'}</p><p className="mt-2 font-body text-xs opacity-65">{property ? brl(property.price, property.transaction_type === 'rent') : 'Preço sob consulta'}</p><p className="mt-3 font-body text-[11px] opacity-60">{property ? `${property.neighborhood} · ${property.city}` : 'Bairro · Cidade'}</p></div></div>{cardMode === 'compact' && <div><div className="aspect-[4/3] rounded-[14px] bg-[linear-gradient(135deg,#746e67,#cfc6ba)]" /><div className="pt-2"><p className="font-display text-base font-semibold">Outro imóvel</p><p className="mt-1 font-body text-[10px] opacity-60">Ver detalhes</p></div></div>}</div></div></div></aside>
+    </div>
+  </>;
 }
 function Dialog({
   title,
@@ -1496,6 +1472,8 @@ export function DashboardApp({ user, route }: Props) {
     page = (
       <CatalogPage profile={profile} properties={properties} toast={say} />
     );
+  else if (route === "/dashboard/personalizar")
+    page = <CatalogCustomizationPage user={user} profile={profile} properties={properties} toast={say} />;
   else if (route === "/dashboard/perfil")
     page = <ProfilePage user={user} profile={profile} toast={say} />;
   else page = <ProfilePage user={user} profile={profile} toast={say} />;
