@@ -25,8 +25,17 @@ type CatalogTheme = {
   palette: "warm" | "paper" | "charcoal";
   property_style: "editorial" | "classic" | "compact";
   profile_band: "light" | "contrast" | "dark";
+  background_color?: string;
+  profile_color?: string;
 };
 const defaultCatalogTheme: CatalogTheme = { palette: "warm", property_style: "editorial", profile_band: "light" };
+const hexColor = (color?: string) => /^#[0-9a-f]{6}$/i.test(color || "") ? color : undefined;
+const darkColor = (color?: string) => {
+  const value = hexColor(color)?.slice(1);
+  if (!value) return false;
+  const [r, g, b] = [0, 2, 4].map((offset) => Number.parseInt(value.slice(offset, offset + 2), 16));
+  return (r * 299 + g * 587 + b * 114) / 1000 < 150;
+};
 type Property = {
   id: string;
   slug: string;
@@ -491,12 +500,15 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
     contrast: "border-[#d7d0c4] bg-[#e9e4da] text-ink",
     dark: "border-white/10 bg-ink text-paper",
   }[theme.profile_band];
+  const customBackground = hexColor(theme.background_color);
+  const customProfileColor = hexColor(theme.profile_color);
+  const profileText = darkColor(customProfileColor) ? "text-paper" : "text-ink";
   return (
     <>
       <CatalogHeader catalog={catalog} />
-      <main className={`overflow-hidden pb-28 ${palette.page}`}>
+      <main className={`overflow-hidden pb-28 ${palette.page}`} style={customBackground ? { backgroundColor: customBackground } : undefined}>
         <section className="px-5 pb-3 pt-7 sm:px-8 sm:pb-6 sm:pt-10">
-          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} className={`mx-auto flex max-w-[1400px] items-center gap-3 rounded-[28px] border p-3 shadow-[0_14px_35px_rgba(11,11,10,.055)] sm:gap-5 sm:rounded-full sm:p-3.5 ${profileBand}`}>
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} style={customProfileColor ? { backgroundColor: customProfileColor } : undefined} className={`mx-auto flex max-w-[1400px] items-center gap-3 rounded-[28px] border p-3 shadow-[0_14px_35px_rgba(11,11,10,.055)] sm:gap-5 sm:rounded-full sm:p-3.5 ${profileBand} ${customProfileColor ? profileText : ""}`}>
             <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-ink sm:h-[72px] sm:w-[72px]">
               {catalog.profile.avatar_url ? <img src={catalog.profile.avatar_url} alt={`Foto de ${catalog.profile.professional_name}`} className="h-full w-full object-cover" /> : <span className="grid h-full w-full place-items-center font-display text-xl font-semibold text-paper sm:text-2xl">{catalog.profile.professional_name.slice(0, 1)}</span>}
             </div>

@@ -4,6 +4,8 @@ export type CatalogTheme = {
   palette: "warm" | "paper" | "charcoal";
   property_style: "editorial" | "classic" | "compact";
   profile_band: "light" | "contrast" | "dark";
+  background_color?: string;
+  profile_color?: string;
 };
 
 export type Profile = {
