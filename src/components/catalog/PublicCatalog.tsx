@@ -1,5 +1,4 @@
 import {
-  ArrowDown,
   ArrowUpRight,
   AtSign,
   Bath,
@@ -472,46 +471,26 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
       );
   }, [catalog.properties, filters]);
   const contact = catalog.profile.whatsapp ? waLink(catalog) : null;
-  const lead = catalog.properties[0];
   const totalLabel = `${properties.length} ${properties.length === 1 ? "imóvel" : "imóveis"}`;
   return (
     <>
-      <CatalogHeader catalog={catalog} onHero />
+      <CatalogHeader catalog={catalog} />
       <main className="overflow-hidden bg-[#f5f2ec] pb-28">
-        <section className="relative bg-[#f5f2ec]">
-          <div className="mx-auto grid min-h-[calc(100svh-68px)] max-w-[1400px] lg:grid-cols-[.92fr_1.08fr]">
-            <div className="relative z-10 flex flex-col justify-between px-5 pb-10 pt-14 sm:px-8 sm:pb-14 sm:pt-20 lg:px-12 lg:py-20 xl:px-16">
-              <div>
-                <motion.h1 initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.08, ease: [0.22, 1, 0.36, 1] }} className="max-w-[620px] font-display text-[54px] font-semibold leading-[.87] tracking-[-.065em] text-ink sm:text-7xl lg:text-[clamp(72px,7vw,112px)]">
-                  Encontre um lugar que pareça seu.
-                </motion.h1>
-                <motion.p initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.18, ease: [0.22, 1, 0.36, 1] }} className="mt-8 max-w-md font-body text-[17px] leading-relaxed text-ash">
-                  {catalog.profile.bio || "Uma seleção de imóveis escolhidos para morar, investir e viver melhor."}
-                </motion.p>
-                <motion.a initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.26, ease: [0.22, 1, 0.36, 1] }} href="#imoveis" className="mt-9 inline-flex items-center gap-3 rounded-full bg-ink px-5 py-3.5 font-body text-sm font-semibold text-paper transition hover:gap-4">
-                  Explorar imóveis <ArrowDown size={16} />
-                </motion.a>
-              </div>
-              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.34, ease: [0.22, 1, 0.36, 1] }} className="mt-12 flex max-w-[520px] items-center gap-3 rounded-[22px] border border-black/10 bg-white/75 p-2.5 shadow-[0_12px_35px_rgba(11,11,10,.06)] backdrop-blur-sm sm:rounded-full">
-                <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full bg-cream">
-                  {catalog.profile.avatar_url ? <img src={catalog.profile.avatar_url} alt={`Foto de ${catalog.profile.professional_name}`} className="h-full w-full object-cover" /> : <span className="grid h-full w-full place-items-center font-display text-lg font-semibold text-ink">{catalog.profile.professional_name.slice(0, 1)}</span>}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-display text-[16px] font-semibold tracking-[-.025em] text-ink">{catalog.profile.professional_name}</p>
-                  <p className="mt-0.5 truncate font-body text-xs text-ash">{catalog.profile.creci || "Corretor de imóveis"}</p>
-                </div>
-                {contact && <a href={contact} target="_blank" rel="noreferrer" className="hidden h-10 shrink-0 items-center gap-2 rounded-full bg-ink px-4 font-body text-xs font-semibold text-paper transition hover:bg-charcoal sm:inline-flex"><MessageCircle size={15} />Falar com {catalog.profile.professional_name.split(" ")[0]}</a>}
-              </motion.div>
+        <section className="px-5 pb-3 pt-7 sm:px-8 sm:pb-6 sm:pt-10">
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} className="mx-auto flex max-w-[1400px] items-center gap-3 rounded-[28px] border border-black/10 bg-white p-3 shadow-[0_14px_35px_rgba(11,11,10,.055)] sm:gap-5 sm:rounded-full sm:p-3.5">
+            <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-ink sm:h-[72px] sm:w-[72px]">
+              {catalog.profile.avatar_url ? <img src={catalog.profile.avatar_url} alt={`Foto de ${catalog.profile.professional_name}`} className="h-full w-full object-cover" /> : <span className="grid h-full w-full place-items-center font-display text-xl font-semibold text-paper sm:text-2xl">{catalog.profile.professional_name.slice(0, 1)}</span>}
             </div>
-            <motion.div initial={{ clipPath: "inset(0 100% 0 0)" }} animate={{ clipPath: "inset(0 0% 0 0)" }} transition={{ duration: 0.9, delay: 0.1, ease: [0.22, 1, 0.36, 1] }} className="relative mx-5 mb-6 min-h-[410px] overflow-hidden rounded-[24px] bg-charcoal sm:min-h-[480px] lg:mx-0 lg:mb-0 lg:min-h-full lg:rounded-none">
-              {lead && propertyImage(lead) ? <img src={propertyImage(lead)} alt={lead.title} fetchPriority="high" className="absolute inset-0 h-full w-full object-cover" /> : <div className="absolute inset-0 bg-charcoal" />}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/10" />
-              {lead && <a href={propertyHref(catalog, lead)} className="group absolute bottom-0 left-0 right-0 p-6 text-paper sm:p-9 lg:p-12"><p className="flex items-end justify-between gap-5 font-display text-3xl font-semibold leading-none tracking-[-.035em] sm:text-5xl">{displayTitle(lead.title)}<ArrowUpRight size={24} className="mb-1 shrink-0 transition group-hover:-translate-y-1 group-hover:translate-x-1" /></p></a>}
-            </motion.div>
-          </div>
+            <div className="min-w-0 flex-1 py-0.5">
+              <p className="truncate font-display text-[19px] font-semibold leading-none tracking-[-.035em] text-ink sm:text-2xl">{catalog.profile.professional_name}</p>
+              <p className="mt-1.5 truncate font-body text-[12px] text-ash sm:text-sm">Corretor de imóveis{catalog.profile.creci ? ` · CRECI ${catalog.profile.creci.replace(/^CRECI\\s*/i, "")}` : ""}</p>
+              {(catalog.profile.city || catalog.profile.state) && <p className="mt-1 flex items-center gap-1 truncate font-body text-[11px] text-stone sm:text-xs"><MapPin size={12} />{[catalog.profile.city, catalog.profile.state].filter(Boolean).join(", ")}</p>}
+            </div>
+            {contact && <a href={contact} target="_blank" rel="noreferrer" className="hidden h-11 shrink-0 items-center gap-2 rounded-full bg-ink px-5 font-body text-sm font-semibold text-paper transition hover:bg-charcoal sm:inline-flex"><MessageCircle size={16} />Falar com {catalog.profile.professional_name.split(" ")[0]}</a>}
+          </motion.div>
         </section>
 
-        <section id="imoveis" className="scroll-mt-20 px-5 py-16 sm:px-8 sm:py-24">
+        <section id="imoveis" className="scroll-mt-20 px-5 pb-16 pt-10 sm:px-8 sm:pb-24 sm:pt-14">
           <div className="mx-auto max-w-[1400px]">
             <div className="flex flex-wrap items-end justify-between gap-5 border-b border-black/10 pb-8">
               <div><h2 className="font-display text-[42px] font-medium leading-[.92] tracking-[-.05em] text-ink sm:text-6xl">Todos os imóveis</h2><p className="mt-4 font-body text-[16px] text-ash">Explore todas as opções disponíveis.</p></div>
