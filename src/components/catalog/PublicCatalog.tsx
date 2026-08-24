@@ -471,7 +471,6 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
       );
   }, [catalog.properties, filters]);
   const contact = catalog.profile.whatsapp ? waLink(catalog) : null;
-  const totalLabel = `${properties.length} ${properties.length === 1 ? "imóvel" : "imóveis"}`;
   return (
     <>
       <CatalogHeader catalog={catalog} />
@@ -492,9 +491,8 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
 
         <section id="imoveis" className="scroll-mt-20 px-5 pb-16 pt-10 sm:px-8 sm:pb-24 sm:pt-14">
           <div className="mx-auto max-w-[1400px]">
-            <div className="flex flex-wrap items-end justify-between gap-5 border-b border-black/10 pb-8">
+            <div className="border-b border-black/10 pb-8">
               <div><h2 className="font-display text-[42px] font-medium leading-[.92] tracking-[-.05em] text-ink sm:text-6xl">Todos os imóveis</h2><p className="mt-4 font-body text-[16px] text-ash">Explore todas as opções disponíveis.</p></div>
-              <p className="font-mono text-xs text-stone">{totalLabel}</p>
             </div>
             <div className="sticky top-[68px] z-30 -mx-5 bg-[#f5f2ec]/95 px-5 py-4 shadow-[0_8px_18px_rgba(11,11,10,.035)] backdrop-blur-md sm:-mx-8 sm:px-8"><div className="mx-auto max-w-[1400px]"><label className="flex h-12 max-w-xl items-center gap-3 rounded-full border border-black/10 bg-white/65 px-4 font-body text-sm transition focus-within:border-black/40 focus-within:bg-white"><Search size={18} className="text-stone" /><input value={filters.query} onChange={(e) => { setFilters((filter) => ({ ...filter, query: e.target.value })); setVisible(12); }} placeholder="Onde você quer morar?" className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-stone" /></label><div className="mt-3"><FilterControls filters={filters} setFilters={setFilters} total={properties.length} /></div></div></div>
             {properties.length > 0 ? <motion.div layout className={`mt-10 grid gap-x-7 gap-y-14 ${properties.length === 1 ? "max-w-[920px]" : "md:grid-cols-2"}`}>
