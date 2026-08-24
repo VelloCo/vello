@@ -1,5 +1,11 @@
 import { requireSupabase } from "./supabase";
 
+export type CatalogTheme = {
+  palette: "warm" | "paper" | "charcoal";
+  property_style: "editorial" | "classic" | "compact";
+  profile_band: "light" | "contrast" | "dark";
+};
+
 export type Profile = {
   id: string;
   user_id: string;
@@ -17,6 +23,7 @@ export type Profile = {
   show_instagram: boolean;
   show_creci: boolean;
   show_completed_properties: boolean;
+  catalog_theme: CatalogTheme;
 };
 export type PropertyImage = {
   id: string;

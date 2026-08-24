@@ -35,7 +35,7 @@ import {
   slugify,
   uploadPropertyImages,
 } from "../../lib/vello";
-import type { Profile, Property, Selection } from "../../lib/vello";
+import type { CatalogTheme, Profile, Property, Selection } from "../../lib/vello";
 
 type Props = { user: User; route: string };
 const nav = [
@@ -1210,6 +1210,16 @@ function ProfilePage({
   toast: (s: string) => void;
 }) {
   const [form, setForm] = useState(profile);
+  const theme: CatalogTheme = form.catalog_theme || {
+    palette: "warm",
+    property_style: "editorial",
+    profile_band: "light",
+  };
+  const updateTheme = <K extends keyof CatalogTheme>(key: K, value: CatalogTheme[K]) =>
+    setForm((current) => ({
+      ...current,
+      catalog_theme: { ...theme, [key]: value },
+    }));
   const save = async () => {
     try {
       await saveProfile(user.id, form);
@@ -1302,6 +1312,28 @@ function ProfilePage({
             <div className="mt-8 rounded-xl bg-cream p-4 font-body text-sm text-ash">
               Plano atual: <b className="text-ink">Acesso de teste</b>
             </div>
+        </div>
+        <div className="mt-8 border-t border-line pt-7">
+          <p className="font-display text-lg font-semibold">Personalize seu catálogo</p>
+          <p className="mt-1 font-body text-sm leading-relaxed text-ash">Defina a atmosfera da página pública sem precisar editar seus imóveis.</p>
+          <div className="mt-6">
+            <p className="font-mono text-[10px] uppercase tracking-[.15em] text-stone">Cores do catálogo</p>
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              {([['warm', 'Areia', 'bg-[#f5f2ec]'], ['paper', 'Claro', 'bg-white'], ['charcoal', 'Noite', 'bg-ink']] as const).map(([value, label, color]) => <button key={value} type="button" onClick={() => updateTheme('palette', value)} className={`rounded-xl border p-2 text-left transition ${theme.palette === value ? 'border-ink ring-1 ring-ink' : 'border-line hover:border-stone'}`}><span className={`block h-8 rounded-lg border border-black/10 ${color}`} /><span className="mt-2 block font-body text-xs font-medium">{label}</span></button>)}
+            </div>
+          </div>
+          <div className="mt-6">
+            <p className="font-mono text-[10px] uppercase tracking-[.15em] text-stone">Estilo dos imóveis</p>
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              {([['editorial', 'Editorial', 'Fotos protagonistas e informações sobrepostas.'], ['classic', 'Clássico', 'Card tradicional, com leitura mais direta.'], ['compact', 'Compacto', 'Mais imóveis visíveis de uma só vez.']] as const).map(([value, label, description]) => <button key={value} type="button" onClick={() => updateTheme('property_style', value)} className={`rounded-xl border p-3 text-left transition ${theme.property_style === value ? 'border-ink bg-cream ring-1 ring-ink' : 'border-line hover:border-stone'}`}><span className="block font-body text-sm font-semibold">{label}</span><span className="mt-1 block font-body text-xs leading-relaxed text-ash">{description}</span></button>)}
+            </div>
+          </div>
+          <div className="mt-6">
+            <p className="font-mono text-[10px] uppercase tracking-[.15em] text-stone">Faixa do seu perfil</p>
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              {([['light', 'Leve', 'bg-white text-ink'], ['contrast', 'Areia', 'bg-[#e9e4da] text-ink'], ['dark', 'Escura', 'bg-ink text-paper']] as const).map(([value, label, appearance]) => <button key={value} type="button" onClick={() => updateTheme('profile_band', value)} className={`rounded-xl border p-2 text-left transition ${theme.profile_band === value ? 'border-ink ring-1 ring-ink' : 'border-line hover:border-stone'}`}><span className={`block h-8 rounded-lg ${appearance}`} /><span className="mt-2 block font-body text-xs font-medium">{label}</span></button>)}
+            </div>
+          </div>
         </div>
         <Button onClick={save} className="mt-7">
           Salvar alterações

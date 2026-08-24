@@ -21,6 +21,12 @@ import { LoadingScreen } from "../LoadingScreen";
 import { Logo } from "../Logo";
 
 type Image = { image_url: string; position: number };
+type CatalogTheme = {
+  palette: "warm" | "paper" | "charcoal";
+  property_style: "editorial" | "classic" | "compact";
+  profile_band: "light" | "contrast" | "dark";
+};
+const defaultCatalogTheme: CatalogTheme = { palette: "warm", property_style: "editorial", profile_band: "light" };
 type Property = {
   id: string;
   slug: string;
@@ -52,6 +58,7 @@ type Catalog = {
     instagram: string | null;
     slug: string;
     bio: string;
+    catalog_theme?: CatalogTheme;
   };
   properties: Property[];
 };
@@ -167,10 +174,12 @@ function PropertyCard({
   property,
   catalog,
   index = 0,
+  style = "editorial",
 }: {
   property: Property;
   catalog: Catalog;
   index?: number;
+  style?: CatalogTheme["property_style"];
 }) {
   const href = propertyHref(catalog, property);
   const specs = propertySpecs(property);
@@ -184,7 +193,7 @@ function PropertyCard({
       transition={{ duration: 0.45, delay: Math.min(index * 0.07, 0.28), ease: [0.22, 1, 0.36, 1] }}
       className="group relative"
     >
-      <div className="relative aspect-[5/4] overflow-hidden rounded-[18px] bg-cream sm:rounded-[22px]">
+      <div className={`relative overflow-hidden bg-cream ${style === "classic" ? "aspect-[4/3] rounded-[14px]" : style === "compact" ? "aspect-[16/10] rounded-[16px]" : "aspect-[5/4] rounded-[18px] sm:rounded-[22px]"}`}>
         <a href={href} aria-label={`Conhecer ${property.title}`} className="absolute inset-0 z-10 rounded-[18px] focus-visible:ring-2 focus-visible:ring-ink sm:rounded-[22px]" />
         {propertyImage(property) ? (
           <img
@@ -205,7 +214,7 @@ function PropertyCard({
           <Favorite id={property.id} />
         </div>
       </div>
-      <a href={href} className="relative z-20 -mt-5 ml-4 block rounded-[20px] bg-[#f5f2ec] px-5 pb-5 pt-5 shadow-[0_14px_30px_rgba(11,11,10,.05)] transition duration-300 group-hover:-translate-y-0.5 sm:ml-5 sm:px-6" aria-hidden="true" tabIndex={-1}>
+      <a href={href} className={`relative z-20 block bg-[#f5f2ec] px-5 pb-5 pt-5 transition duration-300 group-hover:-translate-y-0.5 sm:px-6 ${style === "classic" ? "mt-0 rounded-b-[14px] border-x border-b border-black/10" : style === "compact" ? "-mt-3 ml-3 rounded-[16px] shadow-[0_12px_24px_rgba(11,11,10,.05)] sm:ml-4" : "-mt-5 ml-4 rounded-[20px] shadow-[0_14px_30px_rgba(11,11,10,.05)] sm:ml-5"}`} aria-hidden="true" tabIndex={-1}>
         <div className="flex items-start justify-between gap-5">
           <div>
             <h2 className="line-clamp-2 font-display text-[27px] font-medium leading-[.98] tracking-[-.04em] text-ink sm:text-[32px]">
@@ -471,19 +480,30 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
       );
   }, [catalog.properties, filters]);
   const contact = catalog.profile.whatsapp ? waLink(catalog) : null;
+  const theme = catalog.profile.catalog_theme || defaultCatalogTheme;
+  const palette = {
+    warm: { page: "bg-[#f5f2ec]", heading: "text-ink", copy: "text-ash" },
+    paper: { page: "bg-white", heading: "text-ink", copy: "text-ash" },
+    charcoal: { page: "bg-[#1b1b19]", heading: "text-paper", copy: "text-paper/60" },
+  }[theme.palette];
+  const profileBand = {
+    light: "border-black/10 bg-white text-ink",
+    contrast: "border-[#d7d0c4] bg-[#e9e4da] text-ink",
+    dark: "border-white/10 bg-ink text-paper",
+  }[theme.profile_band];
   return (
     <>
       <CatalogHeader catalog={catalog} />
-      <main className="overflow-hidden bg-[#f5f2ec] pb-28">
+      <main className={`overflow-hidden pb-28 ${palette.page}`}>
         <section className="px-5 pb-3 pt-7 sm:px-8 sm:pb-6 sm:pt-10">
-          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} className="mx-auto flex max-w-[1400px] items-center gap-3 rounded-[28px] border border-black/10 bg-white p-3 shadow-[0_14px_35px_rgba(11,11,10,.055)] sm:gap-5 sm:rounded-full sm:p-3.5">
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} className={`mx-auto flex max-w-[1400px] items-center gap-3 rounded-[28px] border p-3 shadow-[0_14px_35px_rgba(11,11,10,.055)] sm:gap-5 sm:rounded-full sm:p-3.5 ${profileBand}`}>
             <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-ink sm:h-[72px] sm:w-[72px]">
               {catalog.profile.avatar_url ? <img src={catalog.profile.avatar_url} alt={`Foto de ${catalog.profile.professional_name}`} className="h-full w-full object-cover" /> : <span className="grid h-full w-full place-items-center font-display text-xl font-semibold text-paper sm:text-2xl">{catalog.profile.professional_name.slice(0, 1)}</span>}
             </div>
             <div className="min-w-0 flex-1 py-0.5">
-              <p className="truncate font-display text-[19px] font-semibold leading-none tracking-[-.035em] text-ink sm:text-2xl">{catalog.profile.professional_name}</p>
-              <p className="mt-1.5 truncate font-body text-[12px] text-ash sm:text-sm">Corretor de imóveis{catalog.profile.creci ? ` · CRECI ${catalog.profile.creci.replace(/^CRECI\\s*/i, "")}` : ""}</p>
-              {(catalog.profile.city || catalog.profile.state) && <p className="mt-1 flex items-center gap-1 truncate font-body text-[11px] text-stone sm:text-xs"><MapPin size={12} />{[catalog.profile.city, catalog.profile.state].filter(Boolean).join(", ")}</p>}
+              <p className="truncate font-display text-[19px] font-semibold leading-none tracking-[-.035em] sm:text-2xl">{catalog.profile.professional_name}</p>
+              <p className="mt-1.5 truncate font-body text-[12px] opacity-65 sm:text-sm">Corretor de imóveis{catalog.profile.creci ? ` · CRECI ${catalog.profile.creci.replace(/^CRECI\\s*/i, "")}` : ""}</p>
+              {(catalog.profile.city || catalog.profile.state) && <p className="mt-1 flex items-center gap-1 truncate font-body text-[11px] opacity-55 sm:text-xs"><MapPin size={12} />{[catalog.profile.city, catalog.profile.state].filter(Boolean).join(", ")}</p>}
             </div>
             {contact && <a href={contact} target="_blank" rel="noreferrer" className="hidden h-11 shrink-0 items-center gap-2 rounded-full bg-ink px-5 font-body text-sm font-semibold text-paper transition hover:bg-charcoal sm:inline-flex"><MessageCircle size={16} />Falar com {catalog.profile.professional_name.split(" ")[0]}</a>}
           </motion.div>
@@ -492,11 +512,11 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
         <section id="imoveis" className="scroll-mt-20 px-5 pb-16 pt-10 sm:px-8 sm:pb-24 sm:pt-14">
           <div className="mx-auto max-w-[1400px]">
             <div className="border-b border-black/10 pb-8">
-              <div><h2 className="font-display text-[42px] font-medium leading-[.92] tracking-[-.05em] text-ink sm:text-6xl">Todos os imóveis</h2><p className="mt-4 font-body text-[16px] text-ash">Explore todas as opções disponíveis.</p></div>
+              <div><h2 className={`font-display text-[42px] font-medium leading-[.92] tracking-[-.05em] sm:text-6xl ${palette.heading}`}>Todos os imóveis</h2><p className={`mt-4 font-body text-[16px] ${palette.copy}`}>Explore todas as opções disponíveis.</p></div>
             </div>
             <div className="sticky top-[68px] z-30 -mx-5 bg-[#f5f2ec]/95 px-5 py-4 shadow-[0_8px_18px_rgba(11,11,10,.035)] backdrop-blur-md sm:-mx-8 sm:px-8"><div className="mx-auto max-w-[1400px]"><label className="flex h-12 max-w-xl items-center gap-3 rounded-full border border-black/10 bg-white/65 px-4 font-body text-sm transition focus-within:border-black/40 focus-within:bg-white"><Search size={18} className="text-stone" /><input value={filters.query} onChange={(e) => { setFilters((filter) => ({ ...filter, query: e.target.value })); setVisible(12); }} placeholder="Onde você quer morar?" className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-stone" /></label><div className="mt-3"><FilterControls filters={filters} setFilters={setFilters} total={properties.length} /></div></div></div>
-            {properties.length > 0 ? <motion.div layout className={`mt-10 grid gap-x-7 gap-y-14 ${properties.length === 1 ? "max-w-[920px]" : "md:grid-cols-2"}`}>
-              {properties.slice(0, visible).map((property, index) => <PropertyCard key={property.id} property={property} catalog={catalog} index={index} />)}
+            {properties.length > 0 ? <motion.div layout className={`mt-10 grid gap-x-7 gap-y-14 ${properties.length === 1 ? "max-w-[920px]" : theme.property_style === "compact" ? "sm:grid-cols-2 xl:grid-cols-3" : theme.property_style === "classic" ? "sm:grid-cols-2 xl:grid-cols-3" : "md:grid-cols-2"}`}>
+              {properties.slice(0, visible).map((property, index) => <PropertyCard key={property.id} property={property} catalog={catalog} index={index} style={theme.property_style} />)}
             </motion.div> : <div className="mt-12 max-w-2xl border-y border-black/10 py-16"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-stone">Sem resultados</p><h3 className="mt-5 font-display text-4xl font-semibold tracking-[-.05em]">Novas oportunidades em breve.</h3><p className="mt-5 max-w-lg font-body leading-relaxed text-ash">No momento não há imóveis que combinem com essa busca. Se você procura algo específico, fale diretamente com {catalog.profile.professional_name}.</p><button onClick={() => setFilters(initial)} className="mt-8 font-body text-sm font-semibold underline underline-offset-4">Limpar filtros</button></div>}
             {visible < properties.length && <div className="mt-14"><button onClick={() => setVisible((value) => value + 12)} className="rounded-full border border-ink px-6 py-3 font-body text-sm font-semibold transition hover:bg-ink hover:text-paper">Ver mais imóveis</button></div>}
           </div>
