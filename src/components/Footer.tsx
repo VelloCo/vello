@@ -9,6 +9,7 @@ const LINKS = [
 ];
 
 const SOCIAL = [
+  { label: 'Contato', href: 'mailto:vellocorretores@gmail.com' },
   { label: 'Instagram', href: '#' },
   { label: 'Termos', href: '#' },
   { label: 'Privacidade', href: '#' },
