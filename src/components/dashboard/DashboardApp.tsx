@@ -455,8 +455,14 @@ function HomePage({
               : "Defina seu link público"}
           </p>
           <a
+            href={appPath("/dashboard/personalizar")}
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-body text-sm font-semibold text-ink"
+          >
+            <Palette size={15} /> Personalizar catálogo
+          </a>
+          <a
             href={appPath("/dashboard/catalogo")}
-            className="mt-6 inline-flex rounded-full bg-white px-4 py-2 font-body text-sm font-semibold text-ink"
+            className="ml-4 inline-flex font-body text-sm text-paper/75 underline underline-offset-4 hover:text-paper"
           >
             Abrir catálogo
           </a>
