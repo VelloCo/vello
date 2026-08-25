@@ -361,9 +361,17 @@ function HomePage({
             Seus imóveis estão todos por aqui.
           </h1>
         </div>
-        <Button onClick={() => go("/dashboard/imoveis/novo")}>
-          <Plus size={17} /> Novo imóvel
-        </Button>
+        <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:justify-end">
+          <a
+            href={appPath("/dashboard/personalizar")}
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-line bg-white px-4 font-body text-sm font-semibold text-ink transition hover:border-ink"
+          >
+            <Palette size={16} /> Personalizar catálogo
+          </a>
+          <Button onClick={() => go("/dashboard/imoveis/novo")}>
+            <Plus size={17} /> Novo imóvel
+          </Button>
+        </div>
       </header>
       <section className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {summary.map(([label, value]) => (
@@ -455,14 +463,8 @@ function HomePage({
               : "Defina seu link público"}
           </p>
           <a
-            href={appPath("/dashboard/personalizar")}
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-body text-sm font-semibold text-ink"
-          >
-            <Palette size={15} /> Personalizar catálogo
-          </a>
-          <a
             href={appPath("/dashboard/catalogo")}
-            className="ml-4 inline-flex font-body text-sm text-paper/75 underline underline-offset-4 hover:text-paper"
+            className="mt-6 inline-flex rounded-full bg-white px-4 py-2 font-body text-sm font-semibold text-ink"
           >
             Abrir catálogo
           </a>
