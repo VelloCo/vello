@@ -25,12 +25,6 @@ html {
   scroll-behavior: smooth;
 }
 
-@media (prefers-color-scheme: dark) {
-  .auth-wave {
-    fill: var(--color-charcoal);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
