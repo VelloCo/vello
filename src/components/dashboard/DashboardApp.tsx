@@ -1,6 +1,9 @@
 import type { User } from "@supabase/supabase-js";
 import { AnimatePresence, motion } from "framer-motion";
 import {
+  ArrowDown,
+  ArrowUp,
+  Archive,
   Building2,
   Check,
   ChevronLeft,
@@ -16,24 +19,28 @@ import {
   Plus,
   Search,
   Share2,
+  Trash2,
   UserRound,
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { appPath } from "../../lib/paths";
 import { LoadingScreen } from "../LoadingScreen";
-import { signOut } from "../../lib/auth";
+import { signOut, updatePassword } from "../../lib/auth";
 import {
   brl,
   dateBR,
   deleteProperty,
+  deleteSelection,
   getProfile,
   getProperties,
   getSelections,
   saveProfile,
   saveProperty,
   saveSelection,
+  setSelectionStatus,
   slugify,
+  uploadAvatar,
   uploadPropertyImages,
 } from "../../lib/vello";
 import type { CatalogTheme, Profile, Property, Selection } from "../../lib/vello";
@@ -605,10 +612,12 @@ function PropertyEditor({
   user,
   property,
   toast,
+  refresh,
 }: {
   user: User;
   property?: Property;
   toast: (s: string) => void;
+  refresh: () => Promise<void>;
 }) {
   const [form, setForm] = useState<Partial<Property>>(
     property || {
@@ -642,8 +651,20 @@ function PropertyEditor({
     setForm((f) => ({ ...f, [key]: value }));
   const upload = async (files: FileList | null) => {
     if (!files) return;
-    const urls = await uploadPropertyImages(user.id, files);
-    setImages((old) => [...old, ...urls.map((url) => ({ url }))]);
+    try {
+      const urls = await uploadPropertyImages(user.id, files);
+      setImages((old) => [...old, ...urls.map((url) => ({ url }))]);
+    } catch (error) {
+      toast(error instanceof Error ? error.message : "Não foi possível enviar as fotos.");
+    }
+  };
+  const moveImage = (from: number, to: number) => {
+    if (to < 0 || to >= images.length) return;
+    setImages((current) => {
+      const next = [...current];
+      [next[from], next[to]] = [next[to], next[from]];
+      return next;
+    });
   };
   const save = async () => {
     if (!form.title || !form.city || !form.neighborhood) {
@@ -656,6 +677,7 @@ function PropertyEditor({
       toast(
         form.publication_status === "draft" ? "Rascunho salvo" : "Imóvel salvo",
       );
+      await refresh();
       go(`/dashboard/imoveis/${id}`);
     } catch {
       toast("Não foi possível salvar. Tente novamente.");
@@ -729,6 +751,26 @@ function PropertyEditor({
                     >
                       <X size={13} />
                     </button>
+                    <div className="absolute bottom-1 right-1 flex gap-1">
+                      <button
+                        type="button"
+                        aria-label="Mover foto para trás"
+                        disabled={i === 0}
+                        onClick={() => moveImage(i, i - 1)}
+                        className="rounded-full bg-white p-1.5 text-ink shadow disabled:opacity-40"
+                      >
+                        <ArrowUp size={12} />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Mover foto para frente"
+                        disabled={i === images.length - 1}
+                        onClick={() => moveImage(i, i + 1)}
+                        className="rounded-full bg-white p-1.5 text-ink shadow disabled:opacity-40"
+                      >
+                        <ArrowDown size={12} />
+                      </button>
+                    </div>
                     {i === 0 && (
                       <span className="absolute bottom-1 left-1 rounded bg-ink px-1.5 py-1 font-mono text-[9px] text-paper">
                         CAPA
@@ -903,7 +945,17 @@ function SelectField({
   );
 }
 
-function SelectionsPage({ selections }: { selections: Selection[] }) {
+function SelectionsPage({ selections, refresh, toast }: { selections: Selection[]; refresh: () => Promise<void>; toast: (value: string) => void }) {
+  const [remove, setRemove] = useState<Selection | null>(null);
+  const setStatus = async (selection: Selection, status: Selection["status"]) => {
+    try {
+      await setSelectionStatus(selection.id, status);
+      toast(status === "archived" ? "Seleção arquivada" : "Seleção reativada");
+      await refresh();
+    } catch {
+      toast("Não foi possível atualizar a seleção.");
+    }
+  };
   return (
     <>
       <header className="flex flex-wrap items-end justify-between gap-4">
@@ -934,10 +986,13 @@ function SelectionsPage({ selections }: { selections: Selection[] }) {
                 {s.selection_properties?.length || 0} imóveis ·{" "}
                 {dateBR(s.created_at)}
               </p>
+              <span className={`mt-4 inline-flex rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide ${s.status === "active" ? "bg-cream text-stone" : "bg-stone/10 text-stone"}`}>
+                {s.status === "active" ? "Ativa" : "Arquivada"}
+              </span>
               <p className="mt-4 truncate font-mono text-xs text-stone">
                 vello.com.br/s/{s.slug}
               </p>
-              <div className="mt-6 flex gap-2">
+              <div className="mt-6 flex flex-wrap gap-2">
                 <button
                   onClick={() => go(`/dashboard/selecoes/${s.id}`)}
                   className="rounded-full bg-ink px-4 py-2 font-body text-sm text-paper"
@@ -954,6 +1009,24 @@ function SelectionsPage({ selections }: { selections: Selection[] }) {
                 >
                   Copiar link
                 </button>
+                {s.client_whatsapp && (
+                  <a
+                    href={`https://wa.me/${s.client_whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Oi ${s.client_name}! Separei alguns imóveis para você: ${window.location.origin}${appPath(`/selecao/${s.slug}`)}`)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full border border-line px-4 py-2 font-body text-sm"
+                  >
+                    WhatsApp
+                  </a>
+                )}
+              </div>
+              <div className="mt-3 flex items-center gap-4">
+                <button onClick={() => setStatus(s, s.status === "active" ? "archived" : "active")} className="inline-flex items-center gap-1 font-body text-xs text-ash hover:text-ink">
+                  <Archive size={14} /> {s.status === "active" ? "Arquivar" : "Reativar"}
+                </button>
+                <button onClick={() => setRemove(s)} className="inline-flex items-center gap-1 font-body text-xs text-red-700">
+                  <Trash2 size={14} /> Excluir
+                </button>
               </div>
             </article>
           ))}
@@ -966,6 +1039,7 @@ function SelectionsPage({ selections }: { selections: Selection[] }) {
           onAction={() => go("/dashboard/selecoes/nova")}
         />
       )}
+      {remove && <Dialog title="Excluir esta seleção?" text="O link deixará de funcionar e essa ação não poderá ser desfeita." confirm="Excluir seleção" danger onClose={() => setRemove(null)} onConfirm={async () => { try { await deleteSelection(remove.id); toast("Seleção excluída"); setRemove(null); await refresh(); } catch { toast("Não foi possível excluir a seleção."); } }} />}
     </>
   );
 }
@@ -974,11 +1048,13 @@ function SelectionEditor({
   properties,
   selection,
   toast,
+  refresh,
 }: {
   user: User;
   properties: Property[];
   selection?: Selection;
   toast: (s: string) => void;
+  refresh: () => Promise<void>;
 }) {
   const initial =
     selection?.selection_properties
@@ -996,6 +1072,14 @@ function SelectionEditor({
     setSelected((x) =>
       x.includes(id) ? x.filter((y) => y !== id) : [...x, id],
     );
+  const moveSelected = (from: number, to: number) => {
+    if (to < 0 || to >= selected.length) return;
+    setSelected((current) => {
+      const next = [...current];
+      [next[from], next[to]] = [next[to], next[from]];
+      return next;
+    });
+  };
   const save = async () => {
     if (!name || !selected.length) {
       toast("Informe o cliente e selecione ao menos um imóvel");
@@ -1015,7 +1099,8 @@ function SelectionEditor({
         },
         selected,
       );
-      toast("Seleção criada");
+      await refresh();
+      toast(selection ? "Seleção atualizada" : "Seleção criada");
       go(`/dashboard/selecoes/${id}`);
     } catch {
       toast("Não foi possível salvar. Tente novamente.");
@@ -1068,6 +1153,18 @@ function SelectionEditor({
           <p className="mt-7 font-mono text-xs text-stone">
             {selected.length} imóveis selecionados
           </p>
+          {selected.length > 0 && (
+            <div className="mt-4 border-t border-line pt-4">
+              <p className="font-mono text-[10px] uppercase tracking-wide text-stone">Ordem da seleção</p>
+              <div className="mt-3 space-y-2">
+                {selected.map((id, index) => {
+                  const item = properties.find((property) => property.id === id);
+                  if (!item) return null;
+                  return <div key={id} className="flex items-center gap-2 rounded-xl bg-cream px-3 py-2"><span className="grid h-6 w-6 place-items-center rounded-full bg-white font-mono text-[10px]">{index + 1}</span><span className="min-w-0 flex-1 truncate font-body text-xs font-medium">{item.title}</span><button type="button" aria-label="Subir imóvel" disabled={index === 0} onClick={() => moveSelected(index, index - 1)} className="p-1 disabled:opacity-30"><ArrowUp size={14} /></button><button type="button" aria-label="Descer imóvel" disabled={index === selected.length - 1} onClick={() => moveSelected(index, index + 1)} className="p-1 disabled:opacity-30"><ArrowDown size={14} /></button></div>;
+                })}
+              </div>
+            </div>
+          )}
         </aside>
         <section>
           <div className="flex items-center justify-between">
@@ -1226,12 +1323,52 @@ function ProfilePage({
   toast: (s: string) => void;
 }) {
   const [form, setForm] = useState(profile);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordSaving, setPasswordSaving] = useState(false);
+  const [avatarSaving, setAvatarSaving] = useState(false);
+  const avatarInput = useRef<HTMLInputElement>(null);
   const save = async () => {
     try {
       await saveProfile(user.id, form);
       toast("Alterações salvas");
     } catch {
       toast("Não foi possível salvar.");
+    }
+  };
+  const changePassword = async () => {
+    if (newPassword.length < 8) {
+      toast("Use uma senha com pelo menos 8 caracteres.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast("As senhas não coincidem.");
+      return;
+    }
+    setPasswordSaving(true);
+    try {
+      await updatePassword(newPassword);
+      setNewPassword("");
+      setConfirmPassword("");
+      toast("Senha atualizada");
+    } catch {
+      toast("Não foi possível atualizar a senha.");
+    } finally {
+      setPasswordSaving(false);
+    }
+  };
+  const changeAvatar = async (file?: File) => {
+    if (!file) return;
+    setAvatarSaving(true);
+    try {
+      const avatarUrl = await uploadAvatar(user.id, file);
+      await saveProfile(user.id, { avatar_url: avatarUrl });
+      setForm((current) => ({ ...current, avatar_url: avatarUrl }));
+      toast("Foto atualizada");
+    } catch (error) {
+      toast(error instanceof Error ? error.message : "Não foi possível enviar a foto.");
+    } finally {
+      setAvatarSaving(false);
     }
   };
   return (
@@ -1245,6 +1382,17 @@ function ProfilePage({
         </p>
       </header>
       <section className="mt-9 max-w-2xl rounded-[24px] border border-line bg-white p-5 sm:p-7">
+        <div className="mb-7 flex items-center gap-4 border-b border-line pb-7">
+          <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full bg-cream font-display text-xl">
+            {form.avatar_url ? <img src={form.avatar_url} alt="Foto de perfil" className="h-full w-full object-cover" /> : (form.professional_name || "V").slice(0, 1)}
+          </span>
+          <span>
+            <b className="block font-body text-sm">Foto de perfil</b>
+            <span className="mt-1 block font-body text-xs text-ash">JPG, PNG ou WebP · até 5 MB</span>
+            <input ref={avatarInput} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(event) => changeAvatar(event.target.files?.[0])} />
+            <button type="button" disabled={avatarSaving} onClick={() => avatarInput.current?.click()} className="mt-3 inline-flex items-center gap-1.5 font-body text-sm font-semibold underline underline-offset-4 disabled:opacity-50"><ImagePlus size={15} /> {avatarSaving ? "Enviando..." : form.avatar_url ? "Trocar foto" : "Adicionar foto"}</button>
+          </span>
+        </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <Field
             label="Nome profissional"
@@ -1303,6 +1451,16 @@ function ProfilePage({
               />
             </label>
             <label className="mt-4 flex justify-between font-body text-sm">
+              Mostrar CRECI
+              <input
+                type="checkbox"
+                checked={form.show_creci}
+                onChange={(e) =>
+                  setForm((x) => ({ ...x, show_creci: e.target.checked }))
+                }
+              />
+            </label>
+            <label className="mt-4 flex justify-between font-body text-sm">
               Mostrar imóveis vendidos/alugados
               <input
                 type="checkbox"
@@ -1325,6 +1483,17 @@ function ProfilePage({
         <Button onClick={save} className="mt-7">
           Salvar alterações
         </Button>
+        <section className="mt-9 border-t border-line pt-7">
+          <p className="font-display text-lg font-semibold">Segurança</p>
+          <p className="mt-1 font-body text-sm text-ash">Atualize a senha de acesso quando precisar.</p>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <Field label="Nova senha" type="password" value={newPassword} onChange={setNewPassword} />
+            <Field label="Confirmar nova senha" type="password" value={confirmPassword} onChange={setConfirmPassword} />
+          </div>
+          <button type="button" disabled={passwordSaving || !newPassword} onClick={changePassword} className="mt-4 h-10 rounded-full border border-line px-4 font-body text-sm font-medium transition hover:border-ink disabled:cursor-not-allowed disabled:opacity-50">
+            {passwordSaving ? "Atualizando..." : "Atualizar senha"}
+          </button>
+        </section>
         <button
           onClick={async () => {
             await signOut();
@@ -1450,11 +1619,11 @@ export function DashboardApp({ user, route }: Props) {
       <PropertiesPage properties={properties} refresh={refresh} toast={say} />
     );
   else if (route === "/dashboard/imoveis/novo")
-    page = <PropertyEditor user={user} toast={say} />;
+    page = <PropertyEditor user={user} toast={say} refresh={refresh} />;
   else if (route.startsWith("/dashboard/imoveis/")) {
     const p = properties.find((x) => x.id === route.split("/").pop());
     page = p ? (
-      <PropertyEditor user={user} property={p} toast={say} />
+      <PropertyEditor user={user} property={p} toast={say} refresh={refresh} />
     ) : (
       <Empty
         title="Imóvel não encontrado."
@@ -1464,9 +1633,9 @@ export function DashboardApp({ user, route }: Props) {
       />
     );
   } else if (route === "/dashboard/selecoes")
-    page = <SelectionsPage selections={selections} />;
+    page = <SelectionsPage selections={selections} refresh={refresh} toast={say} />;
   else if (route === "/dashboard/selecoes/nova")
-    page = <SelectionEditor user={user} properties={properties} toast={say} />;
+    page = <SelectionEditor user={user} properties={properties} toast={say} refresh={refresh} />;
   else if (route.startsWith("/dashboard/selecoes/")) {
     const s = selections.find((x) => x.id === route.split("/").pop());
     page = s ? (
@@ -1475,6 +1644,7 @@ export function DashboardApp({ user, route }: Props) {
         properties={properties}
         selection={s}
         toast={say}
+        refresh={refresh}
       />
     ) : (
       <Empty

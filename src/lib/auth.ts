@@ -36,6 +36,11 @@ export async function signOut() {
   if (error) throw error;
 }
 
+export async function updatePassword(password: string) {
+  const { error } = await requireSupabase().auth.updateUser({ password });
+  if (error) throw error;
+}
+
 export async function getCurrentUser(): Promise<User | null> {
   const { data, error } = await requireSupabase().auth.getUser();
   if (error) return null;

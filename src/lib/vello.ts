@@ -179,13 +179,41 @@ export async function deleteProperty(id: string) {
     .eq("id", id);
   if (error) throw error;
 }
+
+export async function deleteSelection(id: string) {
+  const { error } = await requireSupabase()
+    .from("selections")
+    .delete()
+    .eq("id", id);
+  if (error) throw error;
+}
+
+export async function setSelectionStatus(
+  id: string,
+  status: Selection["status"],
+) {
+  const { error } = await requireSupabase()
+    .from("selections")
+    .update({ status })
+    .eq("id", id);
+  if (error) throw error;
+}
 export async function uploadPropertyImages(
   userId: string,
   files: FileList | File[],
 ) {
+  const acceptedTypes = ["image/jpeg", "image/png", "image/webp"];
+  const maxSize = 10 * 1024 * 1024;
+  const list = [...files];
+  if (list.some((file) => !acceptedTypes.includes(file.type))) {
+    throw new Error("Use apenas imagens JPG, PNG ou WebP.");
+  }
+  if (list.some((file) => file.size > maxSize)) {
+    throw new Error("Cada imagem deve ter no máximo 10 MB.");
+  }
   const client = requireSupabase();
   const uploads = await Promise.all(
-    [...files].map(async (file) => {
+    list.map(async (file) => {
       const ext = file.name.split(".").pop() || "jpg";
       const path = `${userId}/${crypto.randomUUID()}.${ext}`;
       const { error } = await client.storage
@@ -197,6 +225,24 @@ export async function uploadPropertyImages(
     }),
   );
   return uploads;
+}
+
+export async function uploadAvatar(userId: string, file: File) {
+  const acceptedTypes = ["image/jpeg", "image/png", "image/webp"];
+  if (!acceptedTypes.includes(file.type)) {
+    throw new Error("Use uma foto JPG, PNG ou WebP.");
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    throw new Error("A foto deve ter no máximo 5 MB.");
+  }
+  const ext = file.name.split(".").pop() || "jpg";
+  const path = `${userId}/avatar-${crypto.randomUUID()}.${ext}`;
+  const client = requireSupabase();
+  const { error } = await client.storage
+    .from("avatars")
+    .upload(path, file, { upsert: false, contentType: file.type });
+  if (error) throw error;
+  return client.storage.from("avatars").getPublicUrl(path).data.publicUrl;
 }
 export async function getSelections(userId: string) {
   const { data, error } = await requireSupabase()
