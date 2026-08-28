@@ -20,6 +20,9 @@ import { LoadingScreen } from "../LoadingScreen";
 import { AvatarCropper } from "./AvatarCropper";
 
 type Photo = { id: string; url: string; name: string };
+const brazilianStates = [
+  ["AC", "Acre"], ["AL", "Alagoas"], ["AP", "Amapá"], ["AM", "Amazonas"], ["BA", "Bahia"], ["CE", "Ceará"], ["DF", "Distrito Federal"], ["ES", "Espírito Santo"], ["GO", "Goiás"], ["MA", "Maranhão"], ["MT", "Mato Grosso"], ["MS", "Mato Grosso do Sul"], ["MG", "Minas Gerais"], ["PA", "Pará"], ["PB", "Paraíba"], ["PR", "Paraná"], ["PE", "Pernambuco"], ["PI", "Piauí"], ["RJ", "Rio de Janeiro"], ["RN", "Rio Grande do Norte"], ["RS", "Rio Grande do Sul"], ["RO", "Rondônia"], ["RR", "Roraima"], ["SC", "Santa Catarina"], ["SP", "São Paulo"], ["SE", "Sergipe"], ["TO", "Tocantins"],
+].map(([value, label]) => ({ value, label: `${label} · ${value}` }));
 type Profile = {
   fullName: string;
   professionalName: string;
@@ -55,7 +58,7 @@ const blankProfile: Profile = {
   creci: "",
   whatsapp: "",
   city: "",
-  state: "RS",
+  state: "",
   instagram: "",
   slug: "",
   avatarUrl: "",
@@ -198,7 +201,7 @@ export function Onboarding({ user }: { user: User }) {
           creci: data.creci ?? "",
           whatsapp: data.whatsapp ?? "",
           city: data.city ?? "",
-          state: data.state ?? "RS",
+          state: data.state ?? "",
           instagram: data.instagram ?? "",
           slug: data.slug ?? "",
           avatarUrl: data.avatar_url ?? "",
@@ -285,6 +288,7 @@ export function Onboarding({ user }: { user: User }) {
       !profile.creci ||
       !profile.whatsapp ||
       !profile.city ||
+      !profile.state ||
       !profile.slug ||
       slugStatus !== "available"
     ) {
@@ -672,17 +676,18 @@ function ProfileStep({
               className="min-w-0 flex-1 bg-transparent px-3 font-body text-[15px] text-ink outline-none placeholder:text-stone sm:px-4"
             />
             <span className="font-body text-ash">-</span>
-            <input
-              aria-label="Letra final do CRECI"
+            <select
+              aria-label="Tipo de inscrição CRECI"
               value={creciParts.suffix}
-              placeholder="F"
-              maxLength={1}
-              autoCapitalize="characters"
-              onChange={(event) => update("creci", formatCreci(creciParts.number, event.target.value.replace(/[^a-z]/gi, "").toUpperCase()))}
-              className="w-12 bg-transparent px-2 font-mono text-[15px] font-semibold uppercase text-ink outline-none placeholder:font-body placeholder:font-normal placeholder:text-stone"
-            />
+              onChange={(event) => update("creci", formatCreci(creciParts.number, event.target.value))}
+              className="h-full w-[76px] bg-transparent px-2 font-mono text-[13px] font-semibold text-ink outline-none"
+            >
+              <option value="" disabled>Tipo</option>
+              <option value="F">F</option>
+              <option value="J">J</option>
+            </select>
           </div>
-          <p className="mt-2 font-body text-xs text-stone">Digite o número e a letra exatamente como aparecem no seu registro.</p>
+          <p className="mt-2 font-body text-xs text-stone">F para pessoa física; J para imobiliária/pessoa jurídica.</p>
         </div>
         <Input
           label="WhatsApp"
@@ -710,7 +715,8 @@ function ProfileStep({
           label="Estado"
           value={profile.state}
           onChange={(v) => update("state", v)}
-          options={["RS", "SC", "PR", "SP", "RJ", "MG", "BA", "PE"]}
+          options={brazilianStates}
+          placeholder="Selecione o estado"
         />
         <Input
           label="Instagram · opcional"
@@ -1152,11 +1158,13 @@ function Select({
   value,
   onChange,
   options,
+  placeholder,
 }: {
   label: string;
   value: string;
   onChange: (value: string) => void;
-  options: string[];
+  options: Array<string | { value: string; label: string }>;
+  placeholder?: string;
 }) {
   return (
     <label>
@@ -1166,8 +1174,11 @@ function Select({
         value={value}
         onChange={(e) => onChange(e.target.value)}
       >
+        {placeholder && <option value="" disabled>{placeholder}</option>}
         {options.map((option) => (
-          <option key={option}>{option}</option>
+          <option key={typeof option === "string" ? option : option.value} value={typeof option === "string" ? option : option.value}>
+            {typeof option === "string" ? option : option.label}
+          </option>
         ))}
       </select>
     </label>
