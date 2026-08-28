@@ -8,6 +8,8 @@ import {
   LoaderCircle,
   LogOut,
   MapPin,
+  Pencil,
+  Trash2,
   Upload,
   X,
 } from "lucide-react";
@@ -16,6 +18,7 @@ import { appPath } from "../../lib/paths";
 import { requireSupabase } from "../../lib/supabase";
 import { Logo } from "../Logo";
 import { LoadingScreen } from "../LoadingScreen";
+import { AvatarCropper } from "./AvatarCropper";
 
 type Photo = { id: string; url: string; name: string };
 type Profile = {
@@ -157,6 +160,7 @@ export function Onboarding({ user }: { user: User }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
+  const [avatarCandidate, setAvatarCandidate] = useState<File | null>(null);
   const [slugStatus, setSlugStatus] = useState<
     "idle" | "checking" | "available" | "taken"
   >("idle");
@@ -257,6 +261,7 @@ export function Onboarding({ user }: { user: User }) {
         .storage.from("avatars")
         .getPublicUrl(path);
       updateProfile("avatarUrl", data.publicUrl);
+      setAvatarCandidate(null);
     } catch {
       setNotice("Não foi possível enviar a foto. Tente novamente.");
     } finally {
@@ -426,7 +431,8 @@ export function Onboarding({ user }: { user: User }) {
           update={updateProfile}
           saving={saving}
           slugStatus={slugStatus}
-          onAvatar={uploadAvatar}
+          onAvatar={setAvatarCandidate}
+          onRemoveAvatar={() => updateProfile("avatarUrl", "")}
           onContinue={saveProfile}
         />
       ) : step === 2 ? (
@@ -491,6 +497,13 @@ export function Onboarding({ user }: { user: User }) {
           </p>
         )}
       </div>
+      {avatarCandidate && (
+        <AvatarCropper
+          file={avatarCandidate}
+          onCancel={() => setAvatarCandidate(null)}
+          onConfirm={uploadAvatar}
+        />
+      )}
     </main>
   );
 }
@@ -540,6 +553,7 @@ function ProfileStep({
   saving,
   slugStatus,
   onAvatar,
+  onRemoveAvatar,
   onContinue,
 }: {
   profile: Profile;
@@ -547,6 +561,7 @@ function ProfileStep({
   saving: boolean;
   slugStatus: string;
   onAvatar: (file: File) => void;
+  onRemoveAvatar: () => void;
   onContinue: () => void;
 }) {
   return (
@@ -562,32 +577,49 @@ function ProfileStep({
       </p>
       <div className="mt-10">
         <label className={label}>Foto de perfil</label>
-        <label className="group flex w-fit cursor-pointer items-center gap-4">
-          <span className="grid h-20 w-20 place-items-center overflow-hidden rounded-full border border-line bg-cream">
+        <div className="flex items-center gap-4">
+          <span className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full border border-line bg-cream">
             {profile.avatarUrl ? (
               <img
                 src={profile.avatarUrl}
+                alt="Sua foto de perfil"
                 className="h-full w-full object-cover"
               />
             ) : (
               <ImagePlus size={22} className="text-ash" />
             )}
           </span>
-          <span>
-            <b className="block font-body text-sm text-ink">
-              {profile.avatarUrl ? "Trocar foto" : "Adicionar foto"}
-            </b>
-            <small className="mt-1 block font-body text-xs text-stone">
-              JPG, PNG ou WebP
+          <div>
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-line bg-white px-4 font-body text-sm font-semibold text-ink transition hover:border-ink active:scale-[0.98]">
+                {profile.avatarUrl ? <Pencil size={14} /> : <ImagePlus size={15} />}
+                {profile.avatarUrl ? "Trocar" : "Adicionar foto"}
+                <input
+                  className="hidden"
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (file) onAvatar(file);
+                    event.target.value = "";
+                  }}
+                />
+              </label>
+              {profile.avatarUrl && (
+                <button
+                  type="button"
+                  onClick={onRemoveAvatar}
+                  className="inline-flex h-10 items-center gap-2 rounded-full px-3 font-body text-sm font-medium text-ash transition hover:bg-red-50 hover:text-red-700 active:scale-[0.98]"
+                >
+                  <Trash2 size={14} /> Remover
+                </button>
+              )}
+            </div>
+            <small className="mt-2 block font-body text-xs text-stone">
+              JPG, PNG ou WebP · você poderá ajustar o recorte
             </small>
-          </span>
-          <input
-            className="hidden"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            onChange={(e) => e.target.files?.[0] && onAvatar(e.target.files[0])}
-          />
-        </label>
+          </div>
+        </div>
       </div>
       <div className="mt-10 grid gap-5 sm:grid-cols-2">
         <Input
