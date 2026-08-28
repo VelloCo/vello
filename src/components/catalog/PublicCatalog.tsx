@@ -520,7 +520,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
         <section className="px-5 pb-3 pt-7 sm:px-8 sm:pb-6 sm:pt-10">
           <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} style={customProfileColor ? { backgroundColor: customProfileColor } : undefined} className={`mx-auto flex max-w-[1400px] items-center gap-3 rounded-[28px] border p-3 shadow-[0_14px_35px_rgba(11,11,10,.055)] sm:gap-5 sm:rounded-full sm:p-3.5 ${profileBand} ${customProfileColor ? profileText : ""}`}>
             <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-ink sm:h-[72px] sm:w-[72px]">
-              {catalog.profile.avatar_url ? <img src={catalog.profile.avatar_url} alt={`Foto de ${catalog.profile.professional_name}`} className="h-full w-full object-cover" /> : <span className="grid h-full w-full place-items-center font-display text-xl font-semibold text-paper sm:text-2xl">{catalog.profile.professional_name.slice(0, 1)}</span>}
+              {catalog.profile.avatar_url ? <img src={catalog.profile.avatar_url} alt={`Foto de ${catalog.profile.professional_name}`} className="h-full w-full object-cover" /> : <img src={appPath("/vello-mascot.png")} alt="Mascote da Vello" className="h-full w-full object-cover object-top" />}
             </div>
             <div className="min-w-0 flex-1 py-0.5">
               <p className="truncate font-display text-[19px] font-semibold leading-none tracking-[-.035em] sm:text-2xl">{catalog.profile.professional_name}</p>

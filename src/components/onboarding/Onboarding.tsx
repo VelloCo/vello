@@ -7,7 +7,6 @@ import {
   ImagePlus,
   LoaderCircle,
   LogOut,
-  MapPin,
   Pencil,
   Trash2,
   Upload,
@@ -612,7 +611,7 @@ function ProfileStep({
                 className="h-full w-full object-cover"
               />
             ) : (
-              <ImagePlus size={22} className="text-ash" />
+              <img src={appPath("/vello-mascot.png")} alt="Mascote temporário da Vello" className="h-full w-full object-cover object-top" />
             )}
           </span>
           <div>
@@ -642,7 +641,7 @@ function ProfileStep({
               )}
             </div>
             <small className="mt-2 block font-body text-xs text-stone">
-              JPG, PNG ou WebP · você poderá ajustar o recorte
+              JPG, PNG ou WebP · você poderá ajustar o recorte. Sem foto, usamos o mascote Vello por enquanto.
             </small>
           </div>
         </div>
@@ -1042,7 +1041,7 @@ function SuccessStep({
                   className="h-full w-full object-cover"
                 />
               ) : (
-                <MapPin size={16} />
+                <img src={appPath("/vello-mascot.png")} alt="Mascote temporário da Vello" className="h-full w-full object-cover object-top" />
               )}
             </span>
             <div>

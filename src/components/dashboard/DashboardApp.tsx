@@ -26,6 +26,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { appPath } from "../../lib/paths";
 import { LoadingScreen } from "../LoadingScreen";
+import { DashboardTour } from "./DashboardTour";
 import { signOut, updatePassword } from "../../lib/auth";
 import {
   brl,
@@ -216,7 +217,6 @@ function PropertyCard({
 
 function Sidebar({ profile, route }: { profile: Profile; route: string }) {
   const [account, setAccount] = useState(false);
-  const initials = (profile.professional_name || "V").slice(0, 1);
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] border-r border-line bg-white p-5 lg:flex lg:flex-col">
       <a href={appPath("/dashboard")}>
@@ -259,7 +259,7 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
                 className="h-full w-full object-cover"
               />
             ) : (
-              initials
+              <img src={appPath("/vello-mascot.png")} alt="Mascote da Vello" className="h-full w-full object-cover object-top" />
             )}
           </span>
           <span className="min-w-0">
@@ -1399,7 +1399,7 @@ function ProfilePage({
       <section className="mt-9 max-w-2xl rounded-[24px] border border-line bg-white p-5 sm:p-7">
         <div className="mb-7 flex items-center gap-4 border-b border-line pb-7">
           <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full bg-cream font-display text-xl">
-            {form.avatar_url ? <img src={form.avatar_url} alt="Foto de perfil" className="h-full w-full object-cover" /> : (form.professional_name || "V").slice(0, 1)}
+            {form.avatar_url ? <img src={form.avatar_url} alt="Foto de perfil" className="h-full w-full object-cover" /> : <img src={appPath("/vello-mascot.png")} alt="Mascote da Vello" className="h-full w-full object-cover object-top" />}
           </span>
           <span>
             <b className="block font-body text-sm">Foto de perfil</b>
@@ -1542,7 +1542,7 @@ function CatalogCustomizationPage({ user, profile, properties, toast }: { user: 
         <section className="rounded-[24px] border border-line bg-white p-5 sm:p-7"><p className="font-display text-xl font-semibold">3. Faixa do seu perfil</p><p className="mt-1 font-body text-sm text-ash">O primeiro contato visual entre você e quem visita seu catálogo.</p><label className="mt-5 flex items-center justify-between rounded-2xl border-2 border-ink bg-cream p-4 transition hover:bg-[#eee8dc]"><span><b className="block font-display text-lg">Sua cor</b><span className="mt-1 block font-body text-xs text-ash">Dê identidade à sua faixa de apresentação.</span><small className="mt-2 block font-mono text-[11px] uppercase tracking-[.1em] text-stone">{bandColor}</small></span><input aria-label="Escolher cor da faixa do perfil" type="color" value={bandColor} onChange={(event) => update('profile_color', event.target.value)} className="h-14 w-14 cursor-pointer rounded-xl border border-black/15 bg-transparent p-1" /></label><p className="mt-6 font-mono text-[10px] uppercase tracking-[.14em] text-stone">Ou comece por um estilo</p><div className="mt-3 grid grid-cols-3 gap-3">{([['light','Leve','bg-white text-ink'],['contrast','Areia','bg-[#e9e4da] text-ink'],['dark','Escura','bg-ink text-paper']] as const).map(([value,label,appearance]) => <button key={value} type="button" onClick={() => update('profile_band',value)} className={`rounded-2xl border p-3 text-left transition ${theme.profile_band === value ? 'border-ink ring-1 ring-ink' : 'border-line hover:border-stone'}`}><span className={`flex h-12 items-center rounded-xl px-3 font-body text-[10px] font-semibold ${appearance}`}>{profile.professional_name || 'Seu perfil'}</span><b className="mt-3 block font-body text-sm">{label}</b></button>)}</div></section>
         <div className="flex gap-3"><Button onClick={save} disabled={saving}>{saving ? 'Salvando...' : 'Salvar personalização'}</Button><button type="button" onClick={() => setTheme(profile.catalog_theme || { palette: 'warm', property_style: 'editorial', profile_band: 'light' })} className="h-11 rounded-full px-4 font-body text-sm text-ash hover:text-ink">Desfazer alterações</button></div>
       </div>
-      <aside className="xl:sticky xl:top-10"><div className="rounded-[28px] border border-line bg-white p-4 shadow-[0_18px_50px_rgba(11,11,10,.06)] sm:p-5"><div className="flex items-center justify-between"><p className="font-display text-lg font-semibold">Pré-visualização</p><span className="rounded-full bg-cream px-3 py-1 font-mono text-[9px] uppercase tracking-[.12em] text-stone">Ao vivo</span></div><div style={{ backgroundColor: pageColor }} className={`mt-4 min-h-[540px] overflow-hidden rounded-[22px] p-3 transition-colors duration-300 sm:p-5 ${surface}`}><div style={{ backgroundColor: bandColor }} className={`flex items-center gap-3 rounded-full border p-3 transition-colors duration-300 ${band}`}><span className={`grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full font-display text-sm ${theme.profile_band === 'dark' ? 'bg-paper/15' : 'bg-cream'}`}>{profile.avatar_url ? <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" /> : (profile.professional_name || 'V').slice(0,1)}</span><span className="min-w-0"><b className="block truncate font-body text-sm">{profile.professional_name || 'Seu nome profissional'}</b><small className="block truncate font-body text-[10px] opacity-60">CRECI {displayCreci(profile.creci) || '000000'}</small></span></div><div className={`mt-8 grid gap-4 ${cardMode === 'compact' ? 'grid-cols-2' : ''}`}><div className={cardMode === 'classic' ? 'overflow-hidden rounded-[15px] bg-white text-ink' : ''}><div className={`overflow-hidden bg-cream ${cardMode === 'classic' ? 'aspect-[4/3]' : cardMode === 'compact' ? 'aspect-[4/3] rounded-[14px]' : 'aspect-[5/4] rounded-[18px]'}`}>{property && cover(property) ? <img src={cover(property)} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[linear-gradient(135deg,#8f887e,#dbd2c5_45%,#6f6961)]" />}</div><div className={`${cardMode === 'editorial' ? '-mt-5 ml-4 rounded-[17px] bg-white p-4 text-ink shadow-lg' : cardMode === 'classic' ? 'p-4' : 'pt-2 text-paper'}`}><p className="font-display text-xl font-semibold leading-none">{property?.title || 'Seu próximo imóvel'}</p><p className="mt-2 font-body text-xs opacity-65">{property ? brl(property.price, property.transaction_type === 'rent') : 'Preço sob consulta'}</p><p className="mt-3 font-body text-[11px] opacity-60">{property ? `${property.neighborhood} · ${property.city}` : 'Bairro · Cidade'}</p></div></div>{cardMode === 'compact' && <div><div className="aspect-[4/3] rounded-[14px] bg-[linear-gradient(135deg,#746e67,#cfc6ba)]" /><div className="pt-2"><p className="font-display text-base font-semibold">Outro imóvel</p><p className="mt-1 font-body text-[10px] opacity-60">Ver detalhes</p></div></div>}</div></div></div></aside>
+      <aside className="xl:sticky xl:top-10"><div className="rounded-[28px] border border-line bg-white p-4 shadow-[0_18px_50px_rgba(11,11,10,.06)] sm:p-5"><div className="flex items-center justify-between"><p className="font-display text-lg font-semibold">Pré-visualização</p><span className="rounded-full bg-cream px-3 py-1 font-mono text-[9px] uppercase tracking-[.12em] text-stone">Ao vivo</span></div><div style={{ backgroundColor: pageColor }} className={`mt-4 min-h-[540px] overflow-hidden rounded-[22px] p-3 transition-colors duration-300 sm:p-5 ${surface}`}><div style={{ backgroundColor: bandColor }} className={`flex items-center gap-3 rounded-full border p-3 transition-colors duration-300 ${band}`}><span className={`grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full font-display text-sm ${theme.profile_band === 'dark' ? 'bg-paper/15' : 'bg-cream'}`}>{profile.avatar_url ? <img src={profile.avatar_url} alt="" className="h-full w-full object-cover" /> : <img src={appPath("/vello-mascot.png")} alt="Mascote da Vello" className="h-full w-full object-cover object-top" />}</span><span className="min-w-0"><b className="block truncate font-body text-sm">{profile.professional_name || 'Seu nome profissional'}</b><small className="block truncate font-body text-[10px] opacity-60">CRECI {displayCreci(profile.creci) || '000000'}</small></span></div><div className={`mt-8 grid gap-4 ${cardMode === 'compact' ? 'grid-cols-2' : ''}`}><div className={cardMode === 'classic' ? 'overflow-hidden rounded-[15px] bg-white text-ink' : ''}><div className={`overflow-hidden bg-cream ${cardMode === 'classic' ? 'aspect-[4/3]' : cardMode === 'compact' ? 'aspect-[4/3] rounded-[14px]' : 'aspect-[5/4] rounded-[18px]'}`}>{property && cover(property) ? <img src={cover(property)} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full bg-[linear-gradient(135deg,#8f887e,#dbd2c5_45%,#6f6961)]" />}</div><div className={`${cardMode === 'editorial' ? '-mt-5 ml-4 rounded-[17px] bg-white p-4 text-ink shadow-lg' : cardMode === 'classic' ? 'p-4' : 'pt-2 text-paper'}`}><p className="font-display text-xl font-semibold leading-none">{property?.title || 'Seu próximo imóvel'}</p><p className="mt-2 font-body text-xs opacity-65">{property ? brl(property.price, property.transaction_type === 'rent') : 'Preço sob consulta'}</p><p className="mt-3 font-body text-[11px] opacity-60">{property ? `${property.neighborhood} · ${property.city}` : 'Bairro · Cidade'}</p></div></div>{cardMode === 'compact' && <div><div className="aspect-[4/3] rounded-[14px] bg-[linear-gradient(135deg,#746e67,#cfc6ba)]" /><div className="pt-2"><p className="font-display text-base font-semibold">Outro imóvel</p><p className="mt-1 font-body text-[10px] opacity-60">Ver detalhes</p></div></div>}</div></div></div></aside>
     </div>
   </>;
 }
@@ -1686,6 +1686,7 @@ export function DashboardApp({ user, route }: Props) {
       </main>
       <MobileNav route={route} />
       <Toast text={toast} />
+      {route === "/dashboard" && <DashboardTour userId={user.id} />}
     </div>
   );
 }
