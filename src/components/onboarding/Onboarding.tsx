@@ -116,6 +116,10 @@ function money(value: string) {
 }
 function creci(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 8);
+  return digits ? `CRECI ${digits}` : "";
+}
+function completedCreci(value: string) {
+  const digits = value.replace(/\D/g, "").slice(0, 8);
   return digits ? `CRECI ${digits}${digits.length >= 5 ? "-F" : ""}` : "";
 }
 function whatsapp(value: string) {
@@ -247,6 +251,11 @@ export function Onboarding({ user }: { user: User }) {
     value: string | boolean | string[],
   ) => setProperty((old) => ({ ...old, [key]: value }));
 
+  function transitionTo(nextStep: 1 | 2 | 3) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.setTimeout(() => setStep(nextStep), 180);
+  }
+
   async function uploadAvatar(file: File) {
     if (!file.type.startsWith("image/")) return;
     setSaving(true);
@@ -312,7 +321,7 @@ export function Onboarding({ user }: { user: User }) {
       );
       return;
     }
-    setStep(2);
+    transitionTo(2);
   }
 
   async function uploadPhotos(files: FileList | null) {
@@ -411,7 +420,23 @@ export function Onboarding({ user }: { user: User }) {
     }
     localStorage.removeItem(`vello-onboarding-property-${user.id}`);
     setNotice("");
-    setStep(3);
+    transitionTo(3);
+  }
+
+  async function skipProperty() {
+    setSaving(true);
+    setNotice("");
+    const { error } = await requireSupabase()
+      .from("profiles")
+      .update({ onboarding_step: 3 })
+      .eq("user_id", user.id);
+    setSaving(false);
+    if (error) {
+      setNotice("Não foi possível pular esta etapa agora.");
+      return;
+    }
+    localStorage.removeItem(`vello-onboarding-property-${user.id}`);
+    transitionTo(3);
   }
 
   async function finish() {
@@ -445,6 +470,7 @@ export function Onboarding({ user }: { user: User }) {
           onUpload={uploadPhotos}
           onBack={() => setStep(1)}
           onPublish={publish}
+          onSkip={skipProperty}
         />
       ) : (
         <SuccessStep
@@ -637,6 +663,7 @@ function ProfileStep({
           placeholder="CRECI 12345-F"
           inputMode="numeric"
           onChange={(v) => update("creci", creci(v))}
+          onBlur={() => update("creci", completedCreci(profile.creci))}
         />
         <Input
           label="WhatsApp"
@@ -720,6 +747,7 @@ function PropertyStep({
   onUpload,
   onBack,
   onPublish,
+  onSkip,
 }: {
   property: Property;
   update: (key: keyof Property, value: string | boolean | string[]) => void;
@@ -729,6 +757,7 @@ function PropertyStep({
   onUpload: (files: FileList | null) => void;
   onBack: () => void;
   onPublish: () => void;
+  onSkip: () => void;
 }) {
   const toggle = (name: string) =>
     update(
@@ -739,12 +768,22 @@ function PropertyStep({
     );
   return (
     <section className="mx-auto max-w-[900px] py-12 sm:py-16">
-      <button
-        onClick={onBack}
-        className="mb-8 inline-flex items-center gap-1 font-body text-sm text-ash hover:text-ink"
-      >
-        <ChevronLeft size={16} /> Voltar
-      </button>
+      <div className="mb-8 flex items-center justify-between gap-4">
+        <button
+          onClick={onBack}
+          className="inline-flex items-center gap-1 font-body text-sm text-ash hover:text-ink"
+        >
+          <ChevronLeft size={16} /> Voltar
+        </button>
+        <button
+          type="button"
+          onClick={onSkip}
+          disabled={saving}
+          className="font-body text-sm font-medium text-ash underline underline-offset-4 transition hover:text-ink disabled:opacity-50"
+        >
+          Pular por enquanto
+        </button>
+      </div>
       <h1 className="font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
         Agora, adicione seu primeiro imóvel.
       </h1>
@@ -1075,6 +1114,7 @@ function Input({
   placeholder?: string;
   type?: string;
   inputMode?: React.HTMLAttributes<HTMLInputElement>["inputMode"];
+  onBlur?: () => void;
 }) {
   return (
     <label>
