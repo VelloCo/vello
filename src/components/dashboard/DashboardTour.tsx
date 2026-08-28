@@ -75,8 +75,6 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
   });
   const tip = tips[step];
   const Icon = tip.icon;
-  const spotlight = window.innerWidth < 1024 ? tip.spotlight.mobile : tip.spotlight.desktop;
-  const spotlightBottom = `calc(${spotlight.top} + ${spotlight.height})`;
 
   const close = () => {
     localStorage.setItem(storageKey, "done");
@@ -102,7 +100,7 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[90] flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-ink/45 p-4 backdrop-blur-[3px] sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -110,18 +108,8 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
           aria-modal="true"
           aria-labelledby="dashboard-tour-title"
         >
-          <>
-            <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
-              <div className="absolute left-0 right-0 top-0 bg-ink/20 backdrop-blur-[2px]" style={{ height: spotlight.top }} />
-              <div className="absolute bottom-0 left-0 right-0 bg-ink/20 backdrop-blur-[2px]" style={{ top: spotlightBottom }} />
-              <div className="absolute left-0 bg-ink/20 backdrop-blur-[2px]" style={{ top: spotlight.top, bottom: `calc(100% - ${spotlightBottom})`, width: spotlight.left }} />
-              <div className="absolute right-0 bg-ink/20 backdrop-blur-[2px]" style={{ top: spotlight.top, bottom: `calc(100% - ${spotlightBottom})`, width: spotlight.right }} />
-              <div className="absolute rounded-[22px] border-2 border-white/90 bg-white/[.025] shadow-[0_0_0_4px_rgba(11,11,10,.12),0_12px_30px_rgba(255,255,255,.1)]" style={{ top: spotlight.top, left: spotlight.left, right: spotlight.right, height: spotlight.height }}>
-                <span className="absolute -top-3 left-4 rounded-full bg-white px-2.5 py-1 font-mono text-[9px] uppercase tracking-[.12em] text-ink shadow-sm">{tip.spotlightLabel}</span>
-              </div>
-            </div>
             <motion.div
-            className="relative z-10 w-full max-w-md overflow-hidden rounded-[30px] border border-white/15 bg-[#141412] text-paper shadow-[0_28px_90px_rgba(0,0,0,.35)]"
+            className="w-full max-w-md overflow-hidden rounded-[30px] border border-white/15 bg-[#141412] text-paper shadow-[0_28px_90px_rgba(0,0,0,.35)]"
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 18, scale: 0.98 }}
@@ -176,7 +164,6 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
               </div>
             </div>
             </motion.div>
-          </>
         </motion.div>
       )}
     </AnimatePresence>
