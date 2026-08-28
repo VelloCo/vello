@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { Problem } from "./components/Problem";
-import { HowItWorks } from "./components/HowItWorks";
 import { Catalog } from "./components/Catalog";
-import { Benefits } from "./components/Benefits";
 import { Pricing } from "./components/Pricing";
 import { FinalCTA } from "./components/FinalCTA";
 import { Footer } from "./components/Footer";
@@ -34,8 +32,6 @@ function Landing() {
         <Hero />
         <Catalog />
         <Problem />
-        <Benefits />
-        <HowItWorks />
         <Pricing />
         <FinalCTA />
       </main>

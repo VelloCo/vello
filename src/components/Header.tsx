@@ -6,7 +6,7 @@ import { appPath } from '../lib/paths';
 
 const NAV = [
   { label: 'Produto', href: '#produto' },
-  { label: 'Como funciona', href: '#como-funciona' },
+  { label: 'A diferença', href: '#antes-depois' },
   { label: 'Preços', href: '#precos' },
 ];
 

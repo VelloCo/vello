@@ -1,24 +1,28 @@
-import { Heart, Link2, MessageCircle, Search, SlidersHorizontal } from 'lucide-react';
+import { ArrowUpRight, Heart, Link2, MessageCircle, Search, SlidersHorizontal } from 'lucide-react';
 import { Container, Eyebrow, Reveal } from './Primitives';
 import { properties } from '../data/properties';
 
 export function Catalog() {
   return (
-    <section id="produto" className="overflow-hidden bg-cream/60 py-24 md:py-32">
+    <section id="produto" className="overflow-hidden bg-paper py-24 md:py-32">
       <Container>
-        <Reveal>
-          <Eyebrow>O produto</Eyebrow>
-          <h2 className="balance mt-4 max-w-[650px] font-display text-[32px] font-semibold leading-[1.08] tracking-[-0.025em] text-ink md:text-[46px]">
-            Um catálogo que parece feito para você.
-          </h2>
-          <p className="balance mt-4 max-w-[500px] font-body text-[16px] leading-relaxed text-ash md:text-[17px]">
-            Seu nome, seus imóveis, seu contato e uma experiência profissional para cada cliente.
-          </p>
-        </Reveal>
-
-        <div className="mt-14 grid gap-4 lg:grid-cols-[1.6fr_0.8fr]">
+        <div className="grid gap-12 lg:grid-cols-[0.76fr_1.24fr] lg:items-center lg:gap-16">
+          <Reveal>
+            <Eyebrow>O produto</Eyebrow>
+            <h2 className="balance mt-4 max-w-[510px] font-display text-[36px] font-semibold leading-[1.05] tracking-[-0.04em] text-ink md:text-[52px]">
+              Do primeiro imóvel ao link que o cliente abre.
+            </h2>
+            <p className="mt-5 max-w-[440px] font-body text-[16px] leading-relaxed text-ash md:text-[17px]">
+              A Vello reúne o essencial para o corretor cuidar da apresentação — sem planilha, conversa perdida ou catálogo genérico.
+            </p>
+            <div className="mt-9 border-t border-line">
+              <ProductStep number="01" title="Cadastre com clareza" text="Fotos, detalhes e preço em um só lugar." />
+              <ProductStep number="02" title="Deixe com a sua cara" text="Seu perfil e seu catálogo, sem perder o profissionalismo." />
+              <ProductStep number="03" title="Compartilhe em segundos" text="Um link bonito para catálogo, imóvel ou seleção." />
+            </div>
+          </Reveal>
           <Reveal className="min-w-0">
-            <div className="overflow-hidden rounded-[20px] border border-line/70 bg-white shadow-[0_35px_90px_-45px_rgba(11,11,10,0.38)]">
+            <div className="overflow-hidden rounded-[24px] border border-line/70 bg-white shadow-[0_35px_90px_-45px_rgba(11,11,10,0.28)]">
               <div className="flex items-center gap-2 border-b border-line/70 bg-cream/70 px-4 py-3">
                 <div className="flex gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-line" /><span className="h-2.5 w-2.5 rounded-full bg-line" /><span className="h-2.5 w-2.5 rounded-full bg-line" /></div>
                 <div className="ml-3 flex-1 rounded-md bg-white px-3 py-1 font-mono text-[10px] text-stone">vello.com.br/carlos</div>
@@ -38,13 +42,17 @@ export function Catalog() {
               </div>
             </div>
           </Reveal>
+        </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-            <Reveal delay={0.1} className="h-full"><div className="flex h-full min-h-[190px] flex-col justify-between rounded-[20px] bg-ink p-6 text-paper"><div><span className="font-mono text-[10px] uppercase tracking-[0.12em] text-paper/50">Seleções</span><p className="mt-4 max-w-[210px] font-display text-[22px] font-semibold leading-tight">Mostre só o que combina com cada cliente.</p></div><div className="mt-6 space-y-2 font-mono text-[10px] text-paper/70"><div className="flex items-center justify-between rounded-full bg-white/10 px-3 py-2"><span>Mariana · 3 imóveis</span><span>→</span></div><div className="flex items-center justify-between rounded-full bg-white/10 px-3 py-2"><span>Rafael · 5 imóveis</span><span>→</span></div></div></div></Reveal>
-            <Reveal delay={0.18} className="h-full"><div className="flex h-full min-h-[190px] flex-col justify-between rounded-[20px] border border-line/70 bg-paper p-6"><div><span className="font-mono text-[10px] uppercase tracking-[0.12em] text-stone">Compartilhe</span><p className="mt-4 max-w-[230px] font-display text-[22px] font-semibold leading-tight text-ink">Um link. Uma experiência profissional.</p></div><div className="mt-6 flex items-center gap-2 rounded-full border border-line bg-white px-3 py-2 font-mono text-[10px] text-ash"><Link2 size={13} className="text-ink" /> vello.com.br/carlos <span className="ml-auto text-ink">↗</span></div></div></Reveal>
-          </div>
+        <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          <Reveal delay={0.08}><div className="flex min-h-[152px] flex-col justify-between rounded-[20px] bg-ink p-6 text-paper"><div><span className="font-mono text-[10px] uppercase tracking-[0.12em] text-paper/50">Seleções</span><p className="mt-3 max-w-[330px] font-display text-[22px] font-semibold leading-tight">Mostre só o que combina com cada cliente.</p></div><div className="flex items-center justify-between font-mono text-[10px] text-paper/60"><span>Mariana · 3 imóveis</span><ArrowUpRight size={15} /></div></div></Reveal>
+          <Reveal delay={0.16}><div className="flex min-h-[152px] flex-col justify-between rounded-[20px] border border-line bg-cream/45 p-6"><div><span className="font-mono text-[10px] uppercase tracking-[0.12em] text-stone">Compartilhe</span><p className="mt-3 max-w-[330px] font-display text-[22px] font-semibold leading-tight text-ink">Um link pronto para deixar a conversa avançar.</p></div><div className="flex items-center gap-2 font-mono text-[10px] text-ash"><Link2 size={13} className="text-ink" /> vello.com.br/carlos</div></div></Reveal>
         </div>
       </Container>
     </section>
   );
+}
+
+function ProductStep({ number, title, text }: { number: string; title: string; text: string }) {
+  return <div className="grid grid-cols-[38px_1fr] gap-3 border-b border-line py-4"><span className="pt-0.5 font-mono text-[10px] text-stone">{number}</span><div><p className="font-body text-[14px] font-semibold text-ink">{title}</p><p className="mt-1 font-body text-[13px] text-ash">{text}</p></div></div>;
 }

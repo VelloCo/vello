@@ -3,7 +3,7 @@ import { Container } from './Primitives';
 
 const LINKS = [
   { label: 'Produto', href: '#produto' },
-  { label: 'Como funciona', href: '#como-funciona' },
+  { label: 'A diferença', href: '#antes-depois' },
   { label: 'Preços', href: '#precos' },
   { label: 'Entrar', href: '/login' },
 ];
