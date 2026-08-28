@@ -24,9 +24,9 @@ const tips = [
   },
 ] as const;
 
-export function DashboardTour({ userId }: { userId: string }) {
+export function DashboardTour({ userId, preview = false }: { userId: string; preview?: boolean }) {
   const storageKey = `vello-dashboard-tour-${userId}`;
-  const [open, setOpen] = useState(() => localStorage.getItem(storageKey) !== "done");
+  const [open, setOpen] = useState(() => preview || localStorage.getItem(storageKey) !== "done");
   const [step, setStep] = useState(0);
   const tip = tips[step];
   const Icon = tip.icon;
