@@ -1,25 +1,32 @@
 import { motion } from "framer-motion";
+import { appPath } from "../lib/paths";
 import { Logo } from "./Logo";
 
 export function LoadingScreen({ label = "Preparando seu espaço" }: { label?: string }) {
   return (
-    <main className="relative flex min-h-screen overflow-hidden bg-paper px-6 py-8">
-      <div className="pointer-events-none absolute -right-32 top-0 h-[45vh] w-[45vh] rounded-full bg-cream/70 blur-3xl" />
-      <div className="relative mx-auto flex w-full max-w-[680px] flex-col">
-        <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
-          <Logo className="origin-top-left scale-[.78]" />
-        </motion.div>
-        <motion.section initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, delay: 0.08 }} className="my-auto max-w-md pb-16" aria-live="polite">
-          <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">Vello está preparando tudo</p>
-          <h1 className="mt-5 font-display text-4xl font-semibold leading-[.98] tracking-[-.045em] text-ink sm:text-5xl">Um momento.<br />Seu espaço está quase pronto.</h1>
-          <p className="mt-5 font-body text-[15px] leading-relaxed text-ash">{label}</p>
-          <div className="mt-10 h-2 overflow-hidden rounded-full bg-mist" aria-label="Carregando">
-            <motion.span className="block h-full w-[42%] rounded-full bg-ink" animate={{ x: ["-105%", "245%"] }} transition={{ duration: 1.35, ease: "easeInOut", repeat: Infinity }} />
-          </div>
-          <p className="mt-4 font-mono text-[10px] uppercase tracking-[.14em] text-stone">Organizando sua experiência</p>
-        </motion.section>
-        <div className="flex items-center gap-3 pb-2 font-mono text-[10px] uppercase tracking-[.14em] text-stone"><span className="h-px w-9 bg-line" /> Vello</div>
-      </div>
+    <main className="grid min-h-screen place-items-center bg-paper px-6">
+      <motion.section
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35 }}
+        className="flex w-full max-w-sm flex-col items-center text-center"
+        aria-live="polite"
+      >
+        <Logo className="origin-center scale-[.8]" />
+        <motion.img
+          src={appPath("/vello-loading-mascot.png")}
+          alt="Mascote da Vello preparando seu espaço"
+          className="mt-9 h-48 w-48 object-contain sm:h-56 sm:w-56"
+          animate={{ y: [0, -5, 0] }}
+          transition={{ duration: 2.2, ease: "easeInOut", repeat: Infinity }}
+        />
+        <p className="mt-7 font-body text-[15px] text-ash">{label}</p>
+        <div className="mt-4 flex items-center gap-1.5" aria-label="Carregando">
+          <i className="h-1.5 w-1.5 animate-[pulse_1s_ease-in-out_infinite] rounded-full bg-ink" />
+          <i className="h-1.5 w-1.5 animate-[pulse_1s_ease-in-out_.15s_infinite] rounded-full bg-ink/55" />
+          <i className="h-1.5 w-1.5 animate-[pulse_1s_ease-in-out_.3s_infinite] rounded-full bg-ink/25" />
+        </div>
+      </motion.section>
     </main>
   );
 }
