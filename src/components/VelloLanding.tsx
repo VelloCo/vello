@@ -3,6 +3,7 @@ import { ArrowRight, Check, Copy, Menu, X } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { appPath } from '../lib/paths';
 import { Logo } from './Logo';
+import { PhoneMockup } from './PhoneMockup';
 import { Container } from './Primitives';
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -96,8 +97,13 @@ function Hero() {
             </button>
           </div>
         </motion.div>
-        <motion.div initial={{ opacity: 0, y: 42, scale: 0.975 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.14, duration: 0.86, ease }} className="relative mx-auto mt-10 h-[390px] max-w-[1180px] sm:mt-12 sm:h-[600px] lg:h-[660px]">
-          <img src={appPath('/landing/vello-hero-phones-light.png')} alt="Telas claras do catálogo imobiliário Vello em dois celulares" className="absolute left-1/2 top-0 w-[700px] max-w-none -translate-x-1/2 sm:w-[1080px] lg:w-[1180px]" />
+        <motion.div initial={{ opacity: 0, y: 42, scale: 0.975 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.14, duration: 0.86, ease }} className="relative mx-auto mt-10 h-[590px] max-w-[980px] sm:mt-12 sm:h-[620px]">
+          <div className="absolute left-1/2 top-[55px] hidden -translate-x-[155%] scale-[0.9] opacity-65 sm:block lg:-translate-x-[175%]">
+            <PhoneMockup />
+          </div>
+          <div className="absolute left-1/2 top-0 -translate-x-1/2 sm:left-[57%] sm:-translate-x-1/2">
+            <PhoneMockup />
+          </div>
         </motion.div>
       </Container>
     </section>
