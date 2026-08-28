@@ -1148,9 +1148,9 @@ function SelectionEditor({
         </Button>
       </header>
       <div className="mt-9 grid gap-7 xl:grid-cols-[340px_1fr]">
-        <aside className="rounded-[24px] border border-line bg-white p-5">
-          <p className="font-display text-xl font-semibold">Cliente</p>
-          <div className="mt-5 space-y-4">
+        <aside className="rounded-[24px] border border-line bg-white p-5 sm:p-6">
+          <p className="mb-6 font-display text-xl font-semibold">Cliente</p>
+          <div className="space-y-5">
             <Field label="Nome do cliente" value={name} onChange={setName} />
             <Field
               label="WhatsApp · opcional"
@@ -1158,7 +1158,7 @@ function SelectionEditor({
               onChange={setWhats}
             />
             <label>
-              <span className="mb-3 block font-display text-xs font-extrabold uppercase">
+              <span className="mb-3 block font-display text-xs font-extrabold uppercase tracking-tight">
                 Mensagem
               </span>
               <textarea
@@ -1168,7 +1168,7 @@ function SelectionEditor({
               />
             </label>
           </div>
-          <p className="mt-7 font-mono text-xs text-stone">
+          <p className="mt-8 font-mono text-xs text-stone">
             {selected.length} imóveis selecionados
           </p>
           {selected.length > 0 && (
@@ -1185,7 +1185,7 @@ function SelectionEditor({
           )}
         </aside>
         <section>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <p className="font-display text-2xl font-semibold">
               Escolher imóveis
             </p>
@@ -1193,7 +1193,7 @@ function SelectionEditor({
               Toque para selecionar
             </span>
           </div>
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
             {properties
               .filter((p) => p.publication_status === "published")
               .map((p) => (
