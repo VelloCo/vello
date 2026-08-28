@@ -102,7 +102,7 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[90] flex items-end justify-end p-3 sm:p-6"
+          className="fixed inset-0 z-[90] flex items-center justify-center p-4 sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -121,23 +121,23 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
               </div>
             </div>
             <motion.div
-            className="relative z-10 w-full max-w-[312px] overflow-hidden rounded-[22px] border border-white/15 bg-[#141412] text-paper shadow-[0_20px_60px_rgba(0,0,0,.3)]"
+            className="relative z-10 w-full max-w-md overflow-hidden rounded-[30px] border border-white/15 bg-[#141412] text-paper shadow-[0_28px_90px_rgba(0,0,0,.35)]"
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 18, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 330, damping: 30 }}
           >
-            <div className="relative min-h-20 overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_72%_12%,rgba(255,255,255,.16),transparent_34%),linear-gradient(135deg,#252520,#0c0c0b)] px-4 pt-3">
+            <div className="relative min-h-32 overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_72%_12%,rgba(255,255,255,.16),transparent_34%),linear-gradient(135deg,#252520,#0c0c0b)] px-6 pt-5">
               <button onClick={close} className="relative z-10 font-body text-sm text-paper/65 transition hover:text-paper">
                 Pular dicas
               </button>
               <img
                 src={appPath("/vello-mascot.png")}
                 alt="Mascote da Vello"
-                className="absolute -bottom-9 right-4 h-24 w-24 object-contain object-top"
+                className="absolute -bottom-14 right-5 h-48 w-48 object-contain object-top"
               />
             </div>
-            <div className="p-4">
+            <div className="p-6 sm:p-7">
               <div className="flex items-center justify-between gap-4">
                 <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white text-ink">
                   <Icon size={19} strokeWidth={1.8} />
@@ -154,22 +154,22 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
                   exit={{ opacity: 0, x: -10 }}
                   transition={{ duration: 0.28 }}
                 >
-                  <p className="mt-4 font-mono text-[8px] uppercase tracking-[.16em] text-paper/55">{tip.eyebrow}</p>
-                  <h2 id="dashboard-tour-title" className="mt-2 font-display text-[21px] font-semibold leading-[1.04] tracking-[-.04em]">{tip.title}</h2>
-                  <p className="mt-2 max-w-sm font-body text-xs leading-relaxed text-paper/65">{tip.text}</p>
-                  <div className="mt-3 border-l border-paper/35 pl-2.5">
+                  <p className="mt-7 font-mono text-[10px] uppercase tracking-[.16em] text-paper/55">{tip.eyebrow}</p>
+                  <h2 id="dashboard-tour-title" className="mt-3 font-display text-[29px] font-semibold leading-[1.04] tracking-[-.04em] sm:text-[33px]">{tip.title}</h2>
+                  <p className="mt-4 max-w-sm font-body text-[15px] leading-relaxed text-paper/65">{tip.text}</p>
+                  <div className="mt-5 border-l border-paper/35 pl-3.5">
                     <p className="font-mono text-[9px] uppercase tracking-[.16em] text-paper/45">Onde olhar</p>
-                    <p className="mt-1 font-body text-[11px] leading-relaxed text-paper/80">{tip.focus}</p>
+                    <p className="mt-1.5 font-body text-[13px] leading-relaxed text-paper/80">{tip.focus}</p>
                   </div>
                 </motion.div>
               </AnimatePresence>
-              <div className="mt-5 flex items-center justify-between gap-3">
+              <div className="mt-8 flex items-center justify-between gap-4">
                 <div className="flex gap-1.5" aria-label={`Etapa ${step + 1} de ${tips.length}`}>
                   {tips.map((_, index) => <span key={index} className={`h-1.5 rounded-full transition-all ${index === step ? "w-6 bg-paper" : "w-1.5 bg-paper/25"}`} />)}
                 </div>
                 <div className="flex items-center gap-2">
-                  {step > 0 && <button onClick={() => goToStep(step - 1)} aria-label="Dica anterior" className="grid h-9 w-9 place-items-center rounded-full border border-white/15 text-paper transition hover:bg-white/10"><ChevronLeft size={16} /></button>}
-                  <button onClick={() => step === tips.length - 1 ? close() : goToStep(step + 1)} className="inline-flex h-9 items-center gap-1.5 rounded-full bg-paper px-3.5 font-body text-xs font-semibold text-ink transition hover:scale-[1.02]">
+                  {step > 0 && <button onClick={() => goToStep(step - 1)} aria-label="Dica anterior" className="grid h-10 w-10 place-items-center rounded-full border border-white/15 text-paper transition hover:bg-white/10"><ChevronLeft size={17} /></button>}
+                  <button onClick={() => step === tips.length - 1 ? close() : goToStep(step + 1)} className="inline-flex h-10 items-center gap-2 rounded-full bg-paper px-4 font-body text-sm font-semibold text-ink transition hover:scale-[1.02]">
                     {step === tips.length - 1 ? "Concluir" : "Mostrar próxima"} <ArrowRight size={16} />
                   </button>
                 </div>
