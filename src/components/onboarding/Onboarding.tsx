@@ -113,13 +113,15 @@ function money(value: string) {
       }).format(Number(digits))
     : "";
 }
-function creci(value: string) {
-  const digits = value.replace(/\D/g, "").slice(0, 8);
-  return digits ? `CRECI ${digits}` : "";
+function splitCreci(value: string) {
+  const clean = value.replace(/^CRECI\s*/i, "").toUpperCase();
+  return {
+    number: clean.replace(/\D/g, "").slice(0, 8),
+    suffix: clean.match(/[A-Z]$/)?.[0] ?? "",
+  };
 }
-function completedCreci(value: string) {
-  const digits = value.replace(/\D/g, "").slice(0, 8);
-  return digits ? `CRECI ${digits}${digits.length >= 5 ? "-F" : ""}` : "";
+function formatCreci(number: string, suffix: string) {
+  return number ? `CRECI ${number}${suffix ? `-${suffix}` : ""}` : "";
 }
 function whatsapp(value: string) {
   const digits = value.replace(/\D/g, "").slice(0, 11);
@@ -589,6 +591,7 @@ function ProfileStep({
   onRemoveAvatar: () => void;
   onContinue: () => void;
 }) {
+  const creciParts = splitCreci(profile.creci);
   return (
     <section className="mx-auto max-w-[720px] py-12 sm:py-16">
       <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-stone">
@@ -656,14 +659,31 @@ function ProfileStep({
             if (!profile.slug) update("slug", slugify(v));
           }}
         />
-        <Input
-          label="CRECI"
-          value={profile.creci}
-          placeholder="CRECI 12345-F"
-          inputMode="numeric"
-          onChange={(v) => update("creci", creci(v))}
-          onBlur={() => update("creci", completedCreci(profile.creci))}
-        />
+        <div>
+          <label className={label}>CRECI</label>
+          <div className="flex h-[50px] items-center overflow-hidden rounded-xl border border-line bg-white transition focus-within:border-ink focus-within:ring-2 focus-within:ring-ink/10">
+            <span className="shrink-0 border-r border-line px-3 font-mono text-xs font-semibold text-ash sm:px-4">CRECI</span>
+            <input
+              aria-label="Número do CRECI"
+              value={creciParts.number}
+              placeholder="123456"
+              inputMode="numeric"
+              onChange={(event) => update("creci", formatCreci(event.target.value.replace(/\D/g, "").slice(0, 8), creciParts.suffix))}
+              className="min-w-0 flex-1 bg-transparent px-3 font-body text-[15px] text-ink outline-none placeholder:text-stone sm:px-4"
+            />
+            <span className="font-body text-ash">-</span>
+            <input
+              aria-label="Letra final do CRECI"
+              value={creciParts.suffix}
+              placeholder="F"
+              maxLength={1}
+              autoCapitalize="characters"
+              onChange={(event) => update("creci", formatCreci(creciParts.number, event.target.value.replace(/[^a-z]/gi, "").toUpperCase()))}
+              className="w-12 bg-transparent px-2 font-mono text-[15px] font-semibold uppercase text-ink outline-none placeholder:font-body placeholder:font-normal placeholder:text-stone"
+            />
+          </div>
+          <p className="mt-2 font-body text-xs text-stone">Digite o número e a letra exatamente como aparecem no seu registro.</p>
+        </div>
         <Input
           label="WhatsApp"
           value={profile.whatsapp}
