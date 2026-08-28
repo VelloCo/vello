@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Check, Grid2X2, LayoutTemplate, Menu, Palette, SlidersHorizontal, X } from 'lucide-react';
+import { ArrowRight, Check, Copy, Grid2X2, LayoutTemplate, Menu, Palette, SlidersHorizontal, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { appPath } from '../lib/paths';
 import { Logo } from './Logo';
@@ -22,11 +22,10 @@ export function VelloLanding() {
       <LandingHeader />
       <main>
         <LandingHero />
-        <ProductReveal />
         <LinkStory />
         <ScatteredToOne />
         <FeatureStory />
-        <MobileStory />
+        <ClientSelectionsStory />
         <SimpleComparison />
         <HowItWorks />
         <Pricing />
@@ -73,7 +72,7 @@ function LandingHeader() {
 }
 
 function LandingHero() {
-  return <section id="top" className="overflow-hidden bg-ink pb-20 pt-[158px] text-paper md:pb-28 md:pt-[190px]">
+  return <section id="top" className="overflow-hidden bg-ink pb-0 pt-[158px] text-paper md:pt-[190px]">
     <Container>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={reveal} className="mx-auto max-w-[1040px] text-center">
         <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-paper/50">Catálogo digital para corretores</p>
@@ -81,16 +80,15 @@ function LandingHero() {
         <p className="mx-auto mt-7 max-w-[580px] font-body text-[16px] leading-relaxed text-paper/60 md:text-[18px]">Crie um catálogo profissional, organize seus imóveis e compartilhe tudo em um único link — sem precisar montar um site do zero.</p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-4"><a href={appPath('/cadastro')} className="rounded-full bg-paper px-6 py-3.5 font-body text-[14px] font-semibold text-ink transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]">Criar meu catálogo</a><button onClick={() => document.querySelector('#demonstracao')?.scrollIntoView({ behavior: 'smooth' })} className="font-body text-[14px] font-medium text-paper/75 transition-colors hover:text-paper">Ver demonstração</button></div>
         <p className="mt-6 font-mono text-[10px] text-paper/40">Leva poucos minutos para começar.</p>
+        <motion.div id="produto" initial={{ opacity: 0, y: 28, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.14, duration: 0.72, ease: [0.16, 1, 0.3, 1] }} className="relative mx-auto mt-14 flex h-[540px] max-w-[820px] items-end justify-center overflow-hidden sm:h-[620px]">
+          <div className="absolute bottom-[-330px] h-[720px] w-[720px] rounded-full border border-white/10" />
+          <div className="absolute bottom-[-220px] h-[520px] w-[520px] rounded-full border border-white/[0.07]" />
+          <div className="absolute bottom-0 h-[260px] w-[min(100%,590px)] border border-white/10 bg-white/[0.025]" />
+          <p className="absolute left-0 top-20 hidden font-mono text-[9px] uppercase tracking-[0.16em] text-paper/35 sm:block">Perfil · imóveis · contato</p>
+          <p className="absolute right-0 top-36 hidden font-mono text-[9px] uppercase tracking-[0.16em] text-paper/35 sm:block">Toque para explorar</p>
+          <PhoneMockup className="relative z-10 mb-[-54px] scale-[0.94] sm:scale-[1.1]" />
+        </motion.div>
       </motion.div>
-    </Container>
-  </section>;
-}
-
-function ProductReveal() {
-  return <section id="produto" className="bg-paper pb-28 pt-10 md:pb-40 md:pt-16">
-    <Container className="max-w-[1400px]">
-      <CatalogPlayground />
-      <div className="mt-20 grid gap-8 md:grid-cols-[1fr_0.65fr] md:items-end"><Reveal><Eyebrow>Uma experiência completa</Eyebrow><h2 className="balance mt-4 max-w-[780px] font-display text-[clamp(42px,5.8vw,76px)] font-semibold leading-[0.98] tracking-[-0.055em] text-ink">Tudo que seu cliente precisa ver. Em um único link.</h2></Reveal><Reveal delay={0.1}><p className="max-w-[390px] font-body text-[16px] leading-relaxed text-ash">Seu nome, seus imóveis, filtros, detalhes e contato — sem precisar procurar em várias conversas.</p></Reveal></div>
     </Container>
   </section>;
 }
@@ -131,6 +129,8 @@ function CatalogPlayground() {
   </motion.div>;
 }
 
+void CatalogPlayground;
+
 function CatalogControlNotes() {
   const notes = [{ icon: Palette, label: 'Cores livres', text: 'Escolha uma atmosfera ou a sua própria cor.' }, { icon: LayoutTemplate, label: 'Três estilos', text: 'Editorial, clássico ou compacto.' }, { icon: SlidersHorizontal, label: 'Prévia ao vivo', text: 'Veja o resultado antes de publicar.' }];
   return <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={inView} transition={reveal} className="border-y border-line">{notes.map(({ icon: Icon, label, text }) => <div key={label} className="grid grid-cols-[38px_1fr] gap-3 border-b border-line py-5 last:border-b-0"><span className="grid h-8 w-8 place-items-center rounded-full bg-ink text-paper"><Icon size={14} /></span><div><p className="font-display text-[22px] font-semibold tracking-[-0.04em] text-ink">{label}</p><p className="mt-1 font-body text-[13px] leading-relaxed text-ash">{text}</p></div></div>)}</motion.div>;
@@ -142,9 +142,24 @@ function OrganizationConsole() {
   return <motion.div initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={inView} transition={reveal} className="overflow-hidden border border-line bg-paper shadow-[0_30px_80px_-54px_rgba(11,11,10,0.35)]"><div className="flex items-center justify-between border-b border-line px-5 py-4"><div><p className="font-display text-[20px] font-semibold tracking-[-0.04em] text-ink">Seus imóveis</p><p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-stone">Organize com clareza</p></div><span className="rounded-full bg-ink px-3 py-2 font-body text-[11px] font-semibold text-paper">+ Novo imóvel</span></div><div className="grid sm:grid-cols-[0.94fr_1.06fr]"><div className="border-b border-line p-3 sm:border-b-0 sm:border-r">{homes.map((home, index) => <button key={home} onClick={() => setSelected(index)} aria-pressed={selected === index} className={`flex w-full items-center justify-between rounded-xl px-3 py-3 text-left transition-colors duration-200 ${selected === index ? 'bg-cream text-ink' : 'text-ash hover:bg-cream/55'}`}><span><span className="block font-body text-[13px] font-semibold">{home}</span><span className="mt-1 block font-mono text-[9px]">{index === 0 ? 'DISPONÍVEL' : 'RASCUNHO'}</span></span>{selected === index && <ArrowRight size={15} />}</button>)}</div><motion.div key={selected} initial={{ opacity: 0, x: 8 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }} className="p-6"><p className="font-mono text-[9px] uppercase tracking-[0.14em] text-stone">Detalhes do imóvel</p><p className="mt-3 font-display text-[28px] font-semibold leading-[0.95] tracking-[-0.045em] text-ink">{homes[selected]}</p><div className="mt-7 space-y-3">{['Fotos e capa', 'Preço e localização', 'Características e status'].map((detail, index) => <div key={detail} className="flex items-center justify-between border-b border-line pb-3"><span className="font-body text-[12px] text-ash">{detail}</span><span className={`h-2 w-2 rounded-full ${selected === 0 || index < 2 ? 'bg-ink' : 'bg-line'}`} /></div>)}</div><button type="button" className="mt-6 inline-flex items-center gap-2 font-body text-[12px] font-semibold text-ink">Editar imóvel <ArrowRight size={14} /></button></motion.div></div></motion.div>;
 }
 
+function ClientSelectionsStory() {
+  const [copied, setCopied] = useState(false);
+  const [active, setActive] = useState(0);
+  const clients = ['Ana Ribeiro', 'Marcelo Costa'];
+  const selectedHomes = ['Apartamento com vista para o Guaíba', 'Casa contemporânea com jardim', 'Loft ensolarado no Moinhos'];
+  const copySelection = () => {
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 1600);
+  };
+
+  return <section className="bg-paper py-28 md:py-40"><Container><div className="grid gap-16 lg:grid-cols-[0.82fr_1.18fr] lg:items-center"><Reveal><Eyebrow>Para cada cliente</Eyebrow><h2 className="balance mt-4 max-w-[530px] font-display text-[clamp(42px,5.4vw,70px)] font-semibold leading-[0.98] tracking-[-0.055em] text-ink">Envie uma seleção que parece feita sob medida.</h2><p className="mt-5 max-w-[410px] font-body text-[16px] leading-relaxed text-ash">Escolha os imóveis certos, escreva uma mensagem e compartilhe uma página exclusiva para cada cliente.</p><p className="mt-7 font-mono text-[10px] uppercase tracking-[0.14em] text-stone">Clique em um cliente para ver a seleção</p></Reveal><motion.div initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={inView} transition={reveal} className="overflow-hidden border border-line bg-paper shadow-[0_30px_80px_-54px_rgba(11,11,10,0.35)]"><div className="flex items-center justify-between border-b border-line px-5 py-4"><div><p className="font-display text-[20px] font-semibold tracking-[-0.04em] text-ink">Seleções</p><p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.14em] text-stone">Opções para seus clientes</p></div><span className="rounded-full bg-ink px-3 py-2 font-body text-[11px] font-semibold text-paper">+ Nova seleção</span></div><div className="grid sm:grid-cols-[185px_1fr]"><div className="border-b border-line p-3 sm:border-b-0 sm:border-r">{clients.map((client, index) => <button key={client} onClick={() => setActive(index)} aria-pressed={active === index} className={`w-full rounded-xl px-3 py-3 text-left transition-colors duration-150 ${active === index ? 'bg-cream text-ink' : 'text-ash hover:bg-cream/55'}`}><span className="block font-body text-[13px] font-semibold">{client}</span><span className="mt-1 block font-mono text-[9px]">{index === 0 ? '3 IMÓVEIS · PRONTA' : '2 IMÓVEIS · RASCUNHO'}</span></button>)}</div><motion.div key={active} initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }} className="p-5 sm:p-6"><p className="font-mono text-[9px] uppercase tracking-[0.14em] text-stone">Para {clients[active]}</p><p className="mt-3 font-display text-[25px] font-semibold leading-[0.98] tracking-[-0.045em] text-ink">{active === 0 ? 'Opções com luz, varanda e vista.' : 'Opções para morar perto do trabalho.'}</p><div className="mt-6 space-y-2">{selectedHomes.slice(0, active === 0 ? 3 : 2).map((home, index) => <div key={home} className="flex items-center gap-3 border-b border-line pb-2.5"><span className="grid h-5 w-5 place-items-center rounded-full bg-ink font-mono text-[8px] text-paper">0{index + 1}</span><span className="font-body text-[12px] text-ash">{home}</span></div>)}</div><button onClick={copySelection} className={`mt-6 inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-body text-[12px] font-semibold transition-all duration-200 ${copied ? 'bg-ink text-paper' : 'border border-line text-ink hover:border-ink'}`}><Copy size={13} />{copied ? 'Link copiado' : 'Copiar link da seleção'}</button></motion.div></div></motion.div></div></Container></section>;
+}
+
 function MobileStory() {
   return <section className="overflow-hidden bg-ink py-28 text-paper md:py-40"><Container><div className="grid gap-16 lg:grid-cols-[0.8fr_1.2fr] lg:items-center"><Reveal><Eyebrow>Feito para o celular</Eyebrow><h2 className="balance mt-4 max-w-[500px] font-display text-[clamp(46px,5.8vw,76px)] font-semibold leading-[0.97] tracking-[-0.06em] text-paper">Feito para impressionar também no celular.</h2><p className="mt-5 max-w-[400px] font-body text-[16px] leading-relaxed text-paper/60">Seu cliente abre, filtra e encontra o que procura de onde estiver.</p></Reveal><motion.div initial={{ opacity: 0, scale: 0.94, y: 26 }} whileInView={{ opacity: 1, scale: 1, y: 0 }} viewport={inView} transition={{ duration: 0.82, ease: [0.16, 1, 0.3, 1] }} className="relative mx-auto flex min-h-[590px] w-full items-end justify-center md:min-h-[650px]"><div className="absolute bottom-0 h-[420px] w-[min(100%,620px)] border border-white/10 bg-white/[0.03]" /><PhoneMockup className="relative z-10 mb-[-70px] scale-[1.08] sm:scale-[1.18]" /></motion.div></div></Container></section>;
 }
+
+void MobileStory;
 
 function SimpleComparison() {
   return <section className="bg-paper py-28 md:py-40"><Container><Reveal><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-stone">Antes e depois</p><h2 className="balance mt-5 max-w-[720px] font-display text-[clamp(46px,6vw,80px)] font-semibold leading-[0.96] tracking-[-0.06em] text-ink">Menos improviso.<br />Mais apresentação.</h2></Reveal><div className="mt-16 grid gap-px border border-line bg-line md:grid-cols-2"><ComparisonSide title="Sem Vello" tone="muted" items={['PDF', 'Prints', 'Fotos no WhatsApp', 'Links separados', 'Informações espalhadas']} /><ComparisonSide title="Com Vello" items={['Perfil', 'Catálogo', 'Imóveis', 'Filtros', 'Contato', 'Um link']} /></div><div id="demonstracao" className="mt-20 border-t border-line pt-8 text-center"><p className="font-display text-[clamp(32px,4.2vw,54px)] font-semibold tracking-[-0.05em] text-ink">Veja como seu catálogo pode ficar.</p><a href={appPath('/jose')} className="mt-7 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-body text-[14px] font-semibold text-paper transition-transform duration-150 hover:scale-[1.02]">Abrir demonstração <ArrowRight size={15} /></a></div></Container></section>;
