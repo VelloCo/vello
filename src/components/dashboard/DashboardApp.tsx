@@ -965,6 +965,7 @@ function SelectField({
 
 function SelectionsPage({ selections, refresh, toast }: { selections: Selection[]; refresh: () => Promise<void>; toast: (value: string) => void }) {
   const [remove, setRemove] = useState<Selection | null>(null);
+  const [copiedSelection, setCopiedSelection] = useState<string | null>(null);
   const setStatus = async (selection: Selection, status: Selection["status"]) => {
     try {
       await setSelectionStatus(selection.id, status);
@@ -1018,14 +1019,17 @@ function SelectionsPage({ selections, refresh, toast }: { selections: Selection[
                   Abrir
                 </button>
                 <button
-                  onClick={() =>
-                    navigator.clipboard.writeText(
+                  onClick={async () => {
+                    await navigator.clipboard.writeText(
                       `${window.location.origin}${appPath(`/selecao/${s.slug}`)}`,
-                    )
-                  }
+                    );
+                    setCopiedSelection(s.id);
+                    toast("Link copiado");
+                    window.setTimeout(() => setCopiedSelection((current) => current === s.id ? null : current), 1800);
+                  }}
                   className="rounded-full border border-line px-4 py-2 font-body text-sm"
                 >
-                  Copiar link
+                  {copiedSelection === s.id ? <span className="inline-flex items-center gap-1.5"><Check size={14} /> Link copiado</span> : "Copiar link"}
                 </button>
                 {s.client_whatsapp && (
                   <a
@@ -1119,7 +1123,7 @@ function SelectionEditor({
       );
       await refresh();
       toast(selection ? "Seleção atualizada" : "Seleção criada");
-      go(`/dashboard/selecoes/${id}`);
+      go(selection ? `/dashboard/selecoes/${id}` : "/dashboard/selecoes");
     } catch {
       toast("Não foi possível salvar. Tente novamente.");
     } finally {
