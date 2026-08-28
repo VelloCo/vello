@@ -132,7 +132,7 @@ function number(value: string) {
   return Number(value.replace(/\D/g, "")) || 0;
 }
 function publicLink(slug: string) {
-  return `${window.location.origin}${appPath(`/catalogo/${slug}`)}`;
+  return `${window.location.origin}${appPath(`/${slug}`)}`;
 }
 
 async function optimizeImage(file: File) {

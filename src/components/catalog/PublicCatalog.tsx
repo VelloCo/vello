@@ -107,6 +107,8 @@ const displayTitle = (title: string) =>
   title === title.toUpperCase()
     ? title.toLocaleLowerCase("pt-BR").replace(/^\S/, (letter) => letter.toUpperCase())
     : title;
+const displayCreci = (creci: string | null) =>
+  (creci || "").replace(/^CRECI\s*/i, "");
 const propertyHref = (catalog: Catalog, property: Property) =>
   appPath(`/${catalog.profile.slug}/imovel/${property.slug || property.id}`);
 
@@ -514,7 +516,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
             </div>
             <div className="min-w-0 flex-1 py-0.5">
               <p className="truncate font-display text-[19px] font-semibold leading-none tracking-[-.035em] sm:text-2xl">{catalog.profile.professional_name}</p>
-              <p className="mt-1.5 truncate font-body text-[12px] opacity-65 sm:text-sm">Corretor de imóveis{catalog.profile.creci ? ` · CRECI ${catalog.profile.creci.replace(/^CRECI\\s*/i, "")}` : ""}</p>
+              <p className="mt-1.5 truncate font-body text-[12px] opacity-65 sm:text-sm">Corretor de imóveis{catalog.profile.creci ? ` · CRECI ${displayCreci(catalog.profile.creci)}` : ""}</p>
               {(catalog.profile.city || catalog.profile.state) && <p className="mt-1 flex items-center gap-1 truncate font-body text-[11px] opacity-55 sm:text-xs"><MapPin size={12} />{[catalog.profile.city, catalog.profile.state].filter(Boolean).join(", ")}</p>}
             </div>
             {contact && <a href={contact} target="_blank" rel="noreferrer" className="hidden h-11 shrink-0 items-center gap-2 rounded-full bg-ink px-5 font-body text-sm font-semibold text-paper transition hover:bg-charcoal sm:inline-flex"><MessageCircle size={16} />Falar com {catalog.profile.professional_name.split(" ")[0]}</a>}
@@ -547,7 +549,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
         </a>
       )}
       <footer className="border-t border-black/10 bg-[#f5f2ec] px-5 py-8 pb-24 text-center font-body text-xs text-stone sm:px-8 sm:pb-8">
-        {catalog.profile.professional_name}{catalog.profile.creci ? ` · ${catalog.profile.creci}` : ""}{catalog.profile.instagram && <a href={`https://instagram.com/${catalog.profile.instagram.replace("@", "")}`} target="_blank" rel="noreferrer" className="ml-3 inline-flex items-center gap-1 underline underline-offset-4"><AtSign size={12} />Instagram</a>}<span className="px-2">·</span>Criado com Vello
+        {catalog.profile.professional_name}{catalog.profile.creci ? ` · CRECI ${displayCreci(catalog.profile.creci)}` : ""}{catalog.profile.instagram && <a href={`https://instagram.com/${catalog.profile.instagram.replace("@", "")}`} target="_blank" rel="noreferrer" className="ml-3 inline-flex items-center gap-1 underline underline-offset-4"><AtSign size={12} />Instagram</a>}<span className="px-2">·</span>Criado com Vello
       </footer>
     </>
   );
