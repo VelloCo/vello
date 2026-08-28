@@ -17,6 +17,15 @@ import { LoadingScreen } from "./components/LoadingScreen";
 import { appPath } from "./lib/paths";
 import { supabase } from "./lib/supabase";
 
+const getLocation = () => ({
+  path:
+    window.location.pathname.replace(
+      import.meta.env.BASE_URL.replace(/\/$/, ""),
+      "",
+    ) || "/",
+  search: window.location.search,
+});
+
 function Landing() {
   return (
     <>
@@ -36,17 +45,14 @@ function Landing() {
 }
 
 export default function App() {
+  const [location, setLocation] = useState(getLocation);
   const [user, setUser] = useState<
     import("@supabase/supabase-js").User | null | undefined
   >(undefined);
   const [onboardingDone, setOnboardingDone] = useState<boolean | undefined>(
     undefined,
   );
-  const path =
-    window.location.pathname.replace(
-      import.meta.env.BASE_URL.replace(/\/$/, ""),
-      "",
-    ) || "/";
+  const path = location.path;
   const authRoute = [
     "/login",
     "/cadastro",
@@ -66,6 +72,12 @@ export default function App() {
       (_event, session) => setUser(session?.user ?? null),
     );
     return () => listener.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const syncLocation = () => setLocation(getLocation());
+    window.addEventListener("popstate", syncLocation);
+    return () => window.removeEventListener("popstate", syncLocation);
   }, []);
 
   useEffect(() => {
@@ -102,7 +114,7 @@ export default function App() {
   }
   if (path === "/onboarding" && user) return <Onboarding user={user} />;
   if (path.startsWith("/dashboard") && user)
-    return <DashboardApp user={user} route={path} />;
+    return <DashboardApp user={user} route={path} locationSearch={location.search} />;
   if (path === "/login") return <AuthPage mode="login" />;
   if (path === "/cadastro") return <AuthPage mode="signup" />;
   if (path === "/esqueci-senha") return <AuthPage mode="forgot" />;

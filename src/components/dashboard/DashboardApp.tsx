@@ -46,7 +46,7 @@ import {
 } from "../../lib/vello";
 import type { CatalogTheme, Profile, Property, Selection } from "../../lib/vello";
 
-type Props = { user: User; route: string };
+type Props = { user: User; route: string; locationSearch?: string };
 const nav = [
   { href: "/dashboard", label: "Início", icon: Home },
   { href: "/dashboard/imoveis", label: "Imóveis", icon: Building2 },
@@ -1598,7 +1598,7 @@ function Dialog({
   );
 }
 
-export function DashboardApp({ user, route }: Props) {
+export function DashboardApp({ user, route, locationSearch = "" }: Props) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [properties, setProperties] = useState<Property[]>([]);
   const [selections, setSelections] = useState<Selection[]>([]);
@@ -1693,7 +1693,7 @@ export function DashboardApp({ user, route }: Props) {
       </main>
       <MobileNav route={route} />
       <Toast text={toast} />
-      {(route === "/dashboard" || new URLSearchParams(window.location.search).get("tutorial") === "1") && <DashboardTour userId={user.id} currentRoute={route} preview={new URLSearchParams(window.location.search).get("tutorial") === "1"} />}
+      {(route === "/dashboard" || new URLSearchParams(locationSearch).get("tutorial") === "1") && <DashboardTour key={locationSearch} userId={user.id} currentRoute={route} preview={new URLSearchParams(locationSearch).get("tutorial") === "1"} />}
     </div>
   );
 }

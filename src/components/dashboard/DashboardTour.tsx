@@ -79,10 +79,22 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
   const close = () => {
     localStorage.setItem(storageKey, "done");
     setOpen(false);
-    if (preview) window.history.replaceState({}, "", appPath(currentRoute));
+    if (preview) {
+      window.history.replaceState({}, "", appPath(currentRoute));
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    }
+  };
+  const finish = () => {
+    localStorage.setItem(storageKey, "done");
+    setOpen(false);
+    window.history.pushState({}, "", appPath("/dashboard"));
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
   const goToStep = (nextStep: number) => {
-    window.location.href = `${appPath(tips[nextStep].href)}?tutorial=1&tourStep=${nextStep}`;
+    window.history.pushState({}, "", `${appPath(tips[nextStep].href)}?tutorial=1&tourStep=${nextStep}`);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -100,7 +112,7 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[90] flex items-center justify-center bg-ink/45 p-4 backdrop-blur-[3px] sm:p-6"
+          className="fixed inset-0 z-[90] flex translate-y-12 items-center justify-center bg-ink/30 p-4 sm:translate-y-16 sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -157,7 +169,7 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
                 </div>
                 <div className="flex items-center gap-2">
                   {step > 0 && <button onClick={() => goToStep(step - 1)} aria-label="Dica anterior" className="grid h-10 w-10 place-items-center rounded-full border border-white/15 text-paper transition hover:bg-white/10"><ChevronLeft size={17} /></button>}
-                  <button onClick={() => step === tips.length - 1 ? close() : goToStep(step + 1)} className="inline-flex h-10 items-center gap-2 rounded-full bg-paper px-4 font-body text-sm font-semibold text-ink transition hover:scale-[1.02]">
+                  <button onClick={() => step === tips.length - 1 ? finish() : goToStep(step + 1)} className="inline-flex h-10 items-center gap-2 rounded-full bg-paper px-4 font-body text-sm font-semibold text-ink transition hover:scale-[1.02]">
                     {step === tips.length - 1 ? "Concluir" : "Mostrar próxima"} <ArrowRight size={16} />
                   </button>
                 </div>
