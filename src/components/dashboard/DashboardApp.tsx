@@ -553,17 +553,20 @@ function PropertiesPage({
           <Plus size={17} /> Novo imóvel
         </Button>
       </header>
-      <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-        <label className="flex h-11 flex-1 items-center gap-2 rounded-xl border border-line bg-white px-3">
-          <Search size={17} className="text-stone" />
+      <div className="mt-8">
+        <label className="flex h-14 w-full items-center gap-3 rounded-2xl border border-line bg-white p-1.5 pr-3 shadow-[0_8px_22px_rgba(11,11,10,.035)] transition focus-within:border-ink focus-within:shadow-[0_10px_26px_rgba(11,11,10,.07)]">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-cream text-ash">
+            <Search size={18} strokeWidth={1.8} />
+          </span>
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar imóvel..."
-            className="min-w-0 flex-1 bg-transparent font-body text-sm outline-none"
+            placeholder="Busque por imóvel, bairro ou cidade"
+            className="min-w-0 flex-1 bg-transparent font-body text-sm text-ink outline-none placeholder:text-stone"
           />
+          {query && <button type="button" onClick={() => setQuery("")} aria-label="Limpar busca" className="grid h-8 w-8 place-items-center rounded-full text-stone transition hover:bg-cream hover:text-ink"><X size={16} /></button>}
         </label>
-        <div className="flex gap-2 overflow-x-auto">
+        <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
           {[
             ["all", "Todos"],
             ["available", "Disponíveis"],
