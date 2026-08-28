@@ -3,6 +3,7 @@ import { ArrowRight, Check, Copy, Menu, X } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { appPath } from '../lib/paths';
 import { Logo } from './Logo';
+import { PhoneMockup } from './PhoneMockup';
 import { Container } from './Primitives';
 
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -20,6 +21,7 @@ export function VelloLanding() {
       <main>
         <Hero />
         <ProductStory />
+        <AppInAction />
         <ClientSelections />
         <FeatureGrid />
         <HowItWorks />
@@ -145,6 +147,31 @@ function ProductStory() {
           </motion.div>
         </div>
       </Container>
+    </section>
+  );
+}
+
+function AppInAction() {
+  return (
+    <section className="overflow-hidden bg-paper pb-24 pt-8 text-ink md:pb-36 md:pt-14">
+      <Container className="text-center">
+        <Reveal>
+          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-stone">Veja a Vello em ação</p>
+          <h2 className="mx-auto mt-4 max-w-[720px] font-display text-[clamp(44px,5.4vw,74px)] font-semibold leading-[0.94] tracking-[-0.065em]">Feita para abrir bem em qualquer tela.</h2>
+          <p className="mx-auto mt-5 max-w-[540px] font-body text-[16px] leading-relaxed text-ash">Seu cliente navega pelo perfil, encontra o imóvel e inicia a conversa sem precisar instalar nada.</p>
+        </Reveal>
+      </Container>
+      <motion.div initial={{ opacity: 0, y: 34 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ duration: 0.7, ease }} className="relative mx-auto mt-14 h-[455px] max-w-[1180px] sm:h-[570px]">
+        <motion.div whileInView={{ y: 0, opacity: 1 }} initial={{ y: 30, opacity: 0 }} viewport={reveal} transition={{ delay: 0.18, duration: 0.62, ease }} className="absolute left-1/2 top-[24px] z-10 -translate-x-1/2 scale-[0.82] sm:top-0 sm:scale-100">
+          <PhoneMockup />
+        </motion.div>
+        <motion.div whileInView={{ x: 0, opacity: 0.7 }} initial={{ x: 42, opacity: 0 }} viewport={reveal} transition={{ delay: 0.32, duration: 0.62, ease }} className="absolute left-1/2 top-[74px] hidden -translate-x-[182%] scale-[0.78] sm:block">
+          <PhoneMockup />
+        </motion.div>
+        <motion.div whileInView={{ x: 0, opacity: 0.7 }} initial={{ x: -42, opacity: 0 }} viewport={reveal} transition={{ delay: 0.38, duration: 0.62, ease }} className="absolute left-1/2 top-[74px] hidden translate-x-[82%] scale-[0.78] sm:block">
+          <PhoneMockup />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
