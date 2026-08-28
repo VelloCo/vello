@@ -1,39 +1,56 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Building2, ChevronLeft, FolderHeart, Palette } from "lucide-react";
+import { ArrowRight, Building2, ChevronLeft, FolderHeart, Home, Palette } from "lucide-react";
 import { useEffect, useState } from "react";
 import { appPath } from "../../lib/paths";
 
 const tips = [
   {
+    icon: Home,
+    eyebrow: "Primeira parada · início",
+    title: "Veja o que pede sua atenção.",
+    text: "Aqui você acompanha seus imóveis e encontra os atalhos que mais vai usar no dia a dia.",
+    href: "/dashboard",
+  },
+  {
     icon: Building2,
-    eyebrow: "Comece por aqui",
-    title: "Seus imóveis, em um só lugar.",
-    text: "Cadastre, organize e publique cada imóvel sem complicar seu dia.",
+    eyebrow: "Segunda parada · imóveis",
+    title: "Cadastre e organize seus imóveis.",
+    text: "Fotos, detalhes, preço e status ficam em um só lugar — e entram no catálogo quando você publicar.",
+    href: "/dashboard/imoveis",
   },
   {
     icon: FolderHeart,
-    eyebrow: "Para cada cliente",
-    title: "Crie seleções que fazem sentido.",
-    text: "Escolha os imóveis certos e compartilhe tudo em um único link.",
+    eyebrow: "Terceira parada · seleções",
+    title: "Envie opções certas para cada cliente.",
+    text: "Monte uma seleção, organize a ordem dos imóveis e compartilhe tudo em um único link.",
+    href: "/dashboard/selecoes",
   },
   {
     icon: Palette,
-    eyebrow: "Do seu jeito",
-    title: "Seu catálogo já está pronto.",
-    text: "Personalize cores e apresentação quando quiser, depois é só compartilhar.",
+    eyebrow: "Última parada · catálogo",
+    title: "Deixe a apresentação com a sua cara.",
+    text: "Escolha cores e estilos para que o seu catálogo fique profissional, memorável e pronto para compartilhar.",
+    href: "/dashboard/personalizar",
   },
 ] as const;
 
-export function DashboardTour({ userId, preview = false }: { userId: string; preview?: boolean }) {
+export function DashboardTour({ userId, preview = false, currentRoute }: { userId: string; preview?: boolean; currentRoute: string }) {
   const storageKey = `vello-dashboard-tour-${userId}`;
   const [open, setOpen] = useState(() => preview || localStorage.getItem(storageKey) !== "done");
-  const [step, setStep] = useState(0);
+  const [step] = useState(() => {
+    const requestedStep = Number(new URLSearchParams(window.location.search).get("tourStep"));
+    return preview && Number.isInteger(requestedStep) && requestedStep >= 0 && requestedStep < tips.length ? requestedStep : 0;
+  });
   const tip = tips[step];
   const Icon = tip.icon;
 
   const close = () => {
     localStorage.setItem(storageKey, "done");
     setOpen(false);
+    if (preview) window.history.replaceState({}, "", appPath(currentRoute));
+  };
+  const goToStep = (nextStep: number) => {
+    window.location.href = `${appPath(tips[nextStep].href)}?tutorial=1&tourStep=${nextStep}`;
   };
 
   useEffect(() => {
@@ -103,9 +120,9 @@ export function DashboardTour({ userId, preview = false }: { userId: string; pre
                   {tips.map((_, index) => <span key={index} className={`h-1.5 rounded-full transition-all ${index === step ? "w-6 bg-paper" : "w-1.5 bg-paper/25"}`} />)}
                 </div>
                 <div className="flex items-center gap-2">
-                  {step > 0 && <button onClick={() => setStep((current) => current - 1)} aria-label="Dica anterior" className="grid h-10 w-10 place-items-center rounded-full border border-white/15 text-paper transition hover:bg-white/10"><ChevronLeft size={17} /></button>}
-                  <button onClick={() => step === tips.length - 1 ? close() : setStep((current) => current + 1)} className="inline-flex h-10 items-center gap-2 rounded-full bg-paper px-4 font-body text-sm font-semibold text-ink transition hover:scale-[1.02]">
-                    {step === tips.length - 1 ? "Começar" : "Próxima"} <ArrowRight size={16} />
+                  {step > 0 && <button onClick={() => goToStep(step - 1)} aria-label="Dica anterior" className="grid h-10 w-10 place-items-center rounded-full border border-white/15 text-paper transition hover:bg-white/10"><ChevronLeft size={17} /></button>}
+                  <button onClick={() => step === tips.length - 1 ? close() : goToStep(step + 1)} className="inline-flex h-10 items-center gap-2 rounded-full bg-paper px-4 font-body text-sm font-semibold text-ink transition hover:scale-[1.02]">
+                    {step === tips.length - 1 ? "Concluir" : "Mostrar próxima"} <ArrowRight size={16} />
                   </button>
                 </div>
               </div>

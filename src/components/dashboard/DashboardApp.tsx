@@ -1693,7 +1693,7 @@ export function DashboardApp({ user, route }: Props) {
       </main>
       <MobileNav route={route} />
       <Toast text={toast} />
-      {route === "/dashboard" && <DashboardTour userId={user.id} preview={new URLSearchParams(window.location.search).get("tutorial") === "1"} />}
+      {(route === "/dashboard" || new URLSearchParams(window.location.search).get("tutorial") === "1") && <DashboardTour userId={user.id} currentRoute={route} preview={new URLSearchParams(window.location.search).get("tutorial") === "1"} />}
     </div>
   );
 }
