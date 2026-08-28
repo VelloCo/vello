@@ -804,7 +804,7 @@ function PropertyStep({
           type="button"
           onClick={onSkip}
           disabled={saving}
-          className="font-body text-sm font-medium text-ash underline underline-offset-4 transition hover:text-ink disabled:opacity-50"
+          className="inline-flex h-10 items-center justify-center rounded-full border border-line bg-white px-4 font-body text-sm font-semibold text-ink transition hover:border-ink hover:bg-cream active:scale-[0.98] disabled:opacity-50"
         >
           Pular por enquanto
         </button>
@@ -1117,7 +1117,7 @@ function SuccessStep({
         </a>
         <button
           onClick={onDashboard}
-          className="mt-2 font-body text-sm text-ash hover:text-ink"
+          className="mt-1 flex h-12 items-center justify-center rounded-xl border border-line bg-white font-body text-sm font-semibold text-ink transition hover:border-ink hover:bg-cream active:scale-[0.98]"
         >
           Ir para o dashboard
         </button>
