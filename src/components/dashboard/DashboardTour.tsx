@@ -9,6 +9,7 @@ const tips = [
     eyebrow: "Primeira parada · início",
     title: "Veja o que pede sua atenção.",
     text: "Aqui você acompanha seus imóveis e encontra os atalhos que mais vai usar no dia a dia.",
+    focus: "Olhe os números do resumo e os atalhos logo abaixo deles.",
     href: "/dashboard",
   },
   {
@@ -16,6 +17,7 @@ const tips = [
     eyebrow: "Segunda parada · imóveis",
     title: "Cadastre e organize seus imóveis.",
     text: "Fotos, detalhes, preço e status ficam em um só lugar — e entram no catálogo quando você publicar.",
+    focus: "Comece pelo botão “Novo imóvel” e use a busca para encontrar qualquer anúncio depois.",
     href: "/dashboard/imoveis",
   },
   {
@@ -23,6 +25,7 @@ const tips = [
     eyebrow: "Terceira parada · seleções",
     title: "Envie opções certas para cada cliente.",
     text: "Monte uma seleção, organize a ordem dos imóveis e compartilhe tudo em um único link.",
+    focus: "Use “Nova seleção” quando quiser separar opções para uma pessoa específica.",
     href: "/dashboard/selecoes",
   },
   {
@@ -30,6 +33,7 @@ const tips = [
     eyebrow: "Última parada · catálogo",
     title: "Deixe a apresentação com a sua cara.",
     text: "Escolha cores e estilos para que o seu catálogo fique profissional, memorável e pronto para compartilhar.",
+    focus: "A prévia muda enquanto você escolhe — experimente sem receio.",
     href: "/dashboard/personalizar",
   },
 ] as const;
@@ -68,7 +72,7 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[90] flex items-end justify-center bg-ink/50 p-3 backdrop-blur-[3px] sm:items-center sm:p-6"
+          className="fixed inset-0 z-[90] flex items-end justify-end bg-ink/20 p-3 sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -77,7 +81,7 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
           aria-labelledby="dashboard-tour-title"
         >
           <motion.div
-            className="w-full max-w-md overflow-hidden rounded-[30px] border border-white/15 bg-[#141412] text-paper shadow-[0_28px_90px_rgba(0,0,0,.35)]"
+            className="w-full max-w-md overflow-hidden rounded-[30px] border border-white/15 bg-[#141412] text-paper shadow-[0_28px_90px_rgba(0,0,0,.28)]"
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 18, scale: 0.98 }}
@@ -108,11 +112,15 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -10 }}
-                  transition={{ duration: 0.18 }}
+                  transition={{ duration: 0.28 }}
                 >
                   <p className="mt-7 font-mono text-[10px] uppercase tracking-[.16em] text-paper/55">{tip.eyebrow}</p>
                   <h2 id="dashboard-tour-title" className="mt-3 font-display text-[29px] font-semibold leading-[1.04] tracking-[-.04em] sm:text-[33px]">{tip.title}</h2>
                   <p className="mt-4 max-w-sm font-body text-[15px] leading-relaxed text-paper/65">{tip.text}</p>
+                  <div className="mt-5 border-l border-paper/35 pl-3.5">
+                    <p className="font-mono text-[9px] uppercase tracking-[.16em] text-paper/45">Onde olhar</p>
+                    <p className="mt-1.5 font-body text-[13px] leading-relaxed text-paper/80">{tip.focus}</p>
+                  </div>
                 </motion.div>
               </AnimatePresence>
               <div className="mt-8 flex items-center justify-between gap-4">
