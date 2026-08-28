@@ -11,6 +11,7 @@ const tips = [
     text: "Aqui você acompanha seus imóveis e encontra os atalhos que mais vai usar no dia a dia.",
     focus: "Olhe os números do resumo e os atalhos logo abaixo deles.",
     href: "/dashboard",
+    spotlight: { mobile: { top: "20px", left: "12px", right: "12px", height: "310px" }, desktop: { top: "32px", left: "268px", right: "40px", height: "280px" } },
   },
   {
     icon: Building2,
@@ -19,6 +20,7 @@ const tips = [
     text: "Fotos, detalhes, preço e status ficam em um só lugar — e entram no catálogo quando você publicar.",
     focus: "Comece pelo botão “Novo imóvel” e use a busca para encontrar qualquer anúncio depois.",
     href: "/dashboard/imoveis",
+    spotlight: { mobile: { top: "20px", left: "12px", right: "12px", height: "300px" }, desktop: { top: "32px", left: "268px", right: "40px", height: "250px" } },
   },
   {
     icon: FolderHeart,
@@ -27,6 +29,7 @@ const tips = [
     text: "Monte uma seleção, organize a ordem dos imóveis e compartilhe tudo em um único link.",
     focus: "Use “Nova seleção” quando quiser separar opções para uma pessoa específica.",
     href: "/dashboard/selecoes",
+    spotlight: { mobile: { top: "20px", left: "12px", right: "12px", height: "270px" }, desktop: { top: "32px", left: "268px", right: "40px", height: "230px" } },
   },
   {
     icon: Palette,
@@ -35,6 +38,7 @@ const tips = [
     text: "Escolha cores e estilos para que o seu catálogo fique profissional, memorável e pronto para compartilhar.",
     focus: "A prévia muda enquanto você escolhe — experimente sem receio.",
     href: "/dashboard/personalizar",
+    spotlight: { mobile: { top: "20px", left: "12px", right: "12px", height: "330px" }, desktop: { top: "32px", left: "268px", right: "40px", height: "270px" } },
   },
 ] as const;
 
@@ -47,6 +51,8 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
   });
   const tip = tips[step];
   const Icon = tip.icon;
+  const spotlight = window.innerWidth < 1024 ? tip.spotlight.mobile : tip.spotlight.desktop;
+  const spotlightBottom = `calc(${spotlight.top} + ${spotlight.height})`;
 
   const close = () => {
     localStorage.setItem(storageKey, "done");
@@ -72,7 +78,7 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[90] flex items-end justify-end bg-ink/20 p-3 sm:p-6"
+          className="fixed inset-0 z-[90] flex items-end justify-end p-3 sm:p-6"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -80,24 +86,32 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
           aria-modal="true"
           aria-labelledby="dashboard-tour-title"
         >
-          <motion.div
-            className="w-full max-w-md overflow-hidden rounded-[30px] border border-white/15 bg-[#141412] text-paper shadow-[0_28px_90px_rgba(0,0,0,.28)]"
+          <>
+            <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-0">
+              <div className="absolute left-0 right-0 top-0 bg-ink/20 backdrop-blur-[2px]" style={{ height: spotlight.top }} />
+              <div className="absolute bottom-0 left-0 right-0 bg-ink/20 backdrop-blur-[2px]" style={{ top: spotlightBottom }} />
+              <div className="absolute left-0 bg-ink/20 backdrop-blur-[2px]" style={{ top: spotlight.top, bottom: `calc(100% - ${spotlightBottom})`, width: spotlight.left }} />
+              <div className="absolute right-0 bg-ink/20 backdrop-blur-[2px]" style={{ top: spotlight.top, bottom: `calc(100% - ${spotlightBottom})`, width: spotlight.right }} />
+              <div className="absolute rounded-[22px] border-2 border-white/85 shadow-[0_0_0_4px_rgba(11,11,10,.12)]" style={{ top: spotlight.top, left: spotlight.left, right: spotlight.right, height: spotlight.height }} />
+            </div>
+            <motion.div
+            className="relative z-10 w-full max-w-[340px] overflow-hidden rounded-[24px] border border-white/15 bg-[#141412] text-paper shadow-[0_20px_60px_rgba(0,0,0,.3)]"
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 18, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 330, damping: 30 }}
           >
-            <div className="relative min-h-32 overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_72%_12%,rgba(255,255,255,.16),transparent_34%),linear-gradient(135deg,#252520,#0c0c0b)] px-6 pt-5">
+            <div className="relative min-h-24 overflow-hidden border-b border-white/10 bg-[radial-gradient(circle_at_72%_12%,rgba(255,255,255,.16),transparent_34%),linear-gradient(135deg,#252520,#0c0c0b)] px-5 pt-4">
               <button onClick={close} className="relative z-10 font-body text-sm text-paper/65 transition hover:text-paper">
                 Pular dicas
               </button>
               <img
                 src={appPath("/vello-mascot.png")}
                 alt="Mascote da Vello"
-                className="absolute -bottom-14 right-5 h-48 w-48 object-contain object-top"
+                className="absolute -bottom-10 right-4 h-28 w-28 object-contain object-top"
               />
             </div>
-            <div className="p-6 sm:p-7">
+            <div className="p-5">
               <div className="flex items-center justify-between gap-4">
                 <span className="grid h-10 w-10 place-items-center rounded-2xl bg-white text-ink">
                   <Icon size={19} strokeWidth={1.8} />
@@ -114,16 +128,16 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
                   exit={{ opacity: 0, x: -10 }}
                   transition={{ duration: 0.28 }}
                 >
-                  <p className="mt-7 font-mono text-[10px] uppercase tracking-[.16em] text-paper/55">{tip.eyebrow}</p>
-                  <h2 id="dashboard-tour-title" className="mt-3 font-display text-[29px] font-semibold leading-[1.04] tracking-[-.04em] sm:text-[33px]">{tip.title}</h2>
-                  <p className="mt-4 max-w-sm font-body text-[15px] leading-relaxed text-paper/65">{tip.text}</p>
-                  <div className="mt-5 border-l border-paper/35 pl-3.5">
+                  <p className="mt-5 font-mono text-[9px] uppercase tracking-[.16em] text-paper/55">{tip.eyebrow}</p>
+                  <h2 id="dashboard-tour-title" className="mt-2.5 font-display text-[25px] font-semibold leading-[1.04] tracking-[-.04em]">{tip.title}</h2>
+                  <p className="mt-3 max-w-sm font-body text-sm leading-relaxed text-paper/65">{tip.text}</p>
+                  <div className="mt-4 border-l border-paper/35 pl-3">
                     <p className="font-mono text-[9px] uppercase tracking-[.16em] text-paper/45">Onde olhar</p>
                     <p className="mt-1.5 font-body text-[13px] leading-relaxed text-paper/80">{tip.focus}</p>
                   </div>
                 </motion.div>
               </AnimatePresence>
-              <div className="mt-8 flex items-center justify-between gap-4">
+              <div className="mt-6 flex items-center justify-between gap-4">
                 <div className="flex gap-1.5" aria-label={`Etapa ${step + 1} de ${tips.length}`}>
                   {tips.map((_, index) => <span key={index} className={`h-1.5 rounded-full transition-all ${index === step ? "w-6 bg-paper" : "w-1.5 bg-paper/25"}`} />)}
                 </div>
@@ -135,7 +149,8 @@ export function DashboardTour({ userId, preview = false, currentRoute }: { userI
                 </div>
               </div>
             </div>
-          </motion.div>
+            </motion.div>
+          </>
         </motion.div>
       )}
     </AnimatePresence>
