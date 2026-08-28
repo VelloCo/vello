@@ -1,16 +1,13 @@
 import { ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { appPath } from '../lib/paths';
 import { Container, Reveal } from './Primitives';
 
-/**
- * MASCOTE: aguardando o arquivo oficial. Quando disponível, o mascote branco
- * deve aparecer grande, parcialmente cortado, atrás/ao lado da headline —
- * troque o placeholder abaixo por <img src="/vello-mascote-branco.png" />.
- */
 export function FinalCTA() {
   return (
     <section className="relative overflow-hidden bg-ink py-28 md:py-40">
       <div className="pointer-events-none absolute -right-24 top-1/2 h-[420px] w-[420px] -translate-y-1/2 rounded-full bg-white/[0.03] blur-3xl md:h-[560px] md:w-[560px]" />
+      <motion.img aria-hidden="true" src={appPath('/vello-mascot.png')} alt="" className="pointer-events-none absolute -bottom-20 -left-12 hidden w-[240px] opacity-[0.09] invert md:block" animate={{ y: [0, -10, 0], rotate: [0, -2, 0] }} transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }} />
 
       <Container className="relative flex flex-col items-center text-center">
         <Reveal>

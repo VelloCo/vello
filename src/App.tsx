@@ -3,6 +3,7 @@ import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { Problem } from "./components/Problem";
 import { Catalog } from "./components/Catalog";
+import { SelectionsShowcase } from "./components/SelectionsShowcase";
 import { Pricing } from "./components/Pricing";
 import { FinalCTA } from "./components/FinalCTA";
 import { Footer } from "./components/Footer";
@@ -31,6 +32,7 @@ function Landing() {
       <main>
         <Hero />
         <Catalog />
+        <SelectionsShowcase />
         <Problem />
         <Pricing />
         <FinalCTA />

@@ -8,9 +8,21 @@ export function Hero() {
       className="relative flex min-h-[100svh] items-center overflow-hidden bg-ink pb-20 pt-[126px] text-sm text-paper md:min-h-[94svh] md:pt-[132px]"
     >
       <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[420px] w-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/[0.035] blur-[100px] md:h-[600px] md:w-[600px]"
+        animate={{ scale: [1, 1.08, 1], opacity: [0.5, 0.9, 0.5] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-24 right-[12%] h-52 w-52 rounded-full border border-white/[0.08] md:h-72 md:w-72"
+        animate={{ y: [0, -14, 0], rotate: [0, 4, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-10 mx-auto flex max-w-[720px] flex-col items-center px-5 text-center"
       >
         <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-paper/55 md:text-[11px]">

@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import { ArrowDown, Check } from 'lucide-react';
 import { Container, Eyebrow, Reveal } from './Primitives';
 import { appPath } from '../lib/paths';
@@ -8,9 +9,9 @@ export function Problem() {
       <Container>
         <div className="grid gap-12 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16">
           <Reveal className="order-2 lg:order-1">
-            <div className="overflow-hidden rounded-[24px] border border-white/10 bg-charcoal shadow-[0_40px_100px_-42px_rgba(0,0,0,0.9)]">
-              <img src={appPath('/landing/property-real.png')} alt="Página pública de um imóvel na Vello com foto, preço e detalhes" className="block w-full" />
-            </div>
+            <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }} className="overflow-hidden rounded-[24px] border border-white/10 bg-charcoal shadow-[0_40px_100px_-42px_rgba(0,0,0,0.9)]">
+              <motion.img initial={{ opacity: 0, scale: 0.975 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.72, ease: [0.16, 1, 0.3, 1] }} src={appPath('/landing/property-real.png')} alt="Página pública de um imóvel na Vello com foto, preço e detalhes" className="block w-full" />
+            </motion.div>
           </Reveal>
           <Reveal className="order-1 lg:order-2">
             <Eyebrow>Apresentação que aproxima</Eyebrow>
