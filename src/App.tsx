@@ -1,12 +1,5 @@
 import { useEffect, useState } from "react";
-import { Header } from "./components/Header";
-import { Hero } from "./components/Hero";
-import { Problem } from "./components/Problem";
-import { Catalog } from "./components/Catalog";
-import { SelectionsShowcase } from "./components/SelectionsShowcase";
-import { Pricing } from "./components/Pricing";
-import { FinalCTA } from "./components/FinalCTA";
-import { Footer } from "./components/Footer";
+import { VelloLanding } from "./components/VelloLanding";
 import { AuthPage } from "./components/auth/AuthPage";
 import { Onboarding } from "./components/onboarding/Onboarding";
 import { PublicCatalog } from "./components/catalog/PublicCatalog";
@@ -26,20 +19,7 @@ const getLocation = () => ({
 });
 
 function Landing() {
-  return (
-    <>
-      <Header />
-      <main>
-        <Hero />
-        <Catalog />
-        <SelectionsShowcase />
-        <Problem />
-        <Pricing />
-        <FinalCTA />
-      </main>
-      <Footer />
-    </>
-  );
+  return <VelloLanding />;
 }
 
 export default function App() {
