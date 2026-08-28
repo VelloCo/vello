@@ -505,6 +505,14 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
   const customBackground = hexColor(theme.background_color);
   const customProfileColor = hexColor(theme.profile_color);
   const profileText = darkColor(customProfileColor) ? "text-paper" : "text-ink";
+  const darkPage = theme.palette === "charcoal" || darkColor(customBackground);
+  const filterBackground = customBackground
+    ? ""
+    : theme.palette === "charcoal"
+      ? "bg-[#1b1b19]/95"
+      : theme.palette === "paper"
+        ? "bg-white/95"
+        : "bg-[#f5f2ec]/95";
   return (
     <>
       <CatalogHeader catalog={catalog} />
@@ -528,7 +536,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
             <div className="border-b border-black/10 pb-8">
               <div><h2 className={`font-display text-[42px] font-medium leading-[.92] tracking-[-.05em] sm:text-6xl ${palette.heading}`}>Todos os imóveis</h2><p className={`mt-4 font-body text-[16px] ${palette.copy}`}>Explore todas as opções disponíveis.</p></div>
             </div>
-            <div className="sticky top-[68px] z-30 -mx-5 bg-[#f5f2ec]/95 px-5 py-4 shadow-[0_8px_18px_rgba(11,11,10,.035)] backdrop-blur-md sm:-mx-8 sm:px-8"><div className="mx-auto max-w-[1400px]"><label className="flex h-12 max-w-xl items-center gap-3 rounded-full border border-black/10 bg-white/65 px-4 font-body text-sm transition focus-within:border-black/40 focus-within:bg-white"><Search size={18} className="text-stone" /><input value={filters.query} onChange={(e) => { setFilters((filter) => ({ ...filter, query: e.target.value })); setVisible(12); }} placeholder="Onde você quer morar?" className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-stone" /></label><div className="mt-3"><FilterControls filters={filters} setFilters={setFilters} total={properties.length} /></div></div></div>
+            <div style={customBackground ? { backgroundColor: customBackground } : undefined} className={`sticky top-[68px] z-30 -mx-5 px-5 py-4 shadow-[0_8px_18px_rgba(11,11,10,.035)] backdrop-blur-md sm:-mx-8 sm:px-8 ${filterBackground}`}><div className="mx-auto max-w-[1400px]"><label className="flex h-12 max-w-xl items-center gap-3 rounded-full border border-black/10 bg-white/65 px-4 font-body text-sm transition focus-within:border-black/40 focus-within:bg-white"><Search size={18} className="text-stone" /><input value={filters.query} onChange={(e) => { setFilters((filter) => ({ ...filter, query: e.target.value })); setVisible(12); }} placeholder="Onde você quer morar?" className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-stone" /></label><div className="mt-3"><FilterControls filters={filters} setFilters={setFilters} total={properties.length} /></div></div></div>
             {properties.length > 0 ? <motion.div layout className={`mt-10 grid gap-x-7 gap-y-14 ${properties.length === 1 ? "max-w-[920px]" : theme.property_style === "compact" ? "sm:grid-cols-2 xl:grid-cols-3" : theme.property_style === "classic" ? "sm:grid-cols-2 xl:grid-cols-3" : "md:grid-cols-2"}`}>
               {properties.slice(0, visible).map((property, index) => <PropertyCard key={property.id} property={property} catalog={catalog} index={index} style={theme.property_style} />)}
             </motion.div> : <div className="mt-12 max-w-2xl border-y border-black/10 py-16"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-stone">Sem resultados</p><h3 className="mt-5 font-display text-4xl font-semibold tracking-[-.05em]">Novas oportunidades em breve.</h3><p className="mt-5 max-w-lg font-body leading-relaxed text-ash">No momento não há imóveis que combinem com essa busca. Se você procura algo específico, fale diretamente com {catalog.profile.professional_name}.</p><button onClick={() => setFilters(initial)} className="mt-8 font-body text-sm font-semibold underline underline-offset-4">Limpar filtros</button></div>}
@@ -548,7 +556,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
           <MessageCircle size={17} /> Falar com {catalog.profile.professional_name.split(" ")[0]}
         </a>
       )}
-      <footer className="border-t border-black/10 bg-[#f5f2ec] px-5 py-8 pb-24 text-center font-body text-xs text-stone sm:px-8 sm:pb-8">
+      <footer style={customBackground ? { backgroundColor: customBackground } : undefined} className={`border-t px-5 py-8 pb-24 text-center font-body text-xs sm:px-8 sm:pb-8 ${darkPage ? "border-white/10 text-paper/55" : "border-black/10 bg-[#f5f2ec] text-stone"}`}>
         {catalog.profile.professional_name}{catalog.profile.creci ? ` · CRECI ${displayCreci(catalog.profile.creci)}` : ""}{catalog.profile.instagram && <a href={`https://instagram.com/${catalog.profile.instagram.replace("@", "")}`} target="_blank" rel="noreferrer" className="ml-3 inline-flex items-center gap-1 underline underline-offset-4"><AtSign size={12} />Instagram</a>}<span className="px-2">·</span>Criado com Vello
       </footer>
     </>
