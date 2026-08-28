@@ -5,32 +5,8 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative min-h-[108svh] overflow-hidden bg-ink pt-[154px] text-sm text-paper md:min-h-[112svh] md:pt-[172px]"
+      className="relative flex min-h-[100svh] items-center overflow-hidden bg-ink pb-20 pt-[126px] text-sm text-paper md:min-h-[94svh] md:pt-[132px]"
     >
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[61svh] overflow-hidden md:h-[64svh]">
-        <picture className="absolute bottom-[-6%] left-1/2 h-[66svh] w-full max-w-[1100px] -translate-x-1/2 opacity-75 grayscale md:bottom-0 md:h-[64svh]">
-          <source
-            media="(min-width: 768px)"
-            srcSet={appPath("/hero-vello-house-desktop.png")}
-          />
-          <img
-            src={appPath("/hero-vello-house.png")}
-            alt=""
-            aria-hidden="true"
-            className="h-full w-full object-cover object-[center_58%] md:object-contain md:object-bottom"
-            style={{
-              WebkitMaskImage:
-                "radial-gradient(ellipse 78% 70% at 50% 53%, black 34%, transparent 79%)",
-              maskImage:
-                "radial-gradient(ellipse 78% 70% at 50% 53%, black 34%, transparent 79%)",
-            }}
-          />
-        </picture>
-        <div className="absolute inset-y-0 left-0 hidden w-[28%] bg-gradient-to-r from-ink via-ink/80 to-transparent md:block" />
-        <div className="absolute inset-y-0 right-0 hidden w-[28%] bg-gradient-to-l from-ink via-ink/80 to-transparent md:block" />
-        <div className="absolute inset-0 hidden bg-[radial-gradient(ellipse_52%_82%_at_50%_60%,transparent_22%,#0b0b0a_84%)] md:block" />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink via-ink/5 to-ink" />
-      </div>
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
