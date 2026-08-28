@@ -916,7 +916,7 @@ function Field({
 }) {
   return (
     <label className={className}>
-      <span className="mb-2 block font-display text-xs font-extrabold uppercase tracking-tight">
+      <span className="mb-3 block font-display text-xs font-extrabold uppercase tracking-tight">
         {label}
       </span>
       <input
@@ -942,7 +942,7 @@ function SelectField({
 }) {
   return (
     <label>
-      <span className="mb-2 block font-display text-xs font-extrabold uppercase tracking-tight">
+      <span className="mb-3 block font-display text-xs font-extrabold uppercase tracking-tight">
         {label}
       </span>
       <select
@@ -1155,7 +1155,7 @@ function SelectionEditor({
               onChange={setWhats}
             />
             <label>
-              <span className="mb-2 block font-display text-xs font-extrabold uppercase">
+              <span className="mb-3 block font-display text-xs font-extrabold uppercase">
                 Mensagem
               </span>
               <textarea
@@ -1441,7 +1441,7 @@ function ProfilePage({
           />
         </div>
         <label className="mt-5 block">
-          <span className="mb-2 block font-display text-xs font-extrabold uppercase">
+          <span className="mb-3 block font-display text-xs font-extrabold uppercase">
             Bio curta
           </span>
           <textarea
