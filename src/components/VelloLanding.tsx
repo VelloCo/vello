@@ -274,10 +274,15 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
     ? 'left-1/2 top-[82%] lg:left-[76%] lg:top-[55%]'
     : 'left-1/2 top-[56%]';
   const phones = mode === 'hero'
-    ? 'bottom-[8px] left-1/2 w-[94%] max-w-[340px] -translate-x-1/2 sm:max-w-none sm:w-[430px] lg:w-[490px]'
+    ? 'bottom-[6px] left-1/2 w-[76%] max-w-[280px] -translate-x-1/2 sm:max-w-none sm:w-[340px] lg:w-[380px]'
     : mode === 'panel'
-      ? 'bottom-[18px] left-1/2 w-[94%] max-w-[420px] -translate-x-1/2 sm:max-w-none sm:w-[540px]'
-      : 'bottom-[24px] left-1/2 w-[94%] max-w-[430px] -translate-x-1/2 sm:max-w-none sm:w-[500px] lg:bottom-[14px] lg:left-[77%] lg:w-[365px]';
+      ? 'bottom-[10px] left-1/2 w-[82%] max-w-[340px] -translate-x-1/2 sm:max-w-none sm:w-[400px]'
+      : 'bottom-[12px] left-1/2 w-[80%] max-w-[300px] -translate-x-1/2 sm:max-w-none sm:w-[360px] lg:bottom-[4px] lg:left-[77%] lg:w-[270px]';
+  const phoneFade = mode === 'hero'
+    ? 'from-[#070707] via-[#070707]/92'
+    : mode === 'panel'
+      ? 'from-[#151515] via-[#151515]/92'
+      : 'from-[#171717] via-[#171717]/92';
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden={mode === 'hero' ? undefined : true}>
@@ -303,13 +308,14 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
           transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut' }}
         />
         <motion.img
-          src={appPath('/landing/vello-phones-real-screens-clean@3x.png')}
+          src={appPath('/landing/vello-phones-dark-reference.png')}
           alt={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : ''}
           decoding="async"
           animate={reduceMotion ? undefined : { y: [0, -8, 0], rotate: [0, 0.35, 0] }}
           transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut' }}
           className="relative z-10 block h-auto w-full max-w-none object-contain [image-rendering:auto] drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)]"
         />
+        <div className={`absolute inset-x-[-5%] bottom-[-2px] z-20 h-[24%] bg-gradient-to-t ${phoneFade} to-transparent`} />
       </div>
     </div>
   );
