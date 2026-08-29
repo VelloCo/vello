@@ -15,6 +15,10 @@ const navigation = [
 ];
 
 export function VelloLanding() {
+  if (import.meta.env.DEV && new URLSearchParams(window.location.search).get('__phoneCapture') === 'screens') {
+    return <PhoneScreenCapture />;
+  }
+
   return (
     <div className="overflow-x-hidden bg-[#070707] text-white">
       <LandingHeader />
@@ -85,7 +89,7 @@ function LandingHeader() {
 
 function Hero() {
   return (
-    <section id="inicio" className="relative min-h-[850px] overflow-hidden bg-[#070707] pt-[142px] sm:min-h-[920px] md:pt-[160px] lg:min-h-[980px]">
+    <section id="inicio" className="relative min-h-[850px] overflow-hidden bg-[#070707] pt-[142px] sm:min-h-[920px] md:pt-[160px] lg:min-h-[1120px]">
       <Container className="relative z-10 text-center">
         <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.58, ease }} className="relative z-20">
           <h1 className="mx-auto max-w-[1000px] font-display text-[clamp(43px,5.4vw,72px)] font-medium leading-[1.02] tracking-[-0.064em]">
@@ -103,7 +107,7 @@ function Hero() {
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12, duration: 0.75, ease }} className="relative z-10 mx-auto mt-12 h-[410px] max-w-[1120px] sm:mt-14 sm:h-[500px] lg:h-[570px]">
+        <motion.div initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12, duration: 0.75, ease }} className="relative z-10 mx-auto mt-12 h-[410px] max-w-[1120px] sm:mt-14 sm:h-[500px] lg:h-[720px]">
           <PhoneStage mode="hero" />
         </motion.div>
       </Container>
@@ -274,10 +278,10 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
     ? 'left-1/2 top-[82%] lg:left-[76%] lg:top-[55%]'
     : 'left-1/2 top-[56%]';
   const phones = mode === 'hero'
-    ? 'bottom-[6px] left-1/2 w-[76%] max-w-[280px] -translate-x-1/2 sm:max-w-none sm:w-[340px] lg:w-[380px]'
+    ? 'bottom-[6px] left-1/2 w-[76%] max-w-[280px] -translate-x-1/2 sm:max-w-none sm:w-[340px] lg:w-[500px] xl:w-[540px]'
     : mode === 'panel'
       ? 'bottom-[10px] left-1/2 w-[82%] max-w-[340px] -translate-x-1/2 sm:max-w-none sm:w-[400px]'
-      : 'bottom-[12px] left-1/2 w-[80%] max-w-[300px] -translate-x-1/2 sm:max-w-none sm:w-[360px] lg:bottom-[4px] lg:left-[77%] lg:w-[270px]';
+      : 'bottom-[12px] left-1/2 w-[80%] max-w-[300px] -translate-x-1/2 sm:max-w-none sm:w-[360px] lg:bottom-[4px] lg:left-[77%] lg:w-[320px]';
   const phoneFade = mode === 'hero'
     ? 'from-[#070707] via-[#070707]/92'
     : mode === 'panel'
@@ -310,7 +314,7 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
         <motion.div
           role={mode === 'hero' ? 'img' : undefined}
           aria-label={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : undefined}
-          animate={reduceMotion ? undefined : { y: [0, -8, 0], rotate: [0, 0.35, 0] }}
+          animate={reduceMotion ? undefined : { y: [0, -8, 0] }}
           transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut' }}
           className="relative z-10 aspect-[650/932] w-full [container-type:inline-size] drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)]"
         >
@@ -325,13 +329,29 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
 function CssPhonePair() {
   return (
     <div className="absolute inset-0">
-      <PhoneScreenSurface className="left-[3.25%] top-[17.2%] z-10 h-[80%] w-[41.2%] rounded-[5.8cqw]">
+      <img
+        src={appPath('/landing/vello-phones-perspective@2x.png')}
+        alt=""
+        width="2600"
+        height="3728"
+        draggable={false}
+        decoding="sync"
+        fetchPriority="high"
+        className="absolute inset-0 h-full w-full select-none object-contain"
+      />
+    </div>
+  );
+}
+
+function PhoneScreenCapture() {
+  return (
+    <div className="relative h-[3728px] w-[2600px] overflow-hidden bg-[#00ff00] [container-type:inline-size]">
+      <PhoneScreenSurface className="left-[3.1%] top-[17.25%] z-10 h-[80.2%] w-[41.6%] origin-right rounded-[5.8cqw] [clip-path:polygon(1.2%_2%,100%_0,99.2%_100%,0_98.7%)] [transform:rotateZ(-1.7deg)_scaleX(1.015)]">
         <CatalogPhoneScreen />
       </PhoneScreenSurface>
-      <PhoneScreenSurface className="left-[46.35%] top-[2.65%] z-20 h-[94.7%] w-[51%] origin-right rounded-[6.1cqw] [clip-path:polygon(1.8%_0,100%_0,100%_100%,0.4%_99.5%)] [transform:perspective(720px)_rotateY(-2.6deg)_scaleX(1.025)]">
+      <PhoneScreenSurface className="left-[46.2%] top-[2.5%] z-20 h-[94.9%] w-[51.2%] origin-right rounded-[6.1cqw] [clip-path:polygon(4%_0.8%,100%_3.1%,99.5%_99%,0.8%_97.2%)] [transform:perspective(1800px)_rotateZ(2.35deg)_rotateY(-7deg)_scaleX(1.055)]">
         <DashboardPhoneScreen />
       </PhoneScreenSurface>
-      <img src={appPath('/landing/vello-phone-hardware-3d.png')} alt="" draggable={false} className="absolute inset-0 z-30 h-full w-full select-none object-contain" />
     </div>
   );
 }
