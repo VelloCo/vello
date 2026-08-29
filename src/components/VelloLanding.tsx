@@ -98,8 +98,8 @@ function Hero() {
             </button>
           </div>
         </motion.div>
-        <motion.div initial={{ opacity: 0, y: 42, scale: 0.975 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.14, duration: 0.86, ease }} className="relative mx-auto mt-10 h-[390px] max-w-[1180px] overflow-hidden sm:mt-12 sm:h-[570px] lg:h-[620px]">
-          <img src={appPath('/landing/vello-hero-stage.png')} alt="Catálogo imobiliário Vello em dois celulares sobre uma composição escura" className="absolute bottom-0 left-1/2 w-[700px] max-w-none -translate-x-1/2 sm:w-[1060px] lg:w-[1180px]" />
+        <motion.div initial={{ opacity: 0, y: 42, scale: 0.975 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.14, duration: 0.86, ease }} className="relative mx-auto mt-10 h-[465px] max-w-[1180px] overflow-hidden sm:mt-12 sm:h-[570px] lg:h-[620px]">
+          <img src={appPath('/landing/vello-hero-stage.png')} alt="Catálogo imobiliário Vello em dois celulares sobre uma composição escura" className="absolute bottom-0 left-1/2 w-[700px] max-w-none -translate-x-1/2 grayscale sm:w-[1060px] lg:w-[1180px]" />
         </motion.div>
       </Container>
     </section>
@@ -108,7 +108,7 @@ function Hero() {
 
 function ProductStory() {
   return (
-    <section id="produto" className="bg-paper py-24 text-ink md:py-36">
+    <section id="produto" className="bg-white py-24 text-ink md:py-36">
       <Container>
         <div className="grid gap-14 lg:grid-cols-[0.76fr_1.24fr] lg:items-center">
           <Reveal>
@@ -117,14 +117,14 @@ function ProductStory() {
             <p className="mt-6 max-w-[420px] font-body text-[16px] leading-relaxed text-ash">Seu perfil vem primeiro, a navegação é simples e cada imóvel recebe a atenção que precisa para gerar interesse.</p>
             <a href={appPath('/jose')} className="mt-8 inline-flex items-center gap-2 font-body text-[14px] font-semibold text-ink">Abrir catálogo de demonstração <ArrowRight size={15} /></a>
           </Reveal>
-          <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ duration: 0.62, ease }} className="overflow-hidden rounded-[30px] border border-line bg-cream shadow-[0_42px_90px_-66px_rgba(11,11,10,0.7)]">
-            <div className="flex items-center justify-between border-b border-line bg-paper px-5 py-4">
+          <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ duration: 0.62, ease }} className="overflow-hidden rounded-[30px] border border-line bg-white shadow-[0_42px_90px_-66px_rgba(11,11,10,0.7)]">
+            <div className="flex items-center justify-between border-b border-line bg-white px-5 py-4">
               <div className="flex gap-2"><span className="h-2 w-2 rounded-full bg-line" /><span className="h-2 w-2 rounded-full bg-line" /><span className="h-2 w-2 rounded-full bg-line" /></div>
               <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-stone">Catálogo Vello</p>
               <span className="h-2 w-9" />
             </div>
             <div className="grid min-h-[445px] sm:grid-cols-[174px_1fr]">
-              <aside className="border-b border-line bg-paper p-5 sm:border-b-0 sm:border-r">
+              <aside className="border-b border-line bg-white p-5 sm:border-b-0 sm:border-r">
                 <p className="font-display text-[20px] font-semibold tracking-[-0.05em]">Carlos M.</p>
                 <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.13em] text-stone">CRECI · Porto Alegre</p>
                 <div className="mt-10 space-y-2">
@@ -137,8 +137,8 @@ function ProductStory() {
                   <div><p className="font-display text-[30px] font-semibold tracking-[-0.055em]">Imóveis disponíveis</p><p className="mt-1 font-body text-[12px] text-ash">Tudo o que seus clientes precisam ver, sem ruído.</p></div>
                   <span className="rounded-full bg-ink px-3 py-2 font-body text-[11px] font-semibold text-paper">Compartilhar</span>
                 </div>
-                <div className="mt-6 flex gap-2"><span className="rounded-full bg-ink px-3 py-1.5 font-body text-[11px] text-paper">Todos</span><span className="rounded-full border border-line bg-paper px-3 py-1.5 font-body text-[11px] text-ash">Venda</span><span className="rounded-full border border-line bg-paper px-3 py-1.5 font-body text-[11px] text-ash">Aluguel</span></div>
-                <div className="mt-6 overflow-hidden rounded-[19px] border border-line bg-paper sm:grid sm:grid-cols-[1.05fr_0.95fr]">
+                <div className="mt-6 flex gap-2"><span className="rounded-full bg-ink px-3 py-1.5 font-body text-[11px] text-paper">Todos</span><span className="rounded-full border border-line bg-white px-3 py-1.5 font-body text-[11px] text-ash">Venda</span><span className="rounded-full border border-line bg-white px-3 py-1.5 font-body text-[11px] text-ash">Aluguel</span></div>
+                <div className="mt-6 overflow-hidden rounded-[19px] border border-line bg-white sm:grid sm:grid-cols-[1.05fr_0.95fr]">
                   <img src={appPath('/hero-vello-house.png')} alt="Casa contemporânea apresentada em um catálogo Vello" className="h-[190px] w-full object-cover sm:h-full" />
                   <div className="p-5"><p className="font-mono text-[9px] uppercase tracking-[0.14em] text-stone">Venda</p><p className="mt-3 font-display text-[25px] font-semibold leading-[0.96] tracking-[-0.048em]">Casa contemporânea com jardim</p><p className="mt-3 font-body text-[11px] text-ash">Três Figueiras · Porto Alegre</p><p className="mt-6 font-display text-[22px] font-semibold tracking-[-0.04em]">R$ 1.250.000</p></div>
                 </div>
@@ -152,25 +152,37 @@ function ProductStory() {
 }
 
 function AppInAction() {
+  const screens = [
+    { label: 'Catálogo público', image: '/landing/catalog-real.png' },
+    { label: 'Dashboard', image: '/landing/dashboard-real.png' },
+    { label: 'Personalização', image: '/landing/customizer-real.png' },
+  ];
+  const [active, setActive] = useState(0);
+  const previous = (active + screens.length - 1) % screens.length;
+  const next = (active + 1) % screens.length;
+  const goNext = () => setActive((current) => (current + 1) % screens.length);
+  const goPrevious = () => setActive((current) => (current + screens.length - 1) % screens.length);
+
   return (
-    <section className="overflow-hidden bg-paper pb-24 pt-8 text-ink md:pb-36 md:pt-14">
+    <section className="overflow-hidden bg-white pb-24 pt-8 text-ink md:pb-36 md:pt-14">
       <Container className="text-center">
         <Reveal>
           <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-stone">Veja a Vello em ação</p>
-          <h2 className="mx-auto mt-4 max-w-[720px] font-display text-[clamp(44px,5.4vw,74px)] font-semibold leading-[0.94] tracking-[-0.065em]">Feita para abrir bem em qualquer tela.</h2>
-          <p className="mx-auto mt-5 max-w-[540px] font-body text-[16px] leading-relaxed text-ash">Seu cliente navega pelo perfil, encontra o imóvel e inicia a conversa sem precisar instalar nada.</p>
+          <h2 className="mx-auto mt-4 max-w-[720px] font-display text-[clamp(44px,5.4vw,74px)] font-semibold leading-[0.94] tracking-[-0.065em]">Cada parte do seu trabalho, no lugar certo.</h2>
+          <p className="mx-auto mt-5 max-w-[540px] font-body text-[16px] leading-relaxed text-ash">Arraste para conhecer o catálogo público, o painel de gestão e a personalização da sua vitrine.</p>
         </Reveal>
       </Container>
-      <motion.div initial={{ opacity: 0, y: 34 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ duration: 0.7, ease }} className="relative mx-auto mt-14 h-[455px] max-w-[1180px] sm:h-[570px]">
-        <motion.div whileInView={{ y: 0, opacity: 1 }} initial={{ y: 30, opacity: 0 }} viewport={reveal} transition={{ delay: 0.18, duration: 0.62, ease }} className="absolute left-1/2 top-[24px] z-10 -translate-x-1/2 scale-[0.82] sm:top-0 sm:scale-100">
-          <PhoneMockup />
+      <motion.div initial={{ opacity: 0, y: 34 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ duration: 0.7, ease }} className="relative mx-auto mt-14 h-[492px] max-w-[1180px] touch-pan-y sm:h-[590px]">
+        <motion.button type="button" aria-label={`Ver ${screens[previous].label}`} onClick={goPrevious} animate={{ x: '-182%', scale: 0.77, opacity: 0.45 }} transition={{ duration: 0.45, ease }} className="absolute left-1/2 top-[72px] hidden cursor-pointer sm:block">
+          <PhoneMockup><img src={appPath(screens[previous].image)} alt="" className="h-[560px] w-full object-cover object-top" /></PhoneMockup>
+        </motion.button>
+        <motion.div drag="x" dragConstraints={{ left: 0, right: 0 }} dragElastic={0.12} onDragEnd={(_, info) => { if (info.offset.x < -45 || info.velocity.x < -300) goNext(); if (info.offset.x > 45 || info.velocity.x > 300) goPrevious(); }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.45, ease }} className="absolute left-1/2 top-0 z-10 -translate-x-1/2 cursor-grab active:cursor-grabbing">
+          <PhoneMockup><motion.img key={screens[active].image} initial={{ opacity: 0.25, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.32, ease }} src={appPath(screens[active].image)} alt={`${screens[active].label} da Vello`} className="h-[560px] w-full select-none object-cover object-top" draggable={false} /></PhoneMockup>
         </motion.div>
-        <motion.div whileInView={{ x: 0, opacity: 0.7 }} initial={{ x: 42, opacity: 0 }} viewport={reveal} transition={{ delay: 0.32, duration: 0.62, ease }} className="absolute left-1/2 top-[74px] hidden -translate-x-[182%] scale-[0.78] sm:block">
-          <PhoneMockup />
-        </motion.div>
-        <motion.div whileInView={{ x: 0, opacity: 0.7 }} initial={{ x: -42, opacity: 0 }} viewport={reveal} transition={{ delay: 0.38, duration: 0.62, ease }} className="absolute left-1/2 top-[74px] hidden translate-x-[82%] scale-[0.78] sm:block">
-          <PhoneMockup />
-        </motion.div>
+        <motion.button type="button" aria-label={`Ver ${screens[next].label}`} onClick={goNext} animate={{ x: '82%', scale: 0.77, opacity: 0.45 }} transition={{ duration: 0.45, ease }} className="absolute left-1/2 top-[72px] hidden cursor-pointer sm:block">
+          <PhoneMockup><img src={appPath(screens[next].image)} alt="" className="h-[560px] w-full object-cover object-top" /></PhoneMockup>
+        </motion.button>
+        <div className="absolute inset-x-0 bottom-0 z-20 flex justify-center gap-2">{screens.map((screen, index) => <button key={screen.label} type="button" aria-label={`Mostrar ${screen.label}`} aria-pressed={active === index} onClick={() => setActive(index)} className={`h-2 rounded-full transition-all ${active === index ? 'w-7 bg-ink' : 'w-2 bg-ink/25 hover:bg-ink/45'}`} />)}</div>
       </motion.div>
     </section>
   );
@@ -201,19 +213,19 @@ function ClientSelections() {
               {['Selecione imóveis em segundos', 'Escreva uma mensagem pessoal', 'Envie um único link profissional'].map((item) => <li key={item} className="flex items-center gap-3"><span className="grid h-5 w-5 place-items-center rounded-full bg-paper text-ink"><Check size={12} strokeWidth={2.5} /></span>{item}</li>)}
             </ul>
           </Reveal>
-          <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ duration: 0.62, ease }} className="overflow-hidden rounded-[30px] border border-white/10 bg-paper text-ink shadow-[0_42px_90px_-65px_rgba(0,0,0,0.9)]">
+          <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ duration: 0.62, ease }} className="overflow-hidden rounded-[30px] border border-white/10 bg-white text-ink shadow-[0_42px_90px_-65px_rgba(0,0,0,0.9)]">
             <div className="flex items-center justify-between border-b border-line px-5 py-4"><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-stone">Seleção personalizada</p><span className="rounded-full bg-ink px-3 py-2 font-body text-[11px] font-semibold text-paper">+ Nova seleção</span></div>
             <div className="grid min-h-[365px] sm:grid-cols-[178px_1fr]">
               <div className="border-b border-line p-3 sm:border-b-0 sm:border-r">
-                {clients.map((client, index) => <button key={client.name} onClick={() => setActive(index)} aria-pressed={active === index} className={`w-full rounded-xl px-3 py-3 text-left transition-colors ${active === index ? 'bg-ink text-paper' : 'text-ash hover:bg-cream'}`}><span className="block font-body text-[13px] font-semibold">{client.name}</span><span className="mt-1 block font-mono text-[9px] opacity-60">{client.count} IMÓVEIS</span></button>)}
+                {clients.map((client, index) => <button key={client.name} onClick={() => setActive(index)} aria-pressed={active === index} className={`w-full rounded-xl px-3 py-3 text-left transition-colors ${active === index ? 'bg-ink text-paper' : 'text-ash hover:bg-black/[0.04]'}`}><span className="block font-body text-[13px] font-semibold">{client.name}</span><span className="mt-1 block font-mono text-[9px] opacity-60">{client.count} IMÓVEIS</span></button>)}
               </div>
               <motion.div key={active} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.28, ease }} className="p-5 sm:p-6">
                 <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-stone">Para {clients[active].name}</p>
                 <p className="mt-3 max-w-[390px] font-display text-[30px] font-semibold leading-[0.96] tracking-[-0.05em]">{clients[active].title}</p>
                 <div className="mt-7 space-y-2.5">
-                  {['Apartamento com vista para o Guaíba', 'Casa contemporânea com jardim', 'Loft ensolarado', 'Studio no centro'].slice(0, clients[active].count).map((home, index) => <div key={home} className="flex items-center gap-3 border-b border-line pb-2.5"><span className="grid h-5 w-5 place-items-center rounded-full bg-cream font-mono text-[8px] text-stone">0{index + 1}</span><span className="font-body text-[12px] text-ash">{home}</span></div>)}
+                  {['Apartamento com vista para o Guaíba', 'Casa contemporânea com jardim', 'Loft ensolarado', 'Studio no centro'].slice(0, clients[active].count).map((home, index) => <div key={home} className="flex items-center gap-3 border-b border-line pb-2.5"><span className="grid h-5 w-5 place-items-center rounded-full bg-black/[0.04] font-mono text-[8px] text-stone">0{index + 1}</span><span className="font-body text-[12px] text-ash">{home}</span></div>)}
                 </div>
-                <button onClick={copy} className={`mt-7 inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-body text-[12px] font-semibold transition-all ${copied ? 'bg-ink text-paper' : 'border border-line text-ink hover:bg-cream'}`}><Copy size={13} />{copied ? 'Link copiado' : 'Copiar link da seleção'}</button>
+                <button onClick={copy} className={`mt-7 inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-body text-[12px] font-semibold transition-all ${copied ? 'bg-ink text-paper' : 'border border-line text-ink hover:bg-black/[0.04]'}`}><Copy size={13} />{copied ? 'Link copiado' : 'Copiar link da seleção'}</button>
               </motion.div>
             </div>
           </motion.div>
@@ -240,7 +252,7 @@ function FeatureGrid() {
         <div className="mt-16 grid gap-3 md:grid-cols-2">
           {features.map(([title, description], index) => (
             <motion.article key={title} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ delay: index * 0.06, duration: 0.48, ease }} className="group min-h-[270px] rounded-[28px] border border-white/10 bg-white/[0.035] p-7 transition-colors hover:bg-white/[0.07] md:p-9">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-paper font-display text-[18px] font-semibold text-ink">0{index + 1}</span>
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-white font-display text-[18px] font-semibold text-ink">0{index + 1}</span>
               <h3 className="mt-12 font-display text-[31px] font-semibold tracking-[-0.053em]">{title}</h3>
               <p className="mt-3 max-w-[400px] font-body text-[15px] leading-relaxed text-paper/55">{description}</p>
             </motion.article>
@@ -249,7 +261,7 @@ function FeatureGrid() {
         <div className="mt-3 overflow-hidden rounded-[28px] border border-white/10 bg-[#171716] p-5 sm:p-8">
           <div className="grid items-center gap-8 md:grid-cols-[0.82fr_1.18fr]">
             <div><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-paper/40">Visualização real</p><h3 className="mt-4 max-w-[430px] font-display text-[clamp(34px,4.4vw,58px)] font-semibold leading-[0.95] tracking-[-0.06em]">O cliente entende o imóvel antes de perguntar.</h3><p className="mt-5 max-w-[400px] font-body text-[15px] leading-relaxed text-paper/55">A Vello coloca o que importa na ordem certa: foto, preço, detalhes e uma forma simples de entrar em contato.</p></div>
-            <div className="overflow-hidden rounded-[20px] border border-white/10 bg-paper"><img src={appPath('/landing/property-real.png')} alt="Página de imóvel real exibida pela Vello" className="w-full object-cover object-top" /></div>
+            <div className="overflow-hidden rounded-[20px] border border-white/10 bg-white"><img src={appPath('/landing/property-real.png')} alt="Página de imóvel real exibida pela Vello" className="w-full object-cover object-top" /></div>
           </div>
         </div>
       </Container>
@@ -265,7 +277,7 @@ function HowItWorks() {
   ];
 
   return (
-    <section id="como-funciona" className="bg-cream py-24 text-ink md:py-36">
+    <section id="como-funciona" className="bg-white py-24 text-ink md:py-36">
       <Container>
         <Reveal><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-stone">Comece em minutos</p><h2 className="mt-4 max-w-[790px] font-display text-[clamp(46px,5.8vw,80px)] font-semibold leading-[0.94] tracking-[-0.065em]">Três passos para transformar sua apresentação.</h2></Reveal>
         <div className="mt-16 grid gap-10 md:grid-cols-3 md:gap-0">
