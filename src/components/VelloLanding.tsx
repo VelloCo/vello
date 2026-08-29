@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Building2, FolderHeart, Heart, Home, MapPin, Menu, Palette, Search, Share2, SlidersHorizontal, Smartphone, X } from 'lucide-react';
 import { useState } from 'react';
 import { appPath } from '../lib/paths';
@@ -269,6 +269,7 @@ function ClosingCall() {
 }
 
 function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
+  const reduceMotion = useReducedMotion();
   const lineCenter = mode === 'cta'
     ? 'left-1/2 top-[82%] lg:left-[76%] lg:top-[55%]'
     : 'left-1/2 top-[56%]';
@@ -294,12 +295,22 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
       <span className="absolute left-[4%] top-[55%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:left-[10%]" />
       <span className="absolute right-[14%] top-[18%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:right-[22%]" />
 
-      <img
-        src={appPath('/landing/vello-phones-real-screens@3x.png')}
-        alt={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : ''}
-        decoding="async"
-        className={`absolute z-20 block h-auto max-w-none object-contain [image-rendering:auto] drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)] ${phones}`}
-      />
+      <div className={`absolute z-20 ${phones}`}>
+        <motion.span
+          aria-hidden="true"
+          className="absolute -bottom-1 left-1/2 h-7 w-[70%] -translate-x-1/2 rounded-[50%] bg-black/70 blur-lg"
+          animate={reduceMotion ? undefined : { opacity: [0.42, 0.26, 0.42], scaleX: [0.94, 1.04, 0.94] }}
+          transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.img
+          src={appPath('/landing/vello-phones-real-screens-clean@3x.png')}
+          alt={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : ''}
+          decoding="async"
+          animate={reduceMotion ? undefined : { y: [0, -8, 0], rotate: [0, 0.35, 0] }}
+          transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut' }}
+          className="relative z-10 block h-auto w-full max-w-none object-contain [image-rendering:auto] drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)]"
+        />
+      </div>
     </div>
   );
 }
