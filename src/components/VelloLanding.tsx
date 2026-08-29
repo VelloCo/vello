@@ -280,6 +280,7 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden={mode === 'hero' ? undefined : true}>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_46%_at_50%_67%,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.025)_34%,transparent_72%)]" />
       <div className={`absolute ${lineCenter} h-[310px] w-[620px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/[0.11] sm:h-[430px] sm:w-[900px]`} />
       <div className={`absolute ${lineCenter} h-[235px] w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/[0.09] sm:h-[330px] sm:w-[700px]`} />
       <div className={`absolute ${lineCenter} h-[160px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/[0.07] sm:h-[230px] sm:w-[520px]`} />
@@ -292,12 +293,12 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
 
       <span className="absolute left-[4%] top-[55%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:left-[10%]" />
       <span className="absolute right-[14%] top-[18%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:right-[22%]" />
-      <span className="absolute bottom-[-60px] left-1/2 h-32 w-[72%] -translate-x-1/2 rounded-[50%] bg-white/15 blur-[55px]" />
 
       <img
         src={appPath('/landing/vello-phones-real-screens.png')}
         alt={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : ''}
-        className={`absolute z-20 max-w-none drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)] ${phones}`}
+        decoding="async"
+        className={`absolute z-20 block h-auto max-w-none object-contain [image-rendering:auto] drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)] ${phones}`}
       />
     </div>
   );
