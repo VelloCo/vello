@@ -1,77 +1,120 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Check, Copy, Menu, X } from 'lucide-react';
+import {
+  ArrowRight,
+  Building2,
+  FolderHeart,
+  Menu,
+  Palette,
+  Search,
+  Share2,
+  Smartphone,
+  UserRound,
+  X,
+} from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 import { appPath } from '../lib/paths';
 import { Logo } from './Logo';
 import { PhoneMockup } from './PhoneMockup';
 import { Container } from './Primitives';
 
-const ease = [0.16, 1, 0.3, 1] as const;
-const reveal = { once: true, margin: '-12% 0px' };
-const navItems = [
-  { label: 'Produto', href: '#produto' },
+const ease = [0.4, 0, 0.2, 1] as const;
+const viewport = { once: true, margin: '-10% 0px' };
+
+const navigation = [
+  { label: 'Início', href: '#inicio' },
   { label: 'Recursos', href: '#recursos' },
   { label: 'Como funciona', href: '#como-funciona' },
+  { label: 'Contato', href: '#contato' },
 ];
 
 export function VelloLanding() {
   return (
-    <div className="overflow-x-hidden bg-ink text-paper">
+    <div className="overflow-x-hidden bg-black text-white">
       <LandingHeader />
       <main>
         <Hero />
-        <ProductStory />
-        <AppInAction />
-        <ClientSelections />
-        <FeatureGrid />
+        <Numbers />
+        <FeatureCenter />
+        <EverydayFeatures />
         <HowItWorks />
-        <FinalCall />
+        <ClosingCall />
       </main>
-      <Footer />
+      <LandingFooter />
     </div>
   );
 }
 
 function LandingHeader() {
   const [open, setOpen] = useState(false);
-  const moveTo = (href: string) => {
+
+  const goTo = (href: string) => {
     setOpen(false);
     document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <header className="absolute inset-x-0 top-0 z-30 bg-ink/85 backdrop-blur-sm">
-      <Container className="flex h-[76px] items-center justify-between">
-        <a href="#top" aria-label="Vello" className="flex items-center"><Logo variant="light" /></a>
-        <nav className="hidden items-center gap-8 md:flex">
-          {navItems.map((item) => (
-            <button key={item.href} onClick={() => moveTo(item.href)} className="font-body text-[14px] text-paper/70 transition-colors hover:text-paper">
+    <header className="absolute inset-x-0 top-0 z-50 border-b border-white/[0.06] bg-black/80 backdrop-blur-xl">
+      <Container className="flex h-[78px] items-center justify-between lg:h-[88px]">
+        <a href="#inicio" aria-label="Vello — início" className="shrink-0">
+          <Logo variant="light" />
+        </a>
+
+        <nav className="hidden items-center gap-9 lg:flex">
+          {navigation.map((item, index) => (
+            <button
+              key={item.href}
+              type="button"
+              onClick={() => goTo(item.href)}
+              className={`font-body text-[14px] transition-colors duration-150 ${index === 0 ? 'font-semibold text-white' : 'text-white/55 hover:text-white'}`}
+            >
               {item.label}
             </button>
           ))}
         </nav>
-        <div className="hidden items-center gap-5 md:flex">
-          <a href={appPath('/login')} className="font-body text-[14px] text-paper/70 transition-colors hover:text-paper">Entrar</a>
-          <a href={appPath('/cadastro')} className="rounded-full bg-paper px-5 py-2.5 font-body text-[14px] font-semibold text-ink transition-transform duration-150 hover:scale-[1.02]">Criar catálogo</a>
+
+        <div className="hidden items-center gap-5 lg:flex">
+          <a href={appPath('/login')} className="font-body text-[14px] text-white/55 transition-colors hover:text-white">
+            Entrar
+          </a>
+          <a
+            href={appPath('/cadastro')}
+            className="rounded-full bg-white px-5 py-3 font-body text-[14px] font-semibold text-black transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
+          >
+            Criar catálogo
+          </a>
         </div>
-        <div className="flex items-center gap-3 md:hidden">
-          <a href={appPath('/cadastro')} className="rounded-full bg-paper px-3.5 py-2 font-body text-[12px] font-semibold text-ink">Criar</a>
-          <button aria-label={open ? 'Fechar menu' : 'Abrir menu'} onClick={() => setOpen((value) => !value)} className="text-paper">
-            {open ? <X size={22} /> : <Menu size={22} />}
+
+        <div className="flex items-center gap-3 lg:hidden">
+          <a href={appPath('/cadastro')} className="rounded-full bg-white px-4 py-2.5 font-body text-[12px] font-semibold text-black">
+            Começar
+          </a>
+          <button
+            type="button"
+            aria-label={open ? 'Fechar menu' : 'Abrir menu'}
+            onClick={() => setOpen((current) => !current)}
+            className="grid h-10 w-10 place-items-center rounded-full border border-white/15 text-white"
+          >
+            {open ? <X size={19} /> : <Menu size={19} />}
           </button>
         </div>
       </Container>
+
       {open && (
-        <div className="border-t border-white/10 bg-ink px-6 py-6 md:hidden">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease }}
+          className="border-t border-white/10 bg-black px-6 py-7 lg:hidden"
+        >
           <div className="mx-auto flex max-w-[1200px] flex-col gap-5">
-            {navItems.map((item) => (
-              <button key={item.href} onClick={() => moveTo(item.href)} className="text-left font-display text-[25px] font-semibold tracking-[-0.04em] text-paper">
+            {navigation.map((item) => (
+              <button key={item.href} type="button" onClick={() => goTo(item.href)} className="text-left font-display text-[27px] font-semibold tracking-[-0.045em]">
                 {item.label}
               </button>
             ))}
-            <a href={appPath('/login')} className="font-body text-[15px] text-paper/65">Entrar</a>
+            <a href={appPath('/login')} className="pt-2 font-body text-[14px] text-white/60">Já tenho uma conta</a>
           </div>
-        </div>
+        </motion.div>
       )}
     </header>
   );
@@ -79,229 +122,356 @@ function LandingHeader() {
 
 function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden bg-ink pt-[146px] md:pt-[174px]">
-      <Container className="relative z-10">
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease }} className="mx-auto max-w-[1040px] text-center">
-          <p className="font-mono text-[10px] uppercase tracking-[0.19em] text-paper/45">Catálogo digital para corretores</p>
-          <h1 className="mt-6 font-display text-[clamp(52px,7.8vw,110px)] font-semibold leading-[0.89] tracking-[-0.078em]">
-            Seus imóveis, apresentados como merecem.
+    <section id="inicio" className="relative min-h-screen overflow-hidden bg-black pt-[142px] md:pt-[174px]">
+      <Container className="relative z-10 text-center">
+        <motion.div initial={{ opacity: 0, y: 26 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.62, ease }}>
+          <h1 className="mx-auto max-w-[1080px] font-display text-[clamp(48px,7.1vw,94px)] font-medium leading-[0.98] tracking-[-0.07em]">
+            Seus imóveis merecem uma apresentação que impressiona.
           </h1>
-          <p className="mx-auto mt-7 max-w-[630px] font-body text-[16px] leading-relaxed text-paper/60 md:text-[18px]">
-            Crie um catálogo que organiza seu perfil, seus imóveis e cada conversa com seus clientes.
+          <p className="mx-auto mt-6 max-w-[730px] font-body text-[15px] leading-relaxed text-white/52 sm:text-[17px]">
+            A Vello reúne seu perfil, seus imóveis e as seleções de cada cliente em um catálogo profissional, pronto para compartilhar.
           </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <a href={appPath('/cadastro')} className="inline-flex items-center gap-2 rounded-full bg-paper px-6 py-3.5 font-body text-[14px] font-semibold text-ink transition-transform duration-150 hover:scale-[1.02]">
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href={appPath('/cadastro')}
+              className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-body text-[14px] font-semibold text-black transition-transform duration-150 hover:scale-[1.02] active:scale-[0.98]"
+            >
               Criar meu catálogo <ArrowRight size={15} />
             </a>
-            <button onClick={() => document.querySelector('#produto')?.scrollIntoView({ behavior: 'smooth' })} className="rounded-full border border-white/20 px-6 py-3.5 font-body text-[14px] font-medium text-paper transition-colors hover:bg-white/10">
+            <button
+              type="button"
+              onClick={() => document.querySelector('#recursos')?.scrollIntoView({ behavior: 'smooth' })}
+              className="rounded-full border border-white/18 px-6 py-3.5 font-body text-[14px] font-medium text-white transition-colors hover:bg-white/10"
+            >
               Conhecer a Vello
             </button>
           </div>
         </motion.div>
-        <motion.div initial={{ opacity: 0, y: 42, scale: 0.975 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ delay: 0.14, duration: 0.86, ease }} className="relative mx-auto mt-10 h-[465px] max-w-[1180px] overflow-hidden sm:mt-12 sm:h-[570px] lg:h-[620px]">
-          <img src={appPath('/landing/vello-hero-stage.png')} alt="Catálogo imobiliário Vello em dois celulares sobre uma composição escura" className="absolute bottom-0 left-1/2 w-[700px] max-w-none -translate-x-1/2 grayscale sm:w-[1060px] lg:w-[1180px]" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 44, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ delay: 0.12, duration: 0.82, ease }}
+          className="relative mx-auto mt-12 h-[500px] max-w-[1120px] sm:h-[590px] lg:h-[650px]"
+        >
+          <div className="absolute left-1/2 top-[58%] h-[430px] w-[760px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/10 sm:h-[520px] sm:w-[1040px]" />
+          <div className="absolute left-1/2 top-[60%] h-[300px] w-[560px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/[0.07] sm:h-[390px] sm:w-[780px]" />
+          <span className="absolute left-[5%] top-[43%] hidden h-2.5 w-2.5 rounded-full bg-white shadow-[0_0_24px_rgba(255,255,255,0.75)] sm:block" />
+          <span className="absolute right-[8%] top-[34%] hidden h-3 w-3 rounded-full bg-white/80 shadow-[0_0_26px_rgba(255,255,255,0.65)] sm:block" />
+          <span className="absolute left-[14%] top-[26%] hidden rounded-full border border-white/12 bg-[#131313] p-4 text-white/72 sm:grid">
+            <Share2 size={20} />
+          </span>
+          <span className="absolute right-[14%] top-[20%] hidden rounded-full border border-white/12 bg-[#131313] p-4 text-white/72 sm:grid">
+            <Search size={20} />
+          </span>
+
+          <motion.div
+            animate={{ y: [0, -7, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute left-1/2 top-[92px] z-10 -translate-x-[72%] scale-[0.78] sm:top-[74px] sm:-translate-x-[92%] sm:scale-[0.96] lg:top-[54px] lg:-translate-x-[98%] lg:scale-[1.08]"
+          >
+            <PhoneMockup>
+              <img src={appPath('/landing/dashboard-real.png')} alt="Painel da Vello no celular" className="h-[560px] w-full object-cover object-top" />
+            </PhoneMockup>
+          </motion.div>
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+            className="absolute left-1/2 top-[40px] z-20 -translate-x-[26%] scale-[0.86] sm:top-[34px] sm:translate-x-[-5%] sm:scale-[1.04] lg:top-[16px] lg:translate-x-[-2%] lg:scale-[1.18]"
+          >
+            <PhoneMockup>
+              <img src={appPath('/landing/catalog-real.png')} alt="Catálogo público da Vello no celular" className="h-[560px] w-full object-cover object-top" />
+            </PhoneMockup>
+          </motion.div>
+          <div className="absolute inset-x-0 bottom-0 z-30 h-44 bg-gradient-to-t from-black via-black/90 to-transparent" />
         </motion.div>
       </Container>
     </section>
   );
 }
 
-function ProductStory() {
-  return (
-    <section id="produto" className="bg-white py-24 text-ink md:py-36">
-      <Container>
-        <div className="grid gap-14 lg:grid-cols-[0.76fr_1.24fr] lg:items-center">
-          <Reveal>
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-stone">O seu espaço público</p>
-            <h2 className="mt-4 max-w-[540px] font-display text-[clamp(46px,5.5vw,76px)] font-semibold leading-[0.94] tracking-[-0.065em]">Uma vitrine com a sua cara. E com foco no imóvel.</h2>
-            <p className="mt-6 max-w-[420px] font-body text-[16px] leading-relaxed text-ash">Seu perfil vem primeiro, a navegação é simples e cada imóvel recebe a atenção que precisa para gerar interesse.</p>
-            <a href={appPath('/jose')} className="mt-8 inline-flex items-center gap-2 font-body text-[14px] font-semibold text-ink">Abrir catálogo de demonstração <ArrowRight size={15} /></a>
-          </Reveal>
-          <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ duration: 0.62, ease }} className="overflow-hidden rounded-[30px] border border-line bg-white shadow-[0_42px_90px_-66px_rgba(11,11,10,0.7)]">
-            <div className="flex items-center justify-between border-b border-line bg-white px-5 py-4">
-              <div className="flex gap-2"><span className="h-2 w-2 rounded-full bg-line" /><span className="h-2 w-2 rounded-full bg-line" /><span className="h-2 w-2 rounded-full bg-line" /></div>
-              <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-stone">Catálogo Vello</p>
-              <span className="h-2 w-9" />
-            </div>
-            <div className="grid min-h-[445px] sm:grid-cols-[174px_1fr]">
-              <aside className="border-b border-line bg-white p-5 sm:border-b-0 sm:border-r">
-                <p className="font-display text-[20px] font-semibold tracking-[-0.05em]">Carlos M.</p>
-                <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.13em] text-stone">CRECI · Porto Alegre</p>
-                <div className="mt-10 space-y-2">
-                  {['Meu catálogo', 'Imóveis', 'Seleções'].map((item, index) => <span key={item} className={`block rounded-xl px-3 py-2.5 font-body text-[12px] ${index === 0 ? 'bg-ink font-semibold text-paper' : 'text-ash'}`}>{item}</span>)}
-                </div>
-                <p className="mt-12 font-mono text-[9px] uppercase leading-relaxed tracking-[0.13em] text-stone">Seu trabalho, mais fácil de apresentar.</p>
-              </aside>
-              <div className="p-5 sm:p-7">
-                <div className="flex items-start justify-between gap-4">
-                  <div><p className="font-display text-[30px] font-semibold tracking-[-0.055em]">Imóveis disponíveis</p><p className="mt-1 font-body text-[12px] text-ash">Tudo o que seus clientes precisam ver, sem ruído.</p></div>
-                  <span className="rounded-full bg-ink px-3 py-2 font-body text-[11px] font-semibold text-paper">Compartilhar</span>
-                </div>
-                <div className="mt-6 flex gap-2"><span className="rounded-full bg-ink px-3 py-1.5 font-body text-[11px] text-paper">Todos</span><span className="rounded-full border border-line bg-white px-3 py-1.5 font-body text-[11px] text-ash">Venda</span><span className="rounded-full border border-line bg-white px-3 py-1.5 font-body text-[11px] text-ash">Aluguel</span></div>
-                <div className="mt-6 overflow-hidden rounded-[19px] border border-line bg-white sm:grid sm:grid-cols-[1.05fr_0.95fr]">
-                  <img src={appPath('/hero-vello-house.png')} alt="Casa contemporânea apresentada em um catálogo Vello" className="h-[190px] w-full object-cover sm:h-full" />
-                  <div className="p-5"><p className="font-mono text-[9px] uppercase tracking-[0.14em] text-stone">Venda</p><p className="mt-3 font-display text-[25px] font-semibold leading-[0.96] tracking-[-0.048em]">Casa contemporânea com jardim</p><p className="mt-3 font-body text-[11px] text-ash">Três Figueiras · Porto Alegre</p><p className="mt-6 font-display text-[22px] font-semibold tracking-[-0.04em]">R$ 1.250.000</p></div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-function AppInAction() {
-  const screens = [
-    { label: 'Catálogo público', image: '/landing/catalog-real.png' },
-    { label: 'Dashboard', image: '/landing/dashboard-real.png' },
-    { label: 'Personalização', image: '/landing/customizer-real.png' },
+function Numbers() {
+  const items = [
+    ['1 link', 'para apresentar seu catálogo e atender melhor'],
+    ['3 passos', 'para configurar o perfil, cadastrar e compartilhar'],
+    ['100%', 'pensado para funcionar bem no celular'],
   ];
-  const [active, setActive] = useState(0);
-  const previous = (active + screens.length - 1) % screens.length;
-  const next = (active + 1) % screens.length;
-  const goNext = () => setActive((current) => (current + 1) % screens.length);
-  const goPrevious = () => setActive((current) => (current + screens.length - 1) % screens.length);
 
   return (
-    <section className="overflow-hidden bg-white pb-24 pt-8 text-ink md:pb-36 md:pt-14">
-      <Container className="text-center">
-        <Reveal>
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-stone">Veja a Vello em ação</p>
-          <h2 className="mx-auto mt-4 max-w-[720px] font-display text-[clamp(44px,5.4vw,74px)] font-semibold leading-[0.94] tracking-[-0.065em]">Cada parte do seu trabalho, no lugar certo.</h2>
-          <p className="mx-auto mt-5 max-w-[540px] font-body text-[16px] leading-relaxed text-ash">Arraste para conhecer o catálogo público, o painel de gestão e a personalização da sua vitrine.</p>
+    <section className="bg-black pb-28 pt-10 md:pb-40 md:pt-20">
+      <Container>
+        <Reveal className="text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">Do cadastro ao atendimento</p>
+          <h2 className="mx-auto mt-5 max-w-[940px] font-display text-[clamp(42px,5.7vw,76px)] font-medium leading-[1] tracking-[-0.06em]">
+            Uma rotina mais simples. Uma apresentação muito melhor.
+          </h2>
         </Reveal>
-      </Container>
-      <motion.div initial={{ opacity: 0, y: 34 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ duration: 0.7, ease }} className="relative mx-auto mt-14 h-[492px] max-w-[1180px] touch-pan-y sm:h-[590px]">
-        <motion.button type="button" aria-label={`Ver ${screens[previous].label}`} onClick={goPrevious} animate={{ x: '-182%', scale: 0.77, opacity: 0.45 }} transition={{ duration: 0.45, ease }} className="absolute left-1/2 top-[72px] hidden cursor-pointer sm:block">
-          <PhoneMockup><img src={appPath(screens[previous].image)} alt="" className="h-[560px] w-full object-cover object-top" /></PhoneMockup>
-        </motion.button>
-        <motion.div drag="x" dragConstraints={{ left: 0, right: 0 }} dragElastic={0.12} onDragEnd={(_, info) => { if (info.offset.x < -45 || info.velocity.x < -300) goNext(); if (info.offset.x > 45 || info.velocity.x > 300) goPrevious(); }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.45, ease }} className="absolute left-1/2 top-0 z-10 -translate-x-1/2 cursor-grab active:cursor-grabbing">
-          <PhoneMockup><motion.img key={screens[active].image} initial={{ opacity: 0.25, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.32, ease }} src={appPath(screens[active].image)} alt={`${screens[active].label} da Vello`} className="h-[560px] w-full select-none object-cover object-top" draggable={false} /></PhoneMockup>
-        </motion.div>
-        <motion.button type="button" aria-label={`Ver ${screens[next].label}`} onClick={goNext} animate={{ x: '82%', scale: 0.77, opacity: 0.45 }} transition={{ duration: 0.45, ease }} className="absolute left-1/2 top-[72px] hidden cursor-pointer sm:block">
-          <PhoneMockup><img src={appPath(screens[next].image)} alt="" className="h-[560px] w-full object-cover object-top" /></PhoneMockup>
-        </motion.button>
-        <div className="absolute inset-x-0 bottom-0 z-20 flex justify-center gap-2">{screens.map((screen, index) => <button key={screen.label} type="button" aria-label={`Mostrar ${screen.label}`} aria-pressed={active === index} onClick={() => setActive(index)} className={`h-2 rounded-full transition-all ${active === index ? 'w-7 bg-ink' : 'w-2 bg-ink/25 hover:bg-ink/45'}`} />)}</div>
-      </motion.div>
-    </section>
-  );
-}
 
-function ClientSelections() {
-  const [active, setActive] = useState(0);
-  const [copied, setCopied] = useState(false);
-  const clients = [
-    { name: 'Ana Ribeiro', title: 'Opções para morar perto do parque.', count: 3 },
-    { name: 'Marcelo Costa', title: 'Casas com espaço para receber.', count: 2 },
-    { name: 'Juliana Alves', title: 'Imóveis para investir no centro.', count: 4 },
-  ];
-  const copy = () => {
-    setCopied(true);
-    window.setTimeout(() => setCopied(false), 1600);
-  };
-
-  return (
-    <section id="recursos" className="bg-[#111110] py-24 md:py-36">
-      <Container>
-        <div className="grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <Reveal>
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-paper/45">Seleções para clientes</p>
-            <h2 className="mt-4 max-w-[570px] font-display text-[clamp(46px,5.5vw,76px)] font-semibold leading-[0.94] tracking-[-0.065em]">Uma página certa para cada conversa.</h2>
-            <p className="mt-6 max-w-[430px] font-body text-[16px] leading-relaxed text-paper/60">Monte uma seleção, deixe uma mensagem e compartilhe opções que realmente combinam com o que cada pessoa procura.</p>
-            <ul className="mt-8 space-y-3 font-body text-[14px] text-paper/72">
-              {['Selecione imóveis em segundos', 'Escreva uma mensagem pessoal', 'Envie um único link profissional'].map((item) => <li key={item} className="flex items-center gap-3"><span className="grid h-5 w-5 place-items-center rounded-full bg-paper text-ink"><Check size={12} strokeWidth={2.5} /></span>{item}</li>)}
-            </ul>
-          </Reveal>
-          <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ duration: 0.62, ease }} className="overflow-hidden rounded-[30px] border border-white/10 bg-white text-ink shadow-[0_42px_90px_-65px_rgba(0,0,0,0.9)]">
-            <div className="flex items-center justify-between border-b border-line px-5 py-4"><p className="font-mono text-[9px] uppercase tracking-[0.15em] text-stone">Seleção personalizada</p><span className="rounded-full bg-ink px-3 py-2 font-body text-[11px] font-semibold text-paper">+ Nova seleção</span></div>
-            <div className="grid min-h-[365px] sm:grid-cols-[178px_1fr]">
-              <div className="border-b border-line p-3 sm:border-b-0 sm:border-r">
-                {clients.map((client, index) => <button key={client.name} onClick={() => setActive(index)} aria-pressed={active === index} className={`w-full rounded-xl px-3 py-3 text-left transition-colors ${active === index ? 'bg-ink text-paper' : 'text-ash hover:bg-black/[0.04]'}`}><span className="block font-body text-[13px] font-semibold">{client.name}</span><span className="mt-1 block font-mono text-[9px] opacity-60">{client.count} IMÓVEIS</span></button>)}
+        <div className="mt-20 grid gap-14 md:grid-cols-3 md:gap-0">
+          {items.map(([number, description], index) => (
+            <Reveal key={number} delay={index * 0.07}>
+              <div className={`min-h-[180px] md:px-10 ${index > 0 ? 'md:border-l md:border-white/10' : ''} ${index === 1 ? 'md:pt-16' : ''}`}>
+                <p className="font-display text-[clamp(55px,6vw,82px)] font-medium leading-none tracking-[-0.07em]">{number}</p>
+                <p className="mt-4 max-w-[280px] font-body text-[15px] leading-relaxed text-white/48">{description}</p>
               </div>
-              <motion.div key={active} initial={{ opacity: 0, x: 12 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.28, ease }} className="p-5 sm:p-6">
-                <p className="font-mono text-[9px] uppercase tracking-[0.14em] text-stone">Para {clients[active].name}</p>
-                <p className="mt-3 max-w-[390px] font-display text-[30px] font-semibold leading-[0.96] tracking-[-0.05em]">{clients[active].title}</p>
-                <div className="mt-7 space-y-2.5">
-                  {['Apartamento com vista para o Guaíba', 'Casa contemporânea com jardim', 'Loft ensolarado', 'Studio no centro'].slice(0, clients[active].count).map((home, index) => <div key={home} className="flex items-center gap-3 border-b border-line pb-2.5"><span className="grid h-5 w-5 place-items-center rounded-full bg-black/[0.04] font-mono text-[8px] text-stone">0{index + 1}</span><span className="font-body text-[12px] text-ash">{home}</span></div>)}
-                </div>
-                <button onClick={copy} className={`mt-7 inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-body text-[12px] font-semibold transition-all ${copied ? 'bg-ink text-paper' : 'border border-line text-ink hover:bg-black/[0.04]'}`}><Copy size={13} />{copied ? 'Link copiado' : 'Copiar link da seleção'}</button>
-              </motion.div>
-            </div>
-          </motion.div>
-        </div>
-      </Container>
-    </section>
-  );
-}
-
-function FeatureGrid() {
-  const features = [
-    ['Seu catálogo, seu endereço', 'Um link direto para colocar no WhatsApp, na bio e nos anúncios.'],
-    ['Perfil que apresenta você', 'Nome, CRECI, localização e atendimento já organizados para inspirar confiança.'],
-    ['Imóveis com contexto', 'Fotos, preço, detalhes e localização aparecem do jeito certo em qualquer tela.'],
-    ['Visual personalizável', 'Ajuste cores, estilos e a faixa do perfil sem transformar o catálogo em um site complexo.'],
-  ];
-
-  return (
-    <section className="bg-ink py-24 md:py-36">
-      <Container>
-        <Reveal>
-          <div className="max-w-[770px]"><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-paper/40">Feito para o dia a dia</p><h2 className="mt-4 font-display text-[clamp(46px,5.8vw,80px)] font-semibold leading-[0.94] tracking-[-0.065em]">O essencial para trabalhar melhor e apresentar mais.</h2></div>
-        </Reveal>
-        <div className="mt-16 grid gap-3 md:grid-cols-2">
-          {features.map(([title, description], index) => (
-            <motion.article key={title} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ delay: index * 0.06, duration: 0.48, ease }} className="group min-h-[270px] rounded-[28px] border border-white/10 bg-white/[0.035] p-7 transition-colors hover:bg-white/[0.07] md:p-9">
-              <span className="grid h-10 w-10 place-items-center rounded-xl bg-white font-display text-[18px] font-semibold text-ink">0{index + 1}</span>
-              <h3 className="mt-12 font-display text-[31px] font-semibold tracking-[-0.053em]">{title}</h3>
-              <p className="mt-3 max-w-[400px] font-body text-[15px] leading-relaxed text-paper/55">{description}</p>
-            </motion.article>
+            </Reveal>
           ))}
         </div>
-        <div className="mt-3 overflow-hidden rounded-[28px] border border-white/10 bg-[#171716] p-5 sm:p-8">
-          <div className="grid items-center gap-8 md:grid-cols-[0.82fr_1.18fr]">
-            <div><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-paper/40">Visualização real</p><h3 className="mt-4 max-w-[430px] font-display text-[clamp(34px,4.4vw,58px)] font-semibold leading-[0.95] tracking-[-0.06em]">O cliente entende o imóvel antes de perguntar.</h3><p className="mt-5 max-w-[400px] font-body text-[15px] leading-relaxed text-paper/55">A Vello coloca o que importa na ordem certa: foto, preço, detalhes e uma forma simples de entrar em contato.</p></div>
-            <div className="overflow-hidden rounded-[20px] border border-white/10 bg-white"><img src={appPath('/landing/property-real.png')} alt="Página de imóvel real exibida pela Vello" className="w-full object-cover object-top" /></div>
+      </Container>
+    </section>
+  );
+}
+
+function FeatureCenter() {
+  const features = [
+    { icon: Smartphone, title: 'Painel inteligente', description: 'Veja seus imóveis, seleções e acessos de um só lugar.' },
+    { icon: Building2, title: 'Imóveis organizados', description: 'Fotos, valores e detalhes sempre prontos para apresentar.' },
+    { icon: FolderHeart, title: 'Seleções por cliente', description: 'Monte uma página específica para cada oportunidade.' },
+    { icon: Palette, title: 'Catálogo personalizável', description: 'Ajuste o visual para combinar com sua forma de trabalhar.' },
+  ];
+
+  return (
+    <section id="recursos" className="bg-black py-24 md:py-36">
+      <Container>
+        <div className="grid gap-14 lg:grid-cols-[0.96fr_1.04fr] lg:items-center">
+          <div>
+            <Reveal>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">Tudo em um só lugar</p>
+              <h2 className="mt-5 max-w-[650px] font-display text-[clamp(44px,5.3vw,72px)] font-medium leading-[0.98] tracking-[-0.065em]">
+                Seu centro de apresentação imobiliária.
+              </h2>
+            </Reveal>
+            <div className="mt-14 grid gap-x-9 gap-y-11 sm:grid-cols-2">
+              {features.map((feature, index) => {
+                const Icon = feature.icon;
+                return (
+                  <Reveal key={feature.title} delay={index * 0.06}>
+                    <article>
+                      <span className="grid h-12 w-12 place-items-center rounded-[14px] border border-white/15 bg-white text-black shadow-[0_0_32px_rgba(255,255,255,0.12)]">
+                        <Icon size={20} strokeWidth={1.8} />
+                      </span>
+                      <h3 className="mt-5 font-display text-[22px] font-semibold tracking-[-0.045em]">{feature.title}</h3>
+                      <p className="mt-2 max-w-[265px] font-body text-[14px] leading-relaxed text-white/45">{feature.description}</p>
+                    </article>
+                  </Reveal>
+                );
+              })}
+            </div>
           </div>
+
+          <Reveal className="relative min-h-[590px] overflow-hidden rounded-[34px] border border-white/[0.08] bg-[#141414] sm:min-h-[690px]">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(255,255,255,0.09),transparent_38%)]" />
+            <div className="absolute left-1/2 top-[96px] z-10 -translate-x-[88%] rotate-[-7deg] scale-[0.86] opacity-65 sm:top-[82px] sm:-translate-x-[102%] sm:scale-[1.03]">
+              <PhoneMockup>
+                <img src={appPath('/landing/dashboard-real.png')} alt="Gestão de imóveis na Vello" className="h-[560px] w-full object-cover object-top" />
+              </PhoneMockup>
+            </div>
+            <div className="absolute left-1/2 top-[44px] z-20 -translate-x-[16%] rotate-[4deg] scale-[0.94] sm:top-[38px] sm:-translate-x-[12%] sm:scale-[1.1]">
+              <PhoneMockup>
+                <img src={appPath('/landing/catalog-real.png')} alt="Catálogo Vello visto pelo cliente" className="h-[560px] w-full object-cover object-top" />
+              </PhoneMockup>
+            </div>
+            <div className="absolute inset-x-0 bottom-0 z-30 h-48 bg-gradient-to-t from-[#141414] via-[#141414]/92 to-transparent" />
+          </Reveal>
         </div>
       </Container>
     </section>
+  );
+}
+
+function EverydayFeatures() {
+  return (
+    <section className="bg-black py-24 md:py-36">
+      <Container>
+        <Reveal className="text-center">
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">O essencial, bem resolvido</p>
+          <h2 className="mx-auto mt-5 max-w-[900px] font-display text-[clamp(43px,5.3vw,72px)] font-medium leading-[0.98] tracking-[-0.06em]">
+            Feito para o seu dia a dia. E para a tela do seu cliente.
+          </h2>
+          <p className="mx-auto mt-5 max-w-[650px] font-body text-[15px] leading-relaxed text-white/45">
+            Uma experiência limpa para cadastrar, organizar, selecionar e apresentar imóveis sem complicar seu atendimento.
+          </p>
+        </Reveal>
+
+        <div className="mt-16 grid gap-5 md:grid-cols-2">
+          <ProductCard
+            image="/landing/catalog-real.png"
+            eyebrow="Catálogo público"
+            title="Todos os seus imóveis, em uma vitrine."
+            description="Seu cliente encontra, filtra e abre cada imóvel em uma página preparada para gerar interesse."
+          />
+          <ProductCard
+            image="/landing/customizer-real.png"
+            eyebrow="Seleções personalizadas"
+            title="Uma página certa para cada conversa."
+            description="Escolha os imóveis, escreva uma mensagem e envie um link feito especialmente para aquele cliente."
+            reverse
+          />
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+function ProductCard({ image, eyebrow, title, description, reverse = false }: { image: string; eyebrow: string; title: string; description: string; reverse?: boolean }) {
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={viewport}
+      transition={{ duration: 0.56, ease }}
+      className="group overflow-hidden rounded-[30px] border border-white/[0.08] bg-[#151515]"
+    >
+      <div className="relative h-[360px] overflow-hidden border-b border-white/[0.08] bg-[#101010] sm:h-[430px]">
+        <div className={`absolute inset-0 ${reverse ? 'bg-[radial-gradient(circle_at_26%_28%,rgba(255,255,255,0.10),transparent_42%)]' : 'bg-[radial-gradient(circle_at_72%_30%,rgba(255,255,255,0.10),transparent_42%)]'}`} />
+        <div className={`absolute top-10 transition-transform duration-500 group-hover:-translate-y-2 ${reverse ? 'left-1/2 -translate-x-[42%] rotate-[3deg] scale-[0.82] sm:scale-[0.9]' : 'left-1/2 -translate-x-1/2 scale-[0.82] sm:scale-[0.9]'}`}>
+          <PhoneMockup>
+            <img src={appPath(image)} alt={title} className="h-[560px] w-full object-cover object-top" />
+          </PhoneMockup>
+        </div>
+        <span className="absolute left-8 top-8 grid h-12 w-12 place-items-center rounded-full border border-white/10 bg-white text-black">
+          {reverse ? <UserRound size={19} /> : <Search size={19} />}
+        </span>
+      </div>
+      <div className="p-7 sm:p-9">
+        <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/35">{eyebrow}</p>
+        <h3 className="mt-4 max-w-[470px] font-display text-[31px] font-semibold leading-[1.02] tracking-[-0.055em] sm:text-[38px]">{title}</h3>
+        <p className="mt-4 max-w-[490px] font-body text-[14px] leading-relaxed text-white/45">{description}</p>
+      </div>
+    </motion.article>
   );
 }
 
 function HowItWorks() {
   const steps = [
-    ['Crie seu perfil', 'Preencha suas informações profissionais e deixe seu atendimento pronto para aparecer no catálogo.'],
-    ['Adicione imóveis', 'Cadastre fotos, valores e detalhes uma vez. O catálogo organiza a apresentação para você.'],
-    ['Compartilhe e converse', 'Envie seu link ou uma seleção personalizada em qualquer conversa com clientes.'],
+    ['01', 'Crie seu perfil', 'Adicione seus dados profissionais e deixe sua apresentação pronta.'],
+    ['02', 'Cadastre os imóveis', 'Organize fotos, valores, diferenciais e informações importantes.'],
+    ['03', 'Compartilhe', 'Envie seu catálogo ou uma seleção personalizada em um único link.'],
   ];
 
   return (
-    <section id="como-funciona" className="bg-white py-24 text-ink md:py-36">
+    <section id="como-funciona" className="bg-black py-24 md:py-36">
       <Container>
-        <Reveal><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-stone">Comece em minutos</p><h2 className="mt-4 max-w-[790px] font-display text-[clamp(46px,5.8vw,80px)] font-semibold leading-[0.94] tracking-[-0.065em]">Três passos para transformar sua apresentação.</h2></Reveal>
-        <div className="mt-16 grid gap-10 md:grid-cols-3 md:gap-0">
-          {steps.map(([title, description], index) => <Reveal key={title} delay={index * 0.07}><article className="border-t border-line pt-5 md:min-h-[268px] md:px-8 md:first:pl-0 md:not-last:border-r md:last:pr-0"><span className="font-display text-[48px] tracking-[-0.065em] text-stone">0{index + 1}</span><h3 className="mt-10 max-w-[260px] font-display text-[30px] font-semibold tracking-[-0.05em]">{title}</h3><p className="mt-3 max-w-[300px] font-body text-[15px] leading-relaxed text-ash">{description}</p></article></Reveal>)}
+        <Reveal>
+          <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">Como funciona</p>
+          <h2 className="mt-5 max-w-[800px] font-display text-[clamp(44px,5.5vw,74px)] font-medium leading-[0.98] tracking-[-0.065em]">
+            Comece em três passos simples.
+          </h2>
+        </Reveal>
+
+        <div className="mt-16 grid gap-12 md:grid-cols-3 md:gap-0">
+          {steps.map(([number, title, description], index) => (
+            <Reveal key={number} delay={index * 0.07}>
+              <article className={`min-h-[245px] md:px-10 ${index > 0 ? 'md:border-l md:border-white/10' : ''} ${index === 0 ? 'md:pl-0' : ''}`}>
+                <span className="grid h-12 w-12 place-items-center rounded-[14px] bg-white font-display text-[17px] font-semibold text-black shadow-[0_0_30px_rgba(255,255,255,0.12)]">{number}</span>
+                <h3 className="mt-12 font-display text-[29px] font-semibold tracking-[-0.05em]">{title}</h3>
+                <p className="mt-3 max-w-[300px] font-body text-[14px] leading-relaxed text-white/45">{description}</p>
+              </article>
+            </Reveal>
+          ))}
         </div>
       </Container>
     </section>
   );
 }
 
-function FinalCall() {
+function ClosingCall() {
   return (
-    <section className="bg-ink py-28 text-paper md:py-40">
-      <Container className="text-center">
-        <Reveal><p className="font-mono text-[10px] uppercase tracking-[0.16em] text-paper/40">Sua próxima vitrine começa aqui</p><h2 className="mx-auto mt-5 max-w-[940px] font-display text-[clamp(52px,7vw,104px)] font-semibold leading-[0.9] tracking-[-0.075em]">Seus imóveis merecem uma apresentação melhor.</h2><p className="mx-auto mt-6 max-w-[520px] font-body text-[16px] leading-relaxed text-paper/58">Crie seu catálogo, compartilhe com segurança e deixe a próxima conversa começar mais preparada.</p><a href={appPath('/cadastro')} className="mt-10 inline-flex items-center gap-2 rounded-full bg-paper px-7 py-4 font-body text-[15px] font-semibold text-ink transition-transform duration-150 hover:scale-[1.02]">Criar meu catálogo <ArrowRight size={16} /></a></Reveal>
+    <section id="contato" className="bg-black pb-8 pt-14 md:pb-10 md:pt-24">
+      <Container>
+        <Reveal className="relative min-h-[600px] overflow-hidden rounded-[34px] border border-white/[0.08] bg-[#171717] p-7 sm:p-12 lg:min-h-[540px] lg:p-14">
+          <div className="absolute right-0 top-0 h-full w-full bg-[radial-gradient(circle_at_88%_8%,rgba(255,255,255,0.15),transparent_36%)] lg:w-[58%]" />
+          <div className="relative z-20 max-w-[550px] lg:pt-12">
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">Sua vitrine começa aqui</p>
+            <h2 className="mt-5 font-display text-[clamp(43px,5.1vw,70px)] font-medium leading-[0.98] tracking-[-0.065em]">
+              Apresente seus imóveis melhor, a partir de hoje.
+            </h2>
+            <p className="mt-5 max-w-[460px] font-body text-[15px] leading-relaxed text-white/48">
+              Crie sua conta, organize seu catálogo e transforme cada conversa em uma apresentação profissional.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href={appPath('/cadastro')} className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-body text-[14px] font-semibold text-black transition-transform duration-150 hover:scale-[1.02]">
+                Criar meu catálogo <ArrowRight size={15} />
+              </a>
+              <a href={appPath('/jose')} className="rounded-full border border-white/18 px-6 py-3.5 font-body text-[14px] font-medium text-white hover:bg-white/10">
+                Ver demonstração
+              </a>
+            </div>
+          </div>
+
+          <div className="absolute bottom-[-138px] right-[-92px] z-10 hidden rotate-[2deg] scale-[1.05] lg:block xl:right-[30px] xl:scale-[1.15]">
+            <PhoneMockup>
+              <img src={appPath('/landing/catalog-real.png')} alt="Catálogo Vello em um celular" className="h-[560px] w-full object-cover object-top" />
+            </PhoneMockup>
+          </div>
+          <div className="absolute bottom-[-170px] right-[175px] z-0 hidden -rotate-[6deg] opacity-55 lg:block xl:right-[300px]">
+            <PhoneMockup>
+              <img src={appPath('/landing/property-real.png')} alt="Detalhe de um imóvel na Vello" className="h-[560px] w-full object-cover object-top" />
+            </PhoneMockup>
+          </div>
+
+          <div className="absolute bottom-[-255px] left-1/2 z-10 -translate-x-1/2 scale-[0.78] lg:hidden">
+            <PhoneMockup>
+              <img src={appPath('/landing/catalog-real.png')} alt="Catálogo Vello em um celular" className="h-[560px] w-full object-cover object-top" />
+            </PhoneMockup>
+          </div>
+        </Reveal>
       </Container>
     </section>
   );
 }
 
-function Footer() {
-  return <footer className="border-t border-white/10 bg-ink py-10 text-paper"><Container className="flex flex-col gap-7 sm:flex-row sm:items-center sm:justify-between"><Logo variant="light" /><div className="flex flex-wrap gap-x-6 gap-y-3 font-body text-[13px] text-paper/55"><a href="#produto" className="hover:text-paper">Produto</a><a href="#recursos" className="hover:text-paper">Recursos</a><a href={appPath('/login')} className="hover:text-paper">Entrar</a><a href={appPath('/cadastro')} className="hover:text-paper">Criar conta</a></div><p className="font-mono text-[10px] text-paper/35">© {new Date().getFullYear()} Vello</p></Container></footer>;
+function LandingFooter() {
+  return (
+    <footer className="bg-black pb-5 pt-4 text-white">
+      <Container>
+        <div className="rounded-[30px] border border-white/[0.08] bg-[#171717] px-7 py-10 sm:px-10 lg:px-12 lg:py-12">
+          <div className="grid gap-12 lg:grid-cols-[1.35fr_0.65fr_0.65fr_1fr]">
+            <div>
+              <Logo variant="light" />
+              <p className="mt-5 max-w-[330px] font-body text-[14px] leading-relaxed text-white/42">
+                A plataforma para corretores apresentarem imóveis, criarem seleções e compartilharem oportunidades com mais profissionalismo.
+              </p>
+            </div>
+            <FooterColumn title="Produto" links={[['Recursos', '#recursos'], ['Como funciona', '#como-funciona'], ['Demonstração', appPath('/jose')]]} />
+            <FooterColumn title="Conta" links={[['Entrar', appPath('/login')], ['Criar conta', appPath('/cadastro')], ['Dashboard', appPath('/dashboard')]]} />
+            <div>
+              <p className="font-body text-[14px] font-semibold">Fale com a Vello</p>
+              <a href="mailto:vellocorretores@gmail.com" className="mt-5 block font-body text-[14px] text-white/45 transition-colors hover:text-white">vellocorretores@gmail.com</a>
+              <a href={appPath('/cadastro')} className="mt-6 inline-flex items-center gap-2 border-b border-white/30 pb-1 font-body text-[13px] font-semibold">Começar agora <ArrowRight size={13} /></a>
+            </div>
+          </div>
+          <div className="mt-12 flex flex-col gap-3 border-t border-white/[0.08] pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/28">© {new Date().getFullYear()} Vello</p>
+            <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-white/28">Feito para corretores que valorizam apresentação</p>
+          </div>
+        </div>
+      </Container>
+    </footer>
+  );
 }
 
-function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
-  return <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={reveal} transition={{ delay, duration: 0.58, ease }}>{children}</motion.div>;
+function FooterColumn({ title, links }: { title: string; links: [string, string][] }) {
+  return (
+    <div>
+      <p className="font-body text-[14px] font-semibold">{title}</p>
+      <div className="mt-5 flex flex-col gap-3">
+        {links.map(([label, href]) => <a key={label} href={href} className="font-body text-[14px] text-white/42 transition-colors hover:text-white">{label}</a>)}
+      </div>
+    </div>
+  );
+}
+
+function Reveal({ children, delay = 0, className = '' }: { children: ReactNode; delay?: number; className?: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={viewport}
+      transition={{ delay, duration: 0.56, ease }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
 }
