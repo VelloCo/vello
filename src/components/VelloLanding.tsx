@@ -294,30 +294,12 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
       <span className="absolute left-[4%] top-[55%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:left-[10%]" />
       <span className="absolute right-[14%] top-[18%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:right-[22%]" />
 
-      <div className={`absolute z-20 aspect-[0.868] ${phones}`}>
-        <RealScreenPhone screen="dashboard" className="bottom-[1%] left-[2%] w-[54%] -rotate-[6deg]" />
-        <RealScreenPhone screen="catalog" className="bottom-0 right-[1%] w-[58%] rotate-[3deg]" priority={mode === 'hero'} />
-      </div>
-    </div>
-  );
-}
-
-function RealScreenPhone({ screen, className, priority = false }: { screen: 'dashboard' | 'catalog'; className: string; priority?: boolean }) {
-  const src = screen === 'dashboard' ? '/landing/dashboard-empty-real.png' : '/landing/catalog-empty-real.png';
-  const alt = screen === 'dashboard' ? 'Painel inicial da Vello' : 'Catálogo público da Vello';
-
-  return (
-    <div className={`absolute aspect-[0.522] [transform-style:preserve-3d] ${className}`}>
-      <span className="absolute -left-[5px] bottom-[6%] top-[8%] w-[7px] rounded-l-full bg-[linear-gradient(90deg,#080808_0%,#555_48%,#111_100%)] shadow-[-4px_0_9px_rgba(255,255,255,0.12)]" />
-      <span className="absolute -right-[4px] top-[25%] h-[11%] w-[5px] rounded-r-full bg-[#1b1b1b]" />
-      <span className="absolute -right-[4px] top-[39%] h-[16%] w-[5px] rounded-r-full bg-[#1b1b1b]" />
-      <div className="relative h-full overflow-hidden rounded-[clamp(24px,7vw,42px)] border-[5px] border-black bg-black shadow-[0_38px_58px_-19px_rgba(0,0,0,0.95),inset_0_0_0_1px_rgba(255,255,255,0.24)]">
-        <div className="absolute inset-[4px] overflow-hidden rounded-[clamp(19px,6vw,36px)] bg-[#f7f6f2]">
-          <img src={appPath(src)} alt={priority ? alt : ''} decoding="async" className="h-full w-full object-cover object-top [image-rendering:auto]" />
-        </div>
-        <span className="absolute left-1/2 top-[6px] z-10 h-[18px] w-[48%] -translate-x-1/2 rounded-full bg-black shadow-[0_1px_3px_rgba(255,255,255,0.14)]" />
-        <span className="pointer-events-none absolute inset-x-[9%] top-[3px] h-px bg-white/25" />
-      </div>
+      <img
+        src={appPath('/landing/vello-phones-real-screens@3x.png')}
+        alt={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : ''}
+        decoding="async"
+        className={`absolute z-20 block h-auto max-w-none object-contain [image-rendering:auto] drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)] ${phones}`}
+      />
     </div>
   );
 }
