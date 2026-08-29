@@ -3,7 +3,6 @@ import { ArrowRight, Building2, FolderHeart, Heart, Home, MapPin, Menu, Palette,
 import { useState } from 'react';
 import { appPath } from '../lib/paths';
 import { Logo } from './Logo';
-import { PhoneMockup } from './PhoneMockup';
 import { Container } from './Primitives';
 
 const ease = [0.4, 0, 0.2, 1] as const;
@@ -273,16 +272,11 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
   const lineCenter = mode === 'cta'
     ? 'left-1/2 top-[82%] lg:left-[76%] lg:top-[55%]'
     : 'left-1/2 top-[56%]';
-  const backPhone = mode === 'hero'
-    ? 'left-[-2%] top-[72px] scale-[0.55] sm:left-[7%] sm:top-[82px] sm:scale-[0.76] lg:left-[10%]'
+  const phones = mode === 'hero'
+    ? 'bottom-[8px] left-1/2 w-[94%] max-w-[340px] -translate-x-1/2 sm:max-w-none sm:w-[430px] lg:w-[490px]'
     : mode === 'panel'
-      ? 'left-[-2%] top-[120px] scale-[0.62] sm:left-[1%] sm:top-[120px] sm:scale-[0.82]'
-      : 'left-[-5%] top-[455px] scale-[0.48] sm:left-[8%] sm:top-[410px] sm:scale-[0.58] lg:left-[48%] lg:top-[88px] lg:scale-[0.59]';
-  const frontPhone = mode === 'hero'
-    ? 'right-[-3%] top-[20px] scale-[0.62] sm:right-[8%] sm:top-[18px] sm:scale-[0.86] lg:right-[10%]'
-    : mode === 'panel'
-      ? 'right-[-4%] top-[38px] scale-[0.7] sm:right-[2%] sm:top-[48px] sm:scale-[0.94]'
-      : 'right-[-4%] top-[405px] scale-[0.55] sm:right-[8%] sm:top-[355px] sm:scale-[0.68] lg:right-[-2%] lg:top-[28px] lg:scale-[0.69]';
+      ? 'bottom-[18px] left-1/2 w-[94%] max-w-[420px] -translate-x-1/2 sm:max-w-none sm:w-[540px]'
+      : 'bottom-[24px] left-1/2 w-[94%] max-w-[430px] -translate-x-1/2 sm:max-w-none sm:w-[500px] lg:bottom-[14px] lg:left-[77%] lg:w-[365px]';
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden={mode === 'hero' ? undefined : true}>
@@ -300,16 +294,11 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
       <span className="absolute right-[14%] top-[18%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:right-[22%]" />
       <span className="absolute bottom-[-60px] left-1/2 h-32 w-[72%] -translate-x-1/2 rounded-[50%] bg-white/15 blur-[55px]" />
 
-      <div className={`absolute z-10 origin-top-left ${backPhone}`}>
-        <PhoneMockup className="shadow-[0_35px_80px_-25px_rgba(0,0,0,0.9)]">
-          <img src={appPath('/landing/dashboard-empty-real.png')} alt={mode === 'hero' ? 'Dashboard da Vello no celular' : ''} className="h-[560px] w-full object-cover object-top" />
-        </PhoneMockup>
-      </div>
-      <div className={`absolute z-20 origin-top-right ${frontPhone}`}>
-        <PhoneMockup className="shadow-[0_35px_80px_-25px_rgba(0,0,0,0.9)]">
-          <img src={appPath('/landing/catalog-empty-real.png')} alt={mode === 'hero' ? 'Catálogo público da Vello no celular' : ''} className="h-[560px] w-full object-cover object-top" />
-        </PhoneMockup>
-      </div>
+      <img
+        src={appPath('/landing/vello-phones-real-screens.png')}
+        alt={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : ''}
+        className={`absolute z-20 max-w-none drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)] ${phones}`}
+      />
     </div>
   );
 }
