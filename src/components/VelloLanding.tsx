@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, Building2, FolderHeart, Heart, Home, MapPin, Menu, Palette, Search, Share2, SlidersHorizontal, Smartphone, X } from 'lucide-react';
+import { ArrowRight, Bell, Building2, FolderHeart, Heart, Home, MapPin, Menu, Palette, Plus, Search, Share2, SlidersHorizontal, Smartphone, UserRound, X } from 'lucide-react';
 import { useState } from 'react';
 import { appPath } from '../lib/paths';
 import { Logo } from './Logo';
@@ -307,16 +307,118 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
           animate={reduceMotion ? undefined : { opacity: [0.42, 0.26, 0.42], scaleX: [0.94, 1.04, 0.94] }}
           transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <motion.img
-          src={appPath('/landing/vello-phones-dark-reference.png')}
-          alt={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : ''}
-          decoding="async"
+        <motion.div
+          role={mode === 'hero' ? 'img' : undefined}
+          aria-label={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : undefined}
           animate={reduceMotion ? undefined : { y: [0, -8, 0], rotate: [0, 0.35, 0] }}
           transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut' }}
-          className="relative z-10 block h-auto w-full max-w-none object-contain [image-rendering:auto] drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)]"
-        />
+          className="relative z-10 aspect-[0.686/1] w-full [container-type:inline-size] drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)]"
+        >
+          <CssPhonePair />
+        </motion.div>
         <div className={`absolute inset-x-[-5%] bottom-[-2px] z-20 h-[24%] bg-gradient-to-t ${phoneFade} to-transparent`} />
       </div>
+    </div>
+  );
+}
+
+function CssPhonePair() {
+  return (
+    <div className="absolute inset-0">
+      <PhoneShell className="left-[1%] top-[17%] z-10 h-[80%] w-[62%] -rotate-[1.4deg] opacity-95">
+        <CatalogPhoneScreen />
+      </PhoneShell>
+      <PhoneShell className="left-[38%] top-0 z-20 h-[96%] w-[62%] rotate-[0.6deg]">
+        <DashboardPhoneScreen />
+      </PhoneShell>
+    </div>
+  );
+}
+
+function PhoneShell({ children, className }: { children: React.ReactNode; className: string }) {
+  return (
+    <div className={`absolute rounded-[10cqw] bg-[linear-gradient(110deg,#777_0%,#171717_8%,#050505_48%,#4a4a4a_96%)] p-[1.35cqw] shadow-[0_3cqw_8cqw_rgba(0,0,0,0.7),inset_0_0_0_0.22cqw_rgba(255,255,255,0.36)] ${className}`}>
+      <span className="absolute -left-[0.55cqw] top-[15%] h-[9%] w-[0.8cqw] rounded-l-full bg-gradient-to-b from-[#676767] to-[#171717]" />
+      <span className="absolute -left-[0.55cqw] top-[27%] h-[14%] w-[0.8cqw] rounded-l-full bg-gradient-to-b from-[#676767] to-[#171717]" />
+      <div className="relative h-full overflow-hidden rounded-[8.6cqw] bg-[#090909] ring-[0.25cqw] ring-white/10">
+        <div className="absolute left-1/2 top-[1.5cqw] z-30 h-[4.8cqw] w-[15cqw] -translate-x-1/2 rounded-full bg-black shadow-[inset_0_0_0_0.18cqw_rgba(255,255,255,0.04)]" />
+        <div className="absolute inset-x-[5cqw] top-[2.05cqw] z-20 flex items-center justify-between font-mono text-[2.25cqw] font-semibold text-white/88">
+          <span>9:41</span><span className="tracking-[-0.12em]">▮▮⌁</span>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function PhoneHeader({ alert = false }: { alert?: boolean }) {
+  return (
+    <div className="flex items-center justify-between px-[4.2cqw] pt-[8.7cqw] text-white">
+      <div className="flex items-center gap-[1.5cqw]"><span className="grid h-[5.5cqw] w-[5.5cqw] place-items-center rounded-full bg-white font-display text-[2.5cqw] font-black text-black">V</span><span className="font-display text-[3.2cqw] font-semibold tracking-[-0.04em]">Vello</span></div>
+      {alert ? <Bell size="3.4cqw" strokeWidth={1.5} className="text-white/60" /> : <span className="grid h-[5.4cqw] w-[5.4cqw] place-items-center rounded-full border border-white/10 bg-white/[0.04]"><Share2 size="2.8cqw" /></span>}
+    </div>
+  );
+}
+
+function DashboardPhoneScreen() {
+  return (
+    <div className="h-full bg-[radial-gradient(circle_at_60%_25%,rgba(255,255,255,0.045),transparent_38%),#0a0a0a]">
+      <PhoneHeader alert />
+      <div className="px-[4.2cqw] pb-[12cqw] pt-[5.5cqw] text-white">
+        <p className="font-body text-[2.45cqw] text-white/48">Boa tarde, Jose.</p>
+        <h3 className="mt-[1cqw] font-display text-[5.4cqw] font-medium leading-[0.96] tracking-[-0.065em]">Seus imóveis estão<br />todos por aqui.</h3>
+        <div className="mt-[4cqw] flex gap-[1.4cqw]">
+          <span className="rounded-full border border-white/12 px-[2.4cqw] py-[1.45cqw] font-body text-[2cqw] font-semibold">Personalizar</span>
+          <span className="flex items-center gap-[0.8cqw] rounded-full bg-white px-[2.5cqw] py-[1.45cqw] font-body text-[2cqw] font-semibold text-black"><Plus size="2.4cqw" /> Novo imóvel</span>
+        </div>
+        <div className="mt-[4cqw] grid grid-cols-2 gap-[1.5cqw]">
+          {[['DISPONÍVEIS', '12'], ['RESERVADOS', '3'], ['VENDIDOS / ALUGADOS', '8'], ['TOTAL', '23']].map(([label, value]) => (
+            <div key={label} className="rounded-[3.5cqw] border border-white/[0.08] bg-white/[0.035] p-[2.5cqw]">
+              <p className="font-mono text-[1.45cqw] tracking-[0.1em] text-white/44">{label}</p>
+              <p className="mt-[1.5cqw] font-display text-[5cqw] font-semibold tracking-[-0.05em]">{value}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-[4.6cqw] flex items-end justify-between"><div><p className="font-display text-[4cqw] font-semibold tracking-[-0.045em]">Seus imóveis</p><p className="mt-[0.5cqw] font-body text-[2cqw] text-white/42">Os mais recentes do catálogo.</p></div><span className="border-b border-white/35 pb-[0.4cqw] font-body text-[1.8cqw]">Ver todos</span></div>
+        <PropertyPhoneCard image="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=90" />
+      </div>
+      <PhoneBottomNav />
+    </div>
+  );
+}
+
+function CatalogPhoneScreen() {
+  return (
+    <div className="h-full bg-[#0a0a0a]">
+      <PhoneHeader />
+      <div className="px-[4.2cqw] pb-[12cqw] pt-[4cqw] text-white">
+        <div className="flex items-center gap-[2cqw] rounded-[4cqw] border border-white/10 bg-white/[0.035] p-[2.2cqw]"><span className="grid h-[7cqw] w-[7cqw] place-items-center rounded-full bg-white text-[3cqw] text-black">J</span><div><p className="font-display text-[2.8cqw] font-semibold">Jose</p><p className="font-body text-[1.7cqw] text-white/42">Corretor de imóveis · CRECI</p></div></div>
+        <h3 className="mt-[5cqw] font-display text-[5cqw] font-medium tracking-[-0.06em]">Todos os imóveis</h3>
+        <p className="mt-[1cqw] font-body text-[2cqw] text-white/42">Explore todas as opções disponíveis.</p>
+        <div className="mt-[3.5cqw] flex items-center gap-[1.4cqw] rounded-full border border-white/10 bg-white/[0.04] px-[2.5cqw] py-[1.8cqw]"><Search size="2.4cqw" className="text-white/48" /><span className="font-body text-[1.9cqw] text-white/42">Onde você quer morar?</span></div>
+        <div className="mt-[2cqw] flex gap-[1cqw]"><span className="rounded-full bg-white px-[2.3cqw] py-[1.25cqw] font-body text-[1.8cqw] font-semibold text-black">Todos</span>{['Comprar', 'Alugar'].map((item) => <span key={item} className="rounded-full border border-white/10 px-[2cqw] py-[1.25cqw] font-body text-[1.8cqw] text-white/55">{item}</span>)}</div>
+        <div className="mt-[3.2cqw] space-y-[2cqw]">
+          <CatalogPropertyCard image="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=90" title="Casa contemporânea" price="R$ 1.250.000" />
+          <CatalogPropertyCard image="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=900&q=90" title="Apartamento no Moinhos" price="R$ 890.000" />
+        </div>
+      </div>
+      <PhoneBottomNav />
+    </div>
+  );
+}
+
+function PropertyPhoneCard({ image }: { image: string }) {
+  return <div className="relative mt-[2.5cqw] h-[20cqw] overflow-hidden rounded-[3.4cqw] border border-white/10"><img src={image} alt="" className="h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" /><span className="absolute bottom-[2cqw] left-[2.2cqw] font-display text-[2.4cqw] font-semibold">Casa contemporânea</span><Heart size="3cqw" className="absolute right-[2cqw] top-[2cqw]" /></div>;
+}
+
+function CatalogPropertyCard({ image, title, price }: { image: string; title: string; price: string }) {
+  return <div className="overflow-hidden rounded-[3.4cqw] border border-white/10 bg-white/[0.035]"><div className="relative h-[17cqw]"><img src={image} alt="" className="h-full w-full object-cover" /><div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" /><Heart size="2.8cqw" className="absolute right-[1.8cqw] top-[1.6cqw]" /></div><div className="p-[2cqw]"><p className="font-display text-[2.5cqw] font-semibold">{title}</p><p className="mt-[0.7cqw] font-mono text-[2cqw] text-white/76">{price}</p></div></div>;
+}
+
+function PhoneBottomNav() {
+  return (
+    <div className="absolute inset-x-0 bottom-0 z-20 flex h-[10cqw] items-center justify-around border-t border-white/[0.07] bg-[#090909]/95 px-[2cqw] text-white/44 backdrop-blur-md">
+      <Home size="3cqw" className="text-white" /><Building2 size="3cqw" /><span className="grid h-[7cqw] w-[7cqw] place-items-center rounded-full bg-white text-black"><Plus size="3.4cqw" /></span><Heart size="3cqw" /><UserRound size="3cqw" />
     </div>
   );
 }
