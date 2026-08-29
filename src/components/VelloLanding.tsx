@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { ArrowRight, Building2, FolderHeart, Menu, Palette, Search, Share2, Smartphone, X } from 'lucide-react';
+import { ArrowRight, Building2, FolderHeart, Heart, Home, MapPin, Menu, Palette, Search, Share2, SlidersHorizontal, Smartphone, X } from 'lucide-react';
 import { useState } from 'react';
 import { appPath } from '../lib/paths';
 import { Logo } from './Logo';
@@ -104,12 +104,7 @@ function Hero() {
         </motion.div>
 
         <motion.div initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12, duration: 0.75, ease }} className="relative z-10 mx-auto mt-12 h-[410px] max-w-[1120px] sm:mt-14 sm:h-[500px] lg:h-[570px]">
-          <img
-            src={appPath('/landing/vello-hero-monochrome.png')}
-            alt="Dois celulares exibindo o catálogo imobiliário da Vello"
-            className="absolute bottom-0 left-1/2 w-[620px] max-w-none -translate-x-1/2 sm:w-[920px] lg:w-[1120px]"
-          />
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#070707] to-transparent" />
+          <PhoneStage mode="hero" />
         </motion.div>
       </Container>
     </section>
@@ -179,8 +174,7 @@ function FeatureCenter() {
           </div>
 
           <div className="relative min-h-[520px] overflow-hidden rounded-[34px] border border-white/[0.08] bg-[#151515] sm:min-h-[640px]">
-            <img src={appPath('/landing/vello-hero-monochrome.png')} alt="Vello funcionando em dois celulares" className="absolute bottom-0 left-1/2 h-full w-full -translate-x-1/2 object-cover object-[58%_center] sm:w-[118%] sm:max-w-none" />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#151515] via-transparent to-transparent" />
+            <PhoneStage mode="panel" />
           </div>
         </div>
       </Container>
@@ -267,12 +261,46 @@ function ClosingCall() {
             </div>
           </div>
 
-          <img src={appPath('/landing/vello-hero-monochrome.png')} alt="Catálogo da Vello no celular" className="absolute bottom-[-30px] right-[-235px] z-10 hidden w-[780px] max-w-none lg:block xl:right-[-100px]" />
-          <img src={appPath('/landing/vello-hero-monochrome.png')} alt="" className="absolute bottom-[-90px] left-1/2 z-10 w-[600px] max-w-none -translate-x-1/2 lg:hidden" />
-          <div className="absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-[#171717] to-transparent" />
+          <PhoneStage mode="cta" />
         </div>
       </Container>
     </section>
+  );
+}
+
+function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
+  const lineCenter = mode === 'cta'
+    ? 'left-1/2 top-[82%] lg:left-[76%] lg:top-[55%]'
+    : 'left-1/2 top-[56%]';
+  const phonePosition = mode === 'hero'
+    ? 'bottom-[-105px] w-[430px] sm:bottom-[-170px] sm:w-[600px] lg:bottom-[-205px] lg:w-[640px]'
+    : mode === 'panel'
+      ? 'bottom-[-40px] w-[500px] sm:bottom-[-25px] sm:w-[610px]'
+      : 'bottom-[-245px] w-[500px] lg:bottom-[-175px] lg:left-[76%] lg:w-[560px]';
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden={mode === 'hero' ? undefined : true}>
+      <div className={`absolute ${lineCenter} h-[310px] w-[620px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/[0.11] sm:h-[430px] sm:w-[900px]`} />
+      <div className={`absolute ${lineCenter} h-[235px] w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/[0.09] sm:h-[330px] sm:w-[700px]`} />
+      <div className={`absolute ${lineCenter} h-[160px] w-[350px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/[0.07] sm:h-[230px] sm:w-[520px]`} />
+
+      <span className="absolute left-[8%] top-[37%] grid h-10 w-10 place-items-center rounded-full border border-white/18 bg-[#171717] text-white/80 shadow-[0_0_22px_rgba(255,255,255,0.08)] sm:left-[14%] sm:h-12 sm:w-12"><SlidersHorizontal size={16} /></span>
+      <span className="absolute right-[9%] top-[28%] grid h-10 w-10 place-items-center rounded-full border border-white/18 bg-[#171717] text-white/80 shadow-[0_0_22px_rgba(255,255,255,0.08)] sm:right-[14%] sm:h-12 sm:w-12"><MapPin size={17} /></span>
+      <span className="absolute left-[3%] bottom-[23%] hidden h-12 w-12 place-items-center rounded-full border border-white/18 bg-[#171717] text-white/80 shadow-[0_0_22px_rgba(255,255,255,0.08)] sm:grid sm:left-[8%]"><Home size={18} /></span>
+      <span className="absolute right-[2%] top-[54%] hidden h-12 w-12 place-items-center rounded-full border border-white/18 bg-[#171717] text-white/80 shadow-[0_0_22px_rgba(255,255,255,0.08)] sm:grid sm:right-[7%]"><Building2 size={18} /></span>
+      <span className="absolute bottom-[14%] right-[5%] hidden h-12 w-12 place-items-center rounded-full border border-white/18 bg-[#171717] text-white/80 shadow-[0_0_22px_rgba(255,255,255,0.08)] sm:grid sm:right-[11%]"><Heart size={18} /></span>
+
+      <span className="absolute left-[4%] top-[55%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:left-[10%]" />
+      <span className="absolute right-[14%] top-[18%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:right-[22%]" />
+      <span className="absolute bottom-[-60px] left-1/2 h-32 w-[72%] -translate-x-1/2 rounded-[50%] bg-white/15 blur-[55px]" />
+
+      <img
+        src={appPath('/landing/vello-phones-cutout-trimmed.png')}
+        alt={mode === 'hero' ? 'Dois celulares exibindo o catálogo imobiliário da Vello' : ''}
+        className={`absolute left-1/2 z-10 max-w-none -translate-x-1/2 ${phonePosition}`}
+      />
+      <div className={`absolute inset-x-0 bottom-0 z-20 h-16 bg-gradient-to-t ${mode === 'hero' ? 'from-[#070707]' : mode === 'panel' ? 'from-[#151515]' : 'from-[#171717]'} to-transparent`} />
+    </div>
   );
 }
 
