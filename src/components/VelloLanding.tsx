@@ -312,7 +312,7 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
           aria-label={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : undefined}
           animate={reduceMotion ? undefined : { y: [0, -8, 0], rotate: [0, 0.35, 0] }}
           transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut' }}
-          className="relative z-10 aspect-[0.76/1] w-full [container-type:inline-size] drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)]"
+          className="relative z-10 aspect-[650/932] w-full [container-type:inline-size] drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)]"
         >
           <CssPhonePair />
         </motion.div>
@@ -325,29 +325,24 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
 function CssPhonePair() {
   return (
     <div className="absolute inset-0">
-      <PhoneShell className="left-[2%] top-[16%] z-10 h-[79%] w-[64%] -rotate-[1.7deg] opacity-95">
+      <PhoneScreenSurface className="left-[3.25%] top-[17.2%] z-10 h-[80%] w-[41.2%] rounded-[5.8cqw]">
         <CatalogPhoneScreen />
-      </PhoneShell>
-      <PhoneShell className="left-[38%] top-[1%] z-20 h-[94%] w-[62%] rotate-[0.2deg]">
+      </PhoneScreenSurface>
+      <PhoneScreenSurface className="left-[46.8%] top-[2.6%] z-20 h-[94.8%] w-[50.3%] rounded-[6.1cqw]">
         <DashboardPhoneScreen />
-      </PhoneShell>
+      </PhoneScreenSurface>
+      <img src={appPath('/landing/vello-phone-hardware-3d.png')} alt="" draggable={false} className="absolute inset-0 z-30 h-full w-full select-none object-contain" />
     </div>
   );
 }
 
-function PhoneShell({ children, className }: { children: React.ReactNode; className: string }) {
+function PhoneScreenSurface({ children, className }: { children: React.ReactNode; className: string }) {
   return (
-    <div className={`absolute rounded-[7.4cqw] bg-[linear-gradient(105deg,#707070_0%,#242424_3%,#060606_13%,#111_72%,#525252_96%,#171717_100%)] p-[0.95cqw] shadow-[0_3cqw_8cqw_rgba(0,0,0,0.72),inset_0_0_0_0.18cqw_rgba(255,255,255,0.34),inset_0.5cqw_0_0_rgba(255,255,255,0.08)] ${className}`}>
-      <span className="absolute -left-[0.42cqw] top-[14%] h-[8%] w-[0.62cqw] rounded-l-full border-l border-white/20 bg-gradient-to-b from-[#5c5c5c] via-[#1e1e1e] to-[#494949]" />
-      <span className="absolute -left-[0.42cqw] top-[25%] h-[13%] w-[0.62cqw] rounded-l-full border-l border-white/20 bg-gradient-to-b from-[#5c5c5c] via-[#1b1b1b] to-[#494949]" />
-      <span className="absolute -right-[0.38cqw] top-[24%] h-[17%] w-[0.56cqw] rounded-r-full bg-gradient-to-b from-[#555] via-[#171717] to-[#3d3d3d]" />
-      <div className="relative h-full overflow-hidden rounded-[6.55cqw] bg-[#090909] ring-[0.18cqw] ring-black shadow-[inset_0_0_0_0.16cqw_rgba(255,255,255,0.09)]">
-        <div className="absolute left-1/2 top-[1.35cqw] z-30 h-[4.5cqw] w-[14.3cqw] -translate-x-1/2 rounded-full bg-black shadow-[inset_0_0_0_0.18cqw_rgba(255,255,255,0.04)]"><span className="absolute right-[1.3cqw] top-1/2 h-[1.15cqw] w-[1.15cqw] -translate-y-1/2 rounded-full bg-[#101a22] ring-[0.18cqw] ring-[#202830]" /></div>
-        <div className="absolute inset-x-[5cqw] top-[2.05cqw] z-20 flex items-center justify-between font-mono text-[2.25cqw] font-semibold text-white/88">
-          <span>9:41</span><span className="tracking-[-0.12em]">▮▮⌁</span>
-        </div>
-        {children}
+    <div className={`absolute overflow-hidden bg-[#090909] ${className}`}>
+      <div className="absolute inset-x-[3.3cqw] top-[1.85cqw] z-40 flex items-center justify-between font-mono text-[1.85cqw] font-semibold text-white/86">
+        <span>9:41</span><span className="tracking-[-0.12em]">▮▮⌁</span>
       </div>
+      {children}
     </div>
   );
 }
