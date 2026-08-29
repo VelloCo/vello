@@ -328,7 +328,7 @@ function CssPhonePair() {
       <PhoneScreenSurface className="left-[3.25%] top-[17.2%] z-10 h-[80%] w-[41.2%] rounded-[5.8cqw]">
         <CatalogPhoneScreen />
       </PhoneScreenSurface>
-      <PhoneScreenSurface className="left-[46.8%] top-[2.6%] z-20 h-[94.8%] w-[50.3%] rounded-[6.1cqw]">
+      <PhoneScreenSurface className="left-[46.35%] top-[2.65%] z-20 h-[94.7%] w-[51%] origin-right rounded-[6.1cqw] [clip-path:polygon(1.8%_0,100%_0,100%_100%,0.4%_99.5%)] [transform:perspective(720px)_rotateY(-2.6deg)_scaleX(1.025)]">
         <DashboardPhoneScreen />
       </PhoneScreenSurface>
       <img src={appPath('/landing/vello-phone-hardware-3d.png')} alt="" draggable={false} className="absolute inset-0 z-30 h-full w-full select-none object-contain" />
