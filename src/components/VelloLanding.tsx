@@ -89,7 +89,7 @@ function LandingHeader() {
 
 function Hero() {
   return (
-    <section id="inicio" className="relative min-h-[850px] overflow-hidden bg-[#070707] pt-[142px] sm:min-h-[920px] md:pt-[160px] lg:min-h-[1080px]">
+    <section id="inicio" className="relative min-h-[900px] overflow-hidden bg-[#070707] pt-[142px] sm:min-h-[980px] md:pt-[160px] lg:min-h-[1160px]">
       <Container className="relative z-10 text-center">
         <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.58, ease }} className="relative z-20">
           <h1 className="mx-auto max-w-[1000px] font-display text-[clamp(43px,5.4vw,72px)] font-medium leading-[1.02] tracking-[-0.064em]">
@@ -107,7 +107,7 @@ function Hero() {
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12, duration: 0.75, ease }} className="relative z-10 mx-auto mt-12 h-[410px] max-w-[1120px] sm:mt-14 sm:h-[520px] lg:h-[680px]">
+        <motion.div initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12, duration: 0.75, ease }} className="relative z-10 mx-auto mt-12 h-[460px] max-w-[1120px] sm:mt-14 sm:h-[570px] lg:h-[760px]">
           <PhoneStage mode="hero" />
         </motion.div>
       </Container>
@@ -283,10 +283,11 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
       ? 'bottom-[10px] left-1/2 w-[82%] max-w-[340px] -translate-x-1/2 sm:max-w-none sm:w-[400px]'
       : 'bottom-[12px] left-1/2 w-[80%] max-w-[300px] -translate-x-1/2 sm:max-w-none sm:w-[360px] lg:bottom-[4px] lg:left-[77%] lg:w-[320px]';
   const phoneFade = mode === 'hero'
-    ? 'from-[#070707] via-[#070707]/92'
+    ? 'from-[#070707]/55 via-[#070707]/10'
     : mode === 'panel'
       ? 'from-[#151515] via-[#151515]/92'
       : 'from-[#171717] via-[#171717]/92';
+  const fadeHeight = mode === 'hero' ? 'h-[11%]' : 'h-[24%]';
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden={mode === 'hero' ? undefined : true}>
@@ -318,7 +319,7 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
         >
           <CssPhonePair />
         </div>
-        <div className={`absolute inset-x-[-5%] bottom-[-2px] z-20 h-[24%] bg-gradient-to-t ${phoneFade} to-transparent`} />
+        <div className={`absolute inset-x-[-5%] bottom-[-2px] z-20 ${fadeHeight} bg-gradient-to-t ${phoneFade} to-transparent`} />
       </div>
     </div>
   );
