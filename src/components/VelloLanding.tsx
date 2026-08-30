@@ -279,7 +279,7 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
   const phones = mode === 'hero'
     ? 'bottom-[6px] left-1/2 w-[88%] max-w-[330px] -translate-x-1/2 sm:max-w-none sm:w-[430px] lg:w-[590px] xl:w-[640px]'
     : mode === 'panel'
-      ? 'bottom-[10px] left-1/2 w-[82%] max-w-[340px] -translate-x-1/2 sm:max-w-none sm:w-[400px]'
+      ? 'bottom-[-22px] left-[57%] w-[73%] max-w-[310px] -translate-x-1/2 -rotate-[4deg] sm:bottom-[-34px] sm:max-w-none sm:w-[390px]'
       : 'bottom-[12px] left-1/2 w-[80%] max-w-[300px] -translate-x-1/2 sm:max-w-none sm:w-[360px] lg:bottom-[4px] lg:left-[77%] lg:w-[320px]';
   const phoneFade = mode === 'panel'
     ? 'from-[#151515] via-[#151515]/92'
@@ -307,12 +307,29 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
         <div
           role={mode === 'hero' ? 'img' : undefined}
           aria-label={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : undefined}
-          className="vello-phone-float relative z-10 aspect-[3141/3618] w-full"
+          className={`vello-phone-float relative z-10 w-full ${mode === 'panel' ? 'aspect-[2600/3728]' : 'aspect-[3141/3618]'}`}
         >
-          <CssPhonePair />
+          {mode === 'panel' ? <PanelPhonePair /> : <CssPhonePair />}
         </div>
         {mode !== 'hero' && <div className={`absolute inset-x-[-5%] bottom-[-2px] z-20 h-[24%] bg-gradient-to-t ${phoneFade} to-transparent`} />}
       </div>
+    </div>
+  );
+}
+
+function PanelPhonePair() {
+  return (
+    <div className="absolute inset-0">
+      <img
+        src={appPath('/landing/vello-phones-perspective@2x.png')}
+        alt=""
+        width="2600"
+        height="3728"
+        draggable={false}
+        decoding="async"
+        loading="lazy"
+        className="absolute inset-0 h-full w-full select-none object-contain grayscale"
+      />
     </div>
   );
 }
