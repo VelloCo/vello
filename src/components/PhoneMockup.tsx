@@ -16,8 +16,8 @@ export function PhoneMockup({ children, className = '' }: { children?: ReactNode
   );
 }
 
-export function CatalogScreen() {
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+export function CatalogScreen({ initialSelectedId = null }: { initialSelectedId?: string | null } = {}) {
+  const [selectedId, setSelectedId] = useState<string | null>(initialSelectedId);
   const selected = properties.find((property) => property.id === selectedId);
 
   return <div className="h-[560px] overflow-hidden bg-paper">
