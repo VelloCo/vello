@@ -41,6 +41,17 @@ export default function App() {
   const privateRoute = path === "/onboarding" || path.startsWith("/dashboard");
 
   useEffect(() => {
+    const page = path === "/" ? ["Vello — Seus imóveis no lugar certo", "Organize seu portfólio, crie um catálogo com a sua identidade e envie uma experiência profissional para cada cliente."]
+      : path === "/login" ? ["Entrar | Vello", "Entre para gerenciar seus imóveis e seu catálogo Vello."]
+      : path === "/cadastro" ? ["Criar conta | Vello", "Comece a montar seu catálogo profissional na Vello."]
+      : path === "/onboarding" ? ["Configure sua Vello", "Complete seu perfil e publique seu primeiro imóvel."]
+      : path.startsWith("/dashboard") ? ["Painel | Vello", "Gerencie imóveis, catálogo e seleções na Vello."]
+      : ["Catálogo | Vello", "Conheça os imóveis disponíveis neste catálogo Vello."];
+    document.title = page[0];
+    document.querySelector('meta[name="description"]')?.setAttribute("content", page[1]);
+  }, [path]);
+
+  useEffect(() => {
     if (!supabase) {
       setUser(null);
       return;

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://velloco.github.io/vello/sitemap.xml
