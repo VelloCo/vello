@@ -72,3 +72,24 @@ textarea:focus-visible {
 .balance {
   text-wrap: balance;
 }
+
+@keyframes vello-phone-float {
+  0%, 100% { transform: translateY(0); }
+  12.5%, 87.5% { transform: translateY(-1px); }
+  25%, 75% { transform: translateY(-2px); }
+  37.5%, 62.5% { transform: translateY(-3px); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes vello-orbit-pulse {
+  0%, 100% { opacity: 0.58; }
+  50% { opacity: 1; }
+}
+
+.vello-phone-float {
+  animation: vello-phone-float 7.2s steps(1, end) infinite;
+}
+
+.vello-orbit-pulse {
+  animation: vello-orbit-pulse 4.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}

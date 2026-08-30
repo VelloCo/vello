@@ -282,12 +282,9 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
     : mode === 'panel'
       ? 'bottom-[10px] left-1/2 w-[82%] max-w-[340px] -translate-x-1/2 sm:max-w-none sm:w-[400px]'
       : 'bottom-[12px] left-1/2 w-[80%] max-w-[300px] -translate-x-1/2 sm:max-w-none sm:w-[360px] lg:bottom-[4px] lg:left-[77%] lg:w-[320px]';
-  const phoneFade = mode === 'hero'
-    ? 'from-[#070707]/55 via-[#070707]/10'
-    : mode === 'panel'
-      ? 'from-[#151515] via-[#151515]/92'
-      : 'from-[#171717] via-[#171717]/92';
-  const fadeHeight = mode === 'hero' ? 'h-[11%]' : 'h-[24%]';
+  const phoneFade = mode === 'panel'
+    ? 'from-[#151515] via-[#151515]/92'
+    : 'from-[#171717] via-[#171717]/92';
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden={mode === 'hero' ? undefined : true}>
@@ -302,8 +299,10 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
       <span className="absolute right-[2%] top-[54%] hidden h-12 w-12 place-items-center rounded-full border border-white/18 bg-[#171717] text-white/80 shadow-[0_0_22px_rgba(255,255,255,0.08)] sm:grid sm:right-[7%]"><Building2 size={18} /></span>
       <span className="absolute bottom-[14%] right-[5%] hidden h-12 w-12 place-items-center rounded-full border border-white/18 bg-[#171717] text-white/80 shadow-[0_0_22px_rgba(255,255,255,0.08)] sm:grid sm:right-[11%]"><Heart size={18} /></span>
 
-      <span className="absolute left-[4%] top-[55%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:left-[10%]" />
-      <span className="absolute right-[14%] top-[18%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:right-[22%]" />
+      <span className="vello-orbit-pulse absolute left-[4%] top-[55%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:left-[10%]" />
+      <span className="vello-orbit-pulse absolute right-[14%] top-[18%] h-2 w-2 rounded-full bg-white shadow-[0_0_18px_5px_rgba(255,255,255,0.48)] sm:right-[22%]" />
+
+      {mode === 'hero' && <div className="absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-[#070707] via-[#070707]/85 to-transparent" />}
 
       <div className={`absolute z-20 ${phones}`}>
         <motion.span
@@ -315,11 +314,11 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
         <div
           role={mode === 'hero' ? 'img' : undefined}
           aria-label={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : undefined}
-          className="relative z-10 aspect-[3141/3618] w-full drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)]"
+          className="vello-phone-float relative z-10 aspect-[3141/3618] w-full drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)]"
         >
           <CssPhonePair />
         </div>
-        <div className={`absolute inset-x-[-5%] bottom-[-2px] z-20 ${fadeHeight} bg-gradient-to-t ${phoneFade} to-transparent`} />
+        {mode !== 'hero' && <div className={`absolute inset-x-[-5%] bottom-[-2px] z-20 h-[24%] bg-gradient-to-t ${phoneFade} to-transparent`} />}
       </div>
     </div>
   );
@@ -329,7 +328,7 @@ function CssPhonePair() {
   return (
     <div className="absolute inset-0">
       <img
-        src={appPath('/landing/vello-phones-real-screens-clean@3x.png')}
+        src={appPath('/landing/vello-phones-real-screens-cleaned@3x.png')}
         alt=""
         width="3141"
         height="3618"
