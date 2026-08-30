@@ -20,7 +20,7 @@ export function VelloHeroCatalogPreview() {
         <div className="flex items-center gap-5"><span className="grid h-16 w-16 place-items-center rounded-full bg-[#0b0b0a] text-lg text-white">V</span><div><b className="block text-[22px]">Vello</b><span className="mt-1 block text-base text-[#5c5a54]">Catálogo digital para imóveis selecionados</span><span className="mt-1 flex items-center gap-1 text-sm text-[#8b8880]"><MapPin size={14} /> Porto Alegre, RS</span></div></div>
         <span className="rounded-full bg-[#0b0b0a] px-6 py-4 text-sm font-semibold text-white">Conhecer Vello</span>
       </section>
-      <div className="mt-12 grid grid-cols-[minmax(0,1fr)_260px] gap-10">
+      <div className="mt-12">
         <main>
           <p className="font-mono text-[11px] uppercase tracking-[.2em] text-[#8b8880]">Catálogo de imóveis</p>
           <div className="mt-3 flex items-end justify-between gap-10">
@@ -32,7 +32,6 @@ export function VelloHeroCatalogPreview() {
             {properties.map(([title, place, price, photo]) => <article key={title} className="overflow-hidden rounded-[18px] border border-[#dedbd3] bg-white"><div className="relative h-[145px] overflow-hidden"><img src={appPath(photo)} alt="Imóvel em destaque" className="h-full w-full object-cover" /><span className="absolute left-4 top-4 rounded-full bg-[#0b0b0a] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[.15em] text-white">Venda</span><Heart className="absolute right-4 top-4 rounded-full bg-white p-2" size={36} /></div><div className="p-5"><h4 className="text-[18px] font-semibold leading-tight">{title}</h4><p className="mt-2 text-sm text-[#5c5a54]">{place} · Porto Alegre</p><b className="mt-4 block text-[17px]">{price}</b></div></article>)}
           </div>
         </main>
-        <aside className="border-l border-[#dedbd3] pl-8"><p className="font-mono text-[11px] uppercase tracking-[.18em] text-[#8b8880]">Destaques</p><div className="mt-5 space-y-4">{["3 quartos", "2 vagas", "124 m²", "Pronto para visita"].map((item, index) => <div key={item} className="rounded-2xl border border-[#dedbd3] bg-white p-4"><span className="text-xs text-[#8b8880]">0{index + 1}</span><b className="mt-3 block text-[17px]">{item}</b></div>)}</div></aside>
       </div>
     </div>
   </div>;
