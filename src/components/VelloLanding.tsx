@@ -89,7 +89,7 @@ function LandingHeader() {
 
 function Hero() {
   return (
-    <section id="inicio" className="relative min-h-[850px] overflow-hidden bg-[#070707] pt-[142px] sm:min-h-[920px] md:pt-[160px] lg:min-h-[1120px]">
+    <section id="inicio" className="relative min-h-[850px] overflow-hidden bg-[#070707] pt-[142px] sm:min-h-[920px] md:pt-[160px] lg:min-h-[1080px]">
       <Container className="relative z-10 text-center">
         <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.58, ease }} className="relative z-20">
           <h1 className="mx-auto max-w-[1000px] font-display text-[clamp(43px,5.4vw,72px)] font-medium leading-[1.02] tracking-[-0.064em]">
@@ -107,7 +107,7 @@ function Hero() {
           </div>
         </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12, duration: 0.75, ease }} className="relative z-10 mx-auto mt-12 h-[410px] max-w-[1120px] sm:mt-14 sm:h-[500px] lg:h-[720px]">
+        <motion.div initial={{ opacity: 0, y: 34 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12, duration: 0.75, ease }} className="relative z-10 mx-auto mt-12 h-[410px] max-w-[1120px] sm:mt-14 sm:h-[520px] lg:h-[680px]">
           <PhoneStage mode="hero" />
         </motion.div>
       </Container>
@@ -278,7 +278,7 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
     ? 'left-1/2 top-[82%] lg:left-[76%] lg:top-[55%]'
     : 'left-1/2 top-[56%]';
   const phones = mode === 'hero'
-    ? 'bottom-[6px] left-1/2 w-[76%] max-w-[280px] -translate-x-1/2 sm:max-w-none sm:w-[340px] lg:w-[500px] xl:w-[540px]'
+    ? 'bottom-[6px] left-1/2 w-[88%] max-w-[330px] -translate-x-1/2 sm:max-w-none sm:w-[430px] lg:w-[590px] xl:w-[640px]'
     : mode === 'panel'
       ? 'bottom-[10px] left-1/2 w-[82%] max-w-[340px] -translate-x-1/2 sm:max-w-none sm:w-[400px]'
       : 'bottom-[12px] left-1/2 w-[80%] max-w-[300px] -translate-x-1/2 sm:max-w-none sm:w-[360px] lg:bottom-[4px] lg:left-[77%] lg:w-[320px]';
@@ -311,15 +311,13 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
           animate={reduceMotion ? undefined : { opacity: [0.42, 0.26, 0.42], scaleX: [0.94, 1.04, 0.94] }}
           transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <motion.div
+        <div
           role={mode === 'hero' ? 'img' : undefined}
           aria-label={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : undefined}
-          animate={reduceMotion ? undefined : { y: [0, -8, 0] }}
-          transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut' }}
-          className="relative z-10 aspect-[650/932] w-full [container-type:inline-size] drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)]"
+          className="relative z-10 aspect-[3141/3618] w-full drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)]"
         >
           <CssPhonePair />
-        </motion.div>
+        </div>
         <div className={`absolute inset-x-[-5%] bottom-[-2px] z-20 h-[24%] bg-gradient-to-t ${phoneFade} to-transparent`} />
       </div>
     </div>
@@ -330,10 +328,10 @@ function CssPhonePair() {
   return (
     <div className="absolute inset-0">
       <img
-        src={appPath('/landing/vello-phones-perspective@2x.png')}
+        src={appPath('/landing/vello-phones-real-screens-clean@3x.png')}
         alt=""
-        width="2600"
-        height="3728"
+        width="3141"
+        height="3618"
         draggable={false}
         decoding="sync"
         fetchPriority="high"
