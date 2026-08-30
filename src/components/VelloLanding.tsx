@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ArrowRight, Bell, Building2, FolderHeart, Heart, Home, MapPin, Menu, Palette, Plus, Search, Share2, SlidersHorizontal, Smartphone, UserRound, X } from 'lucide-react';
 import { useState } from 'react';
 import { appPath } from '../lib/paths';
@@ -273,7 +273,6 @@ function ClosingCall() {
 }
 
 function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
-  const reduceMotion = useReducedMotion();
   const lineCenter = mode === 'cta'
     ? 'left-1/2 top-[82%] lg:left-[76%] lg:top-[55%]'
     : 'left-1/2 top-[56%]';
@@ -305,16 +304,10 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
       {mode === 'hero' && <div className="absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-[#070707] via-[#070707]/85 to-transparent" />}
 
       <div className={`absolute z-20 ${phones}`}>
-        <motion.span
-          aria-hidden="true"
-          className="absolute -bottom-1 left-1/2 h-7 w-[70%] -translate-x-1/2 rounded-[50%] bg-black/70 blur-lg"
-          animate={reduceMotion ? undefined : { opacity: [0.42, 0.26, 0.42], scaleX: [0.94, 1.04, 0.94] }}
-          transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut' }}
-        />
         <div
           role={mode === 'hero' ? 'img' : undefined}
           aria-label={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : undefined}
-          className="vello-phone-float relative z-10 aspect-[3141/3618] w-full drop-shadow-[0_34px_38px_rgba(0,0,0,0.72)]"
+          className="vello-phone-float relative z-10 aspect-[3141/3618] w-full"
         >
           <CssPhonePair />
         </div>
