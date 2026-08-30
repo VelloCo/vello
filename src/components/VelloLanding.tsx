@@ -178,7 +178,7 @@ function FeatureCenter() {
           </div>
 
           <div className="relative min-h-[520px] overflow-hidden rounded-[34px] border border-white/[0.08] bg-[#151515] sm:min-h-[640px]">
-            <PhoneStage mode="panel" />
+            <PanelPhoneShowcase />
           </div>
         </div>
       </Container>
@@ -272,18 +272,13 @@ function ClosingCall() {
   );
 }
 
-function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
+function PhoneStage({ mode }: { mode: 'hero' | 'cta' }) {
   const lineCenter = mode === 'cta'
     ? 'left-1/2 top-[82%] lg:left-[76%] lg:top-[55%]'
     : 'left-1/2 top-[56%]';
   const phones = mode === 'hero'
     ? 'bottom-[6px] left-1/2 w-[88%] max-w-[330px] -translate-x-1/2 sm:max-w-none sm:w-[430px] lg:w-[590px] xl:w-[640px]'
-    : mode === 'panel'
-      ? 'bottom-[-22px] left-[57%] w-[73%] max-w-[310px] -translate-x-1/2 -rotate-[4deg] sm:bottom-[-34px] sm:max-w-none sm:w-[390px]'
-      : 'bottom-[12px] left-1/2 w-[80%] max-w-[300px] -translate-x-1/2 sm:max-w-none sm:w-[360px] lg:bottom-[4px] lg:left-[77%] lg:w-[320px]';
-  const phoneFade = mode === 'panel'
-    ? 'from-[#151515] via-[#151515]/92'
-    : 'from-[#171717] via-[#171717]/92';
+    : 'bottom-[12px] left-1/2 w-[80%] max-w-[300px] -translate-x-1/2 sm:max-w-none sm:w-[360px] lg:bottom-[4px] lg:left-[77%] lg:w-[320px]';
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden={mode === 'hero' ? undefined : true}>
@@ -307,29 +302,33 @@ function PhoneStage({ mode }: { mode: 'hero' | 'panel' | 'cta' }) {
         <div
           role={mode === 'hero' ? 'img' : undefined}
           aria-label={mode === 'hero' ? 'Dashboard e catálogo público da Vello em celulares' : undefined}
-          className={`vello-phone-float relative z-10 w-full ${mode === 'panel' ? 'aspect-[2600/3728]' : 'aspect-[3141/3618]'}`}
+          className="vello-phone-float relative z-10 aspect-[3141/3618] w-full"
         >
-          {mode === 'panel' ? <PanelPhonePair /> : <CssPhonePair />}
+          <CssPhonePair />
         </div>
-        {mode !== 'hero' && <div className={`absolute inset-x-[-5%] bottom-[-2px] z-20 h-[24%] bg-gradient-to-t ${phoneFade} to-transparent`} />}
+        {mode !== 'hero' && <div className="absolute inset-x-[-5%] bottom-[-2px] z-20 h-[24%] bg-gradient-to-t from-[#171717] via-[#171717]/92 to-transparent" />}
       </div>
     </div>
   );
 }
 
-function PanelPhonePair() {
+function PanelPhoneShowcase() {
   return (
-    <div className="absolute inset-0">
-      <img
-        src={appPath('/landing/vello-phones-perspective@2x.png')}
-        alt=""
-        width="2600"
-        height="3728"
-        draggable={false}
-        decoding="async"
-        loading="lazy"
-        className="absolute inset-0 h-full w-full select-none object-contain grayscale"
-      />
+    <div className="pointer-events-none absolute inset-0 overflow-hidden bg-black" aria-hidden="true">
+      <div className="vello-phone-float absolute inset-[-10px]">
+        <img
+          src={appPath('/landing/vello-hero-phones-light.png')}
+          alt=""
+          width="1536"
+          height="1024"
+          draggable={false}
+          decoding="async"
+          loading="lazy"
+          className="h-full w-full select-none object-cover object-[58%_center] grayscale"
+        />
+      </div>
+      <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-black/65 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black via-black/75 to-transparent" />
     </div>
   );
 }
