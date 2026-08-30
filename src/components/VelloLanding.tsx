@@ -3,7 +3,6 @@ import { ArrowRight, Bell, Building2, FolderHeart, Heart, Home, MapPin, Menu, Pa
 import { useState } from 'react';
 import { appPath } from '../lib/paths';
 import { Logo } from './Logo';
-import { CatalogScreen, PhoneMockup } from './PhoneMockup';
 import { Container } from './Primitives';
 
 const ease = [0.4, 0, 0.2, 1] as const;
@@ -315,11 +314,18 @@ function PhoneStage({ mode }: { mode: 'hero' | 'cta' }) {
 
 function PanelPhoneShowcase() {
   return (
-    <div className="absolute inset-0 grid place-items-center overflow-hidden bg-[radial-gradient(circle_at_50%_45%,rgba(255,255,255,0.09),transparent_46%),#101010] p-8">
-      <div className="vello-phone-float origin-center scale-[0.82] sm:scale-100">
-        <PhoneMockup className="shadow-[0_32px_70px_-28px_rgba(0,0,0,0.9)]">
-          <CatalogScreen initialSelectedId="moinhos" />
-        </PhoneMockup>
+    <div className="pointer-events-none absolute inset-0 overflow-hidden bg-black" aria-hidden="true">
+      <div className="vello-phone-float absolute inset-[-6px]">
+        <img
+          src={appPath('/landing/vello-feature-phones-real-pages.png')}
+          alt=""
+          width="1536"
+          height="1024"
+          draggable={false}
+          decoding="async"
+          loading="lazy"
+          className="h-full w-full select-none object-cover object-center"
+        />
       </div>
     </div>
   );
