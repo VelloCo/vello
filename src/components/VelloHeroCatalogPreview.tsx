@@ -5,14 +5,14 @@ const filters = ["Todos", "Comprar", "Alugar", "Tipo", "Quartos"];
 
 export function VelloHeroCatalogPreview() {
   return <div className="min-w-[900px] overflow-hidden bg-[#faf9f6] font-sans text-[#0b0b0a] antialiased">
-    <div className="flex h-[74px] items-center justify-between border-b border-[#dedbd3] px-10">
-      <div className="flex items-center gap-3 text-[20px] font-semibold tracking-[-.05em]"><span className="grid h-8 w-8 place-items-center rounded-full bg-[#0b0b0a] text-[10px] text-white">V</span>Vello</div>
-      <div className="flex items-center gap-3 text-sm font-medium"><span className="rounded-full border border-[#dedbd3] px-5 py-3">Compartilhar</span><span className="rounded-full bg-[#0b0b0a] px-5 py-3 text-white">Falar com Jose</span></div>
+    <div className="flex h-[74px] items-center justify-between bg-[#0b0b0a] px-10 text-[#faf9f6]">
+      <div className="flex items-center gap-3 text-[20px] font-semibold tracking-[-.05em]"><span className="grid h-8 w-8 place-items-center rounded-full bg-[#faf9f6] text-[10px] text-[#0b0b0a]">V</span>Vello</div>
+      <div className="flex items-center gap-3 text-sm font-medium"><span className="rounded-full border border-white/30 px-5 py-3">Compartilhar</span><span className="rounded-full bg-[#faf9f6] px-5 py-3 text-[#0b0b0a]">Ver catálogo</span></div>
     </div>
     <div className="px-9 py-8">
       <section className="flex items-center justify-between rounded-[26px] bg-white px-7 py-5 shadow-[0_18px_38px_rgba(11,11,10,.07)]">
-        <div className="flex items-center gap-4"><span className="grid h-14 w-14 place-items-center rounded-full bg-[#0b0b0a] text-base text-white">J</span><div><b className="block text-[18px] tracking-[-.04em]">Jose</b><span className="mt-1 block text-sm text-[#5c5a54]">Corretor de imóveis · CRECI 22222222-F</span><span className="mt-1 flex items-center gap-1 text-xs text-[#8b8880]"><MapPin size={12} /> Porto Alegre, RS</span></div></div>
-        <span className="rounded-full bg-[#0b0b0a] px-5 py-3 text-sm font-semibold text-white">Falar com Jose</span>
+        <div className="flex items-center gap-4"><span className="grid h-14 w-14 place-items-center rounded-full bg-[#0b0b0a] text-base text-white">V</span><div><b className="block text-[18px] tracking-[-.04em]">Vello</b><span className="mt-1 block text-sm text-[#5c5a54]">Catálogo digital para imóveis</span><span className="mt-1 flex items-center gap-1 text-xs text-[#8b8880]"><MapPin size={12} /> Porto Alegre, RS</span></div></div>
+        <span className="rounded-full bg-[#0b0b0a] px-5 py-3 text-sm font-semibold text-white">Conhecer Vello</span>
       </section>
       <div className="mt-12 grid grid-cols-[minmax(0,1fr)_300px] gap-12">
         <main>
