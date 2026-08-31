@@ -160,8 +160,8 @@ async function optimizeImage(file: File) {
 export function Onboarding({ user }: { user: User }) {
   const params = new URLSearchParams(window.location.search);
   const preview = params.get("preview") === "1";
-  const requestedStep = Number(params.get("step")) as 1 | 2 | 3;
-  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const requestedStep = Number(params.get("step")) as 1 | 2 | 3 | 4;
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
   const [profile, setProfile] = useState<Profile>(blankProfile);
   const [property, setProperty] = useState<Property>(blankProperty);
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -199,11 +199,8 @@ export function Onboarding({ user }: { user: User }) {
           window.location.replace(appPath("/dashboard"));
           return;
         }
-        setStep(
-          [1, 2, 3].includes(requestedStep)
-            ? requestedStep
-            : (data.onboarding_step as 1 | 2 | 3),
-        );
+        const storedStep = Number(data.onboarding_step);
+        setStep([1, 2, 3, 4].includes(requestedStep) ? requestedStep : storedStep === 2 ? 3 : storedStep === 3 ? 4 : 1);
         setProfile({
           fullName: data.full_name ?? "",
           professionalName: data.professional_name ?? "",
@@ -264,7 +261,7 @@ export function Onboarding({ user }: { user: User }) {
     value: string | boolean | string[],
   ) => setProperty((old) => ({ ...old, [key]: value }));
 
-  function transitionTo(nextStep: 1 | 2 | 3) {
+  function transitionTo(nextStep: 1 | 2 | 3 | 4) {
     window.scrollTo({ top: 0, behavior: "smooth" });
     window.setTimeout(() => setStep(nextStep), 180);
   }
@@ -434,7 +431,7 @@ export function Onboarding({ user }: { user: User }) {
     }
     localStorage.removeItem(`vello-onboarding-property-${user.id}`);
     setNotice("");
-    transitionTo(3);
+    transitionTo(4);
   }
 
   async function skipProperty() {
@@ -450,7 +447,7 @@ export function Onboarding({ user }: { user: User }) {
       return;
     }
     localStorage.removeItem(`vello-onboarding-property-${user.id}`);
-    transitionTo(3);
+    transitionTo(4);
   }
 
   async function finish() {
@@ -468,13 +465,25 @@ export function Onboarding({ user }: { user: User }) {
         <ProfileStep
           profile={profile}
           update={updateProfile}
+          stage={1}
+          saving={saving}
+          slugStatus={slugStatus}
+          onAvatar={setAvatarCandidate}
+          onRemoveAvatar={() => updateProfile("avatarUrl", "")}
+          onContinue={() => transitionTo(2)}
+        />
+      ) : step === 2 ? (
+        <ProfileStep
+          profile={profile}
+          update={updateProfile}
+          stage={2}
           saving={saving}
           slugStatus={slugStatus}
           onAvatar={setAvatarCandidate}
           onRemoveAvatar={() => updateProfile("avatarUrl", "")}
           onContinue={saveProfile}
         />
-      ) : step === 2 ? (
+      ) : step === 3 ? (
         <PropertyStep
           property={property}
           update={updateProperty}
@@ -482,7 +491,7 @@ export function Onboarding({ user }: { user: User }) {
           setPhotos={setPhotos}
           saving={saving}
           onUpload={uploadPhotos}
-          onBack={() => setStep(1)}
+          onBack={() => setStep(2)}
           onPublish={publish}
           onSkip={skipProperty}
         />
@@ -516,8 +525,8 @@ export function Onboarding({ user }: { user: User }) {
         <Progress
           step={step}
           onSelect={(nextStep) => {
-            if ((step === 2 || preview) && nextStep < step)
-              setStep(nextStep as 1 | 2 | 3);
+            if ((step > 1 || preview) && nextStep < step)
+              setStep(nextStep as 1 | 2 | 3 | 4);
           }}
         />
         <AnimatePresence mode="wait">
@@ -555,25 +564,25 @@ function Progress({
   step: number;
   onSelect: (step: number) => void;
 }) {
-  const items = ["Perfil", "Imóvel", "Pronto"];
-  const progress = Math.round((step / 3) * 100);
+  const items = ["Identidade", "Contato", "Imóvel", "Pronto"];
+  const progress = Math.round((step / 4) * 100);
   return (
     <div className="mx-auto mt-9 max-w-[720px] rounded-2xl border border-line/80 bg-white/70 px-4 py-3 sm:px-5">
       <div className="flex items-center justify-between gap-4">
         <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-ash">
-          Etapa <b className="text-ink">{step}</b> de 3
+          Etapa <b className="text-ink">{step}</b> de 4
         </span>
         <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-stone">{progress}% concluído</span>
       </div>
       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-line" aria-label={`Progresso: ${progress}%`}>
         <span className="block h-full rounded-full bg-ink transition-all duration-500" style={{ width: `${progress}%` }} />
       </div>
-      <div className="mt-3 flex items-center gap-2" aria-label={`Etapa ${step} de 3`}>
+      <div className="mt-3 flex items-center gap-2" aria-label={`Etapa ${step} de 4`}>
         {items.map((item, index) => {
           const itemStep = index + 1;
           const completed = itemStep < step;
           const current = itemStep === step;
-          const enabled = itemStep < step && step < 3;
+          const enabled = itemStep < step && step < 4;
           return (
             <button
               key={item}
@@ -594,6 +603,7 @@ function Progress({
 function ProfileStep({
   profile,
   update,
+  stage,
   saving,
   slugStatus,
   onAvatar,
@@ -602,6 +612,7 @@ function ProfileStep({
 }: {
   profile: Profile;
   update: (key: keyof Profile, value: string) => void;
+  stage: 1 | 2;
   saving: boolean;
   slugStatus: string;
   onAvatar: (file: File) => void;
@@ -612,13 +623,13 @@ function ProfileStep({
   return (
     <section className="mx-auto max-w-[720px] py-12 sm:py-16">
       <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-stone">
-        Seu perfil
+        {stage === 1 ? "Identidade profissional" : "Contato e endereço público"}
       </p>
       <h1 className="mt-4 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
-        Vamos deixar seu catálogo com a sua cara.
+        {stage === 1 ? "Comece pelo seu perfil." : "Agora, vamos deixar seu catálogo encontrável."}
       </h1>
       <p className="mt-4 max-w-xl font-body text-[16px] leading-relaxed text-ash">
-        Seu perfil já é o primeiro passo do catálogo. Essas informações aparecerão para seus clientes na sua página Vello.
+        {stage === 1 ? "Essas informações aparecerão para seus clientes na sua página Vello." : "Defina como os clientes entram em contato e qual será o endereço da sua página."}
       </p>
       <div className="mt-10">
         <label className={label}>Foto de perfil</label>
@@ -704,6 +715,7 @@ function ProfileStep({
           </div>
           <p className="mt-2 font-body text-xs text-stone">Informe o número e escolha F para pessoa física ou J para pessoa jurídica.</p>
         </div>
+        {stage === 2 && <>
         <Input
           label="WhatsApp"
           value={profile.whatsapp}
@@ -739,8 +751,9 @@ function ProfileStep({
           placeholder="@seuinstagram"
           onChange={(v) => update("instagram", v)}
         />
+        </>}
       </div>
-      <div className="mt-8 rounded-2xl border border-line bg-white p-5">
+      {stage === 2 && <div className="mt-8 rounded-2xl border border-line bg-white p-5">
         <label className={label}>Seu link Vello</label>
         <div className="flex items-center overflow-hidden rounded-xl border border-line bg-paper">
           <span className="whitespace-nowrap border-r border-line px-4 py-3 font-body text-sm text-ash">
@@ -770,9 +783,9 @@ function ProfileStep({
                 ? "Verificando link..."
                 : "Use letras, números e hífen."}
         </p>
-      </div>
+      </div>}
       <Button className="mt-9" loading={saving} onClick={onContinue}>
-        Salvar perfil e continuar
+        {stage === 1 ? "Continuar" : "Salvar perfil e continuar"}
       </Button>
     </section>
   );
