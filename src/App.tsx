@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { VelloLandingMinimal } from "./components/VelloLandingMinimal";
+import { AdminApp } from "./components/AdminApp";
+import { LegalPage, NotFoundPage, SupportPage } from "./components/LaunchPages";
 import { AuthPage } from "./components/auth/AuthPage";
 import { Onboarding } from "./components/onboarding/Onboarding";
 import { PublicCatalog } from "./components/catalog/PublicCatalog";
@@ -8,6 +10,7 @@ import { DashboardApp } from "./components/dashboard/DashboardApp";
 import { LoadingScreen } from "./components/LoadingScreen";
 import { appPath } from "./lib/paths";
 import { supabase } from "./lib/supabase";
+import { initAnalytics, trackPage } from "./lib/analytics";
 
 const getLocation = () => ({
   path:
@@ -38,7 +41,7 @@ export default function App() {
     "/redefinir-senha",
     "/verificar-email",
   ].includes(path);
-  const privateRoute = path === "/onboarding" || path.startsWith("/dashboard");
+  const privateRoute = path === "/onboarding" || path.startsWith("/dashboard") || path === "/admin";
 
   useEffect(() => {
     const page = path === "/" ? ["Vello — Seus imóveis no lugar certo", "Organize seu portfólio, crie um catálogo com a sua identidade e envie uma experiência profissional para cada cliente."]
@@ -46,9 +49,15 @@ export default function App() {
       : path === "/cadastro" ? ["Criar conta | Vello", "Comece a montar seu catálogo profissional na Vello."]
       : path === "/onboarding" ? ["Configure sua Vello", "Complete seu perfil e publique seu primeiro imóvel."]
       : path.startsWith("/dashboard") ? ["Painel | Vello", "Gerencie imóveis, catálogo e seleções na Vello."]
+      : path === "/admin" ? ["Administração | Vello", "Acompanhe a ativação e o uso da Vello."]
+      : path === "/termos" ? ["Termos de Uso | Vello", "Termos de uso da Vello."]
+      : path === "/privacidade" ? ["Política de Privacidade | Vello", "Política de privacidade da Vello."]
+      : path === "/suporte" ? ["Suporte | Vello", "Fale com o suporte da Vello."]
       : ["Catálogo | Vello", "Conheça os imóveis disponíveis neste catálogo Vello."];
     document.title = page[0];
     document.querySelector('meta[name="description"]')?.setAttribute("content", page[1]);
+    initAnalytics();
+    trackPage(path);
   }, [path]);
 
   useEffect(() => {
@@ -102,6 +111,7 @@ export default function App() {
     return null;
   }
   if (path === "/onboarding" && user) return <Onboarding user={user} />;
+  if (path === "/admin" && user) return <AdminApp />;
   if (path.startsWith("/dashboard") && user)
     return <DashboardApp user={user} route={path} locationSearch={location.search} />;
   if (path === "/login") return <AuthPage mode="login" />;
@@ -109,6 +119,10 @@ export default function App() {
   if (path === "/esqueci-senha") return <AuthPage mode="forgot" />;
   if (path === "/redefinir-senha") return <AuthPage mode="reset" />;
   if (path === "/verificar-email") return <AuthPage mode="verify" />;
+  if (path === "/termos") return <LegalPage kind="terms" />;
+  if (path === "/privacidade") return <LegalPage kind="privacy" />;
+  if (path === "/suporte") return <SupportPage />;
+  if (path === "/404") return <NotFoundPage />;
   const catalogRoute = path.match(/^\/catalogo\/([^/]+)(?:\/imovel\/([^/]+))?$/);
   if (catalogRoute)
     return <PublicCatalog slug={catalogRoute[1]} propertySlug={catalogRoute[2]} />;
@@ -117,5 +131,5 @@ export default function App() {
   const publicRoute = path.match(/^\/([^/]+)(?:\/imovel\/([^/]+))?$/);
   if (publicRoute)
     return <PublicCatalog slug={publicRoute[1]} propertySlug={publicRoute[2]} />;
-  return <Landing />;
+  return path === "/" ? <Landing /> : <NotFoundPage />;
 }
