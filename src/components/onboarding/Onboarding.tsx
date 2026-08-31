@@ -96,7 +96,7 @@ const features = [
 const field =
   "h-12 w-full rounded-xl border border-line bg-white px-4 font-body text-[14px] text-ink outline-none transition placeholder:text-stone focus:border-ink";
 const label =
-  "mb-3 block font-display text-[12px] font-extrabold uppercase tracking-[-0.01em] text-ink";
+  "mb-3 block font-body text-[11px] font-medium uppercase tracking-[0.08em] text-ash";
 
 function slugify(value: string) {
   return value
