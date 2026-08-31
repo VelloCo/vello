@@ -1498,9 +1498,6 @@ function ProfilePage({
               Plano atual: <b className="text-ink">Acesso de teste</b>
             </div>
         </div>
-        <a href={appPath("/dashboard/personalizar")} className="mt-8 flex items-center justify-between rounded-2xl border border-line bg-cream p-5 transition hover:border-ink">
-          <span><b className="block font-display text-lg">Personalize seu catálogo</b><span className="mt-1 block font-body text-sm text-ash">Escolha cores, faixa de perfil e estilo dos imóveis.</span></span><Palette size={20} />
-        </a>
         <Button onClick={save} className="mt-7">
           Salvar alterações
         </Button>
