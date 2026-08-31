@@ -1,18 +1,19 @@
 import { Logo } from './Logo';
 import { Container } from './Primitives';
+import { appPath } from '../lib/paths';
 
 const LINKS = [
   { label: 'Produto', href: '#produto' },
   { label: 'A diferença', href: '#antes-depois' },
   { label: 'Preços', href: '#precos' },
-  { label: 'Entrar', href: '/login' },
+  { label: 'Entrar', href: appPath('/login') },
 ];
 
 const SOCIAL = [
   { label: 'Contato', href: 'mailto:vellocorretores@gmail.com' },
   { label: 'Instagram', href: '#' },
-  { label: 'Termos', href: '#' },
-  { label: 'Privacidade', href: '#' },
+  { label: 'Termos', href: appPath('/termos') },
+  { label: 'Privacidade', href: appPath('/privacidade') },
 ];
 
 export function Footer() {
