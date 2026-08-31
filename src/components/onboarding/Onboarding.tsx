@@ -547,15 +547,19 @@ function Progress({
   onSelect: (step: number) => void;
 }) {
   const items = ["Perfil", "Imóvel", "Pronto"];
+  const progress = Math.round((step / 3) * 100);
   return (
-    <div className="mx-auto mt-9 flex max-w-[720px] items-center justify-between rounded-2xl border border-line/80 bg-white/70 px-4 py-3 sm:px-5">
-      <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-ash">
-        Etapa <b className="text-ink">{step}</b> de 3
-      </span>
-      <div
-        className="flex items-center gap-2"
-        aria-label={`Etapa ${step} de 3`}
-      >
+    <div className="mx-auto mt-9 max-w-[720px] rounded-2xl border border-line/80 bg-white/70 px-4 py-3 sm:px-5">
+      <div className="flex items-center justify-between gap-4">
+        <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-ash">
+          Etapa <b className="text-ink">{step}</b> de 3
+        </span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-stone">{progress}% concluído</span>
+      </div>
+      <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-line" aria-label={`Progresso: ${progress}%`}>
+        <span className="block h-full rounded-full bg-ink transition-all duration-500" style={{ width: `${progress}%` }} />
+      </div>
+      <div className="mt-3 flex items-center gap-2" aria-label={`Etapa ${step} de 3`}>
         {items.map((item, index) => {
           const itemStep = index + 1;
           const completed = itemStep < step;
@@ -605,7 +609,7 @@ function ProfileStep({
         Vamos deixar seu catálogo com a sua cara.
       </h1>
       <p className="mt-4 max-w-xl font-body text-[16px] leading-relaxed text-ash">
-        Essas informações aparecerão para seus clientes no seu perfil Vello.
+        Seu perfil já é o primeiro passo do catálogo. Essas informações aparecerão para seus clientes na sua página Vello.
       </p>
       <div className="mt-10">
         <label className={label}>Foto de perfil</label>
@@ -756,7 +760,7 @@ function ProfileStep({
         </p>
       </div>
       <Button className="mt-9" loading={saving} onClick={onContinue}>
-        Continuar
+        Salvar perfil e continuar
       </Button>
     </section>
   );
