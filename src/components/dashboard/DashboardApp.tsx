@@ -14,8 +14,10 @@ import {
   ImagePlus,
   LoaderCircle,
   LogOut,
+  MessageCircle,
   MoreHorizontal,
   Palette,
+  PencilLine,
   Plus,
   Search,
   Share2,
@@ -918,7 +920,7 @@ function Field({
 }) {
   return (
     <label className={className}>
-      <span className="mb-3 block font-display text-xs font-extrabold uppercase tracking-tight">
+      <span className="mb-3 block font-body text-[11px] font-medium uppercase tracking-[0.08em] text-ash">
         {label}
       </span>
       <input
@@ -944,7 +946,7 @@ function SelectField({
 }) {
   return (
     <label>
-      <span className="mb-3 block font-display text-xs font-extrabold uppercase tracking-tight">
+      <span className="mb-3 block font-body text-[11px] font-medium uppercase tracking-[0.08em] text-ash">
         {label}
       </span>
       <select
@@ -995,59 +997,73 @@ function SelectionsPage({ selections, refresh, toast }: { selections: Selection[
           {selections.map((s) => (
             <article
               key={s.id}
-              className="rounded-[22px] border border-line bg-white p-5"
+              className="flex min-h-[250px] flex-col rounded-[20px] border border-line bg-white p-5 shadow-[0_18px_45px_-38px_rgba(11,11,10,.28)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_55px_-38px_rgba(11,11,10,.34)]"
             >
-              <p className="font-display text-xl font-semibold">
-                {s.client_name}
-              </p>
-              <p className="mt-2 font-body text-sm text-ash">
-                {s.selection_properties?.length || 0} imóveis ·{" "}
-                {dateBR(s.created_at)}
-              </p>
-              <span className={`mt-4 inline-flex rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide ${s.status === "active" ? "bg-cream text-stone" : "bg-stone/10 text-stone"}`}>
-                {s.status === "active" ? "Ativa" : "Arquivada"}
-              </span>
-              <p className="mt-4 truncate font-mono text-xs text-stone">
-                vello.com.br/s/{s.slug}
-              </p>
-              <div className="mt-6 flex flex-wrap gap-2">
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0">
+                  <p className="truncate font-display text-xl font-medium">
+                    {s.client_name}
+                  </p>
+                  <p className="mt-2 font-body text-sm text-ash">
+                    {s.selection_properties?.length || 0} imóveis · {dateBR(s.created_at)}
+                  </p>
+                </div>
+                <span className={`shrink-0 rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide ${s.status === "active" ? "bg-cream text-stone" : "bg-stone/10 text-stone"}`}>
+                  {s.status === "active" ? "Ativa" : "Arquivada"}
+                </span>
+              </div>
+              <div className="mt-5 rounded-[14px] border border-line bg-cream/55 px-3 py-2">
+                <p className="truncate font-mono text-[11px] text-stone">
+                  /selecao/{s.slug}
+                </p>
+              </div>
+              <div className="mt-auto pt-6">
                 <button
                   onClick={() => go(`/dashboard/selecoes/${s.id}`)}
-                  className="rounded-full bg-ink px-4 py-2 font-body text-sm text-paper"
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-ink px-4 font-body text-sm font-semibold text-paper transition hover:scale-[1.01]"
                 >
-                  Abrir
+                  <PencilLine size={15} /> Editar seleção
                 </button>
-                <button
-                  onClick={async () => {
-                    await navigator.clipboard.writeText(
-                      `${window.location.origin}${appPath(`/selecao/${s.slug}`)}`,
-                    );
-                    setCopiedSelection(s.id);
-                    toast("Link copiado");
-                    window.setTimeout(() => setCopiedSelection((current) => current === s.id ? null : current), 1800);
-                  }}
-                  className="rounded-full border border-line px-4 py-2 font-body text-sm"
-                >
-                  {copiedSelection === s.id ? <span className="inline-flex items-center gap-1.5"><Check size={14} /> Link copiado</span> : "Copiar link"}
-                </button>
-                {s.client_whatsapp && (
-                  <a
-                    href={`https://wa.me/${s.client_whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Oi ${s.client_name}! Separei alguns imóveis para você: ${window.location.origin}${appPath(`/selecao/${s.slug}`)}`)}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="rounded-full border border-line px-4 py-2 font-body text-sm"
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <button
+                    onClick={async () => {
+                      await navigator.clipboard.writeText(
+                        `${window.location.origin}${appPath(`/selecao/${s.slug}`)}`,
+                      );
+                      setCopiedSelection(s.id);
+                      toast("Link copiado");
+                      window.setTimeout(() => setCopiedSelection((current) => current === s.id ? null : current), 1800);
+                    }}
+                    className="flex h-10 items-center justify-center gap-2 rounded-full border border-line px-3 font-body text-xs font-medium transition hover:border-ink"
                   >
-                    WhatsApp
-                  </a>
-                )}
-              </div>
-              <div className="mt-3 flex items-center gap-4">
-                <button onClick={() => setStatus(s, s.status === "active" ? "archived" : "active")} className="inline-flex items-center gap-1 font-body text-xs text-ash hover:text-ink">
-                  <Archive size={14} /> {s.status === "active" ? "Arquivar" : "Reativar"}
-                </button>
-                <button onClick={() => setRemove(s)} className="inline-flex items-center gap-1 font-body text-xs text-red-700">
-                  <Trash2 size={14} /> Excluir
-                </button>
+                    {copiedSelection === s.id ? <><Check size={14} /> Copiado</> : <><Copy size={14} /> Copiar</>}
+                  </button>
+                  {s.client_whatsapp ? (
+                    <a
+                      href={`https://wa.me/${s.client_whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Oi ${s.client_name}! Separei alguns imóveis para você: ${window.location.origin}${appPath(`/selecao/${s.slug}`)}`)}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex h-10 items-center justify-center gap-2 rounded-full border border-line px-3 font-body text-xs font-medium transition hover:border-ink"
+                    >
+                      <MessageCircle size={14} /> Enviar
+                    </a>
+                  ) : (
+                    <button
+                      onClick={() => go(`/dashboard/selecoes/${s.id}`)}
+                      className="flex h-10 items-center justify-center gap-2 rounded-full border border-line px-3 font-body text-xs font-medium text-ash transition hover:border-ink hover:text-ink"
+                    >
+                      <Plus size={14} /> WhatsApp
+                    </button>
+                  )}
+                </div>
+                <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
+                  <button onClick={() => setStatus(s, s.status === "active" ? "archived" : "active")} className="inline-flex items-center gap-1.5 font-body text-xs text-ash hover:text-ink">
+                    <Archive size={14} /> {s.status === "active" ? "Arquivar" : "Reativar"}
+                  </button>
+                  <button onClick={() => setRemove(s)} className="inline-flex items-center gap-1.5 font-body text-xs text-red-700">
+                    <Trash2 size={14} /> Excluir
+                  </button>
+                </div>
               </div>
             </article>
           ))}
@@ -1139,7 +1155,10 @@ function SelectionEditor({
       </button>
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-4xl font-semibold">
+          <span className="mb-3 inline-flex rounded-full border border-line bg-white px-3 py-1 font-mono text-[10px] uppercase tracking-[.12em] text-stone">
+            {selection ? "Modo edição" : "Nova conversa"}
+          </span>
+          <h1 className="font-display text-4xl font-medium tracking-[-.04em]">
             {selection ? "Editar seleção" : "Nova seleção"}
           </h1>
           <p className="mt-2 font-body text-ash">
@@ -1147,12 +1166,22 @@ function SelectionEditor({
           </p>
         </div>
         <Button onClick={save} disabled={saving}>
-          {saving ? "Salvando..." : "Criar seleção"}
+          {saving ? "Salvando..." : selection ? "Salvar seleção" : "Criar seleção"}
         </Button>
       </header>
       <div className="mt-9 grid gap-7 xl:grid-cols-[340px_1fr]">
-        <aside className="rounded-[24px] border border-line bg-white p-5 sm:p-6">
-          <p className="mb-6 font-display text-xl font-semibold">Cliente</p>
+        <aside className="rounded-[20px] border border-line bg-white p-5 shadow-[0_18px_45px_-40px_rgba(11,11,10,.35)] sm:p-6">
+          <div className="mb-6 flex items-start justify-between gap-4">
+            <div>
+              <p className="font-display text-xl font-medium">Dados da seleção</p>
+              <p className="mt-1 font-body text-xs leading-relaxed text-ash">
+                Essas informações aparecem no link enviado ao cliente.
+              </p>
+            </div>
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-cream">
+              <FolderHeart size={16} />
+            </span>
+          </div>
           <div className="space-y-5">
             <Field label="Nome do cliente" value={name} onChange={setName} />
             <Field
@@ -1161,39 +1190,45 @@ function SelectionEditor({
               onChange={setWhats}
             />
             <label>
-              <span className="mb-3 block font-display text-xs font-extrabold uppercase tracking-tight">
+              <span className="mb-3 block font-body text-[11px] font-medium uppercase tracking-[0.08em] text-ash">
                 Mensagem
               </span>
               <textarea
                 value={msg}
                 onChange={(e) => setMsg(e.target.value)}
-                className="min-h-32 w-full rounded-xl border border-line p-3 font-body text-sm"
+                className="min-h-32 w-full rounded-xl border border-line p-3 font-body text-sm outline-none focus:border-ink"
               />
             </label>
           </div>
-          <p className="mt-8 font-mono text-xs text-stone">
-            {selected.length} imóveis selecionados
-          </p>
+          <div className="mt-8 flex items-center justify-between rounded-[14px] bg-cream px-4 py-3">
+            <span className="font-body text-sm text-ash">Imóveis na seleção</span>
+            <span className="font-mono text-xs text-ink">{selected.length}</span>
+          </div>
           {selected.length > 0 && (
             <div className="mt-4 border-t border-line pt-4">
-              <p className="font-mono text-[10px] uppercase tracking-wide text-stone">Ordem da seleção</p>
+              <p className="font-body text-[11px] font-medium uppercase tracking-[0.08em] text-ash">Ordem da seleção</p>
               <div className="mt-3 space-y-2">
                 {selected.map((id, index) => {
                   const item = properties.find((property) => property.id === id);
                   if (!item) return null;
-                  return <div key={id} className="flex items-center gap-2 rounded-xl bg-cream px-3 py-2"><span className="grid h-6 w-6 place-items-center rounded-full bg-white font-mono text-[10px]">{index + 1}</span><span className="min-w-0 flex-1 truncate font-body text-xs font-medium">{item.title}</span><button type="button" aria-label="Subir imóvel" disabled={index === 0} onClick={() => moveSelected(index, index - 1)} className="p-1 disabled:opacity-30"><ArrowUp size={14} /></button><button type="button" aria-label="Descer imóvel" disabled={index === selected.length - 1} onClick={() => moveSelected(index, index + 1)} className="p-1 disabled:opacity-30"><ArrowDown size={14} /></button></div>;
+                  return <div key={id} className="flex items-center gap-2 rounded-xl border border-line bg-white px-3 py-2"><span className="grid h-6 w-6 place-items-center rounded-full bg-cream font-mono text-[10px]">{index + 1}</span><span className="min-w-0 flex-1 truncate font-body text-xs font-medium">{item.title}</span><button type="button" aria-label="Subir imóvel" disabled={index === 0} onClick={() => moveSelected(index, index - 1)} className="grid h-7 w-7 place-items-center rounded-full hover:bg-cream disabled:opacity-30"><ArrowUp size={14} /></button><button type="button" aria-label="Descer imóvel" disabled={index === selected.length - 1} onClick={() => moveSelected(index, index + 1)} className="grid h-7 w-7 place-items-center rounded-full hover:bg-cream disabled:opacity-30"><ArrowDown size={14} /></button></div>;
                 })}
               </div>
             </div>
           )}
         </aside>
         <section>
-          <div className="flex items-center justify-between gap-4">
-            <p className="font-display text-2xl font-semibold">
+          <div className="flex items-end justify-between gap-4 border-b border-line pb-4">
+            <div>
+              <p className="font-display text-2xl font-medium tracking-[-.03em]">
               Escolher imóveis
-            </p>
-            <span className="font-body text-sm text-ash">
-              Toque para selecionar
+              </p>
+              <p className="mt-1 font-body text-sm text-ash">
+                Toque nos imóveis para montar o link do cliente.
+              </p>
+            </div>
+            <span className="shrink-0 font-mono text-[10px] uppercase tracking-[.12em] text-stone">
+              {properties.filter((p) => p.publication_status === "published").length} publicados
             </span>
           </div>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
