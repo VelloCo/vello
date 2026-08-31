@@ -41,6 +41,21 @@ export async function updatePassword(password: string) {
   if (error) throw error;
 }
 
+export async function sendPasswordReset(email: string) {
+  const { error } = await requireSupabase().auth.resetPasswordForEmail(email, {
+    redirectTo: redirectUrl('/redefinir-senha'),
+  });
+  if (error) throw error;
+}
+
+export async function resendSignupEmail(email: string) {
+  const { error } = await requireSupabase().auth.resend({
+    type: 'signup',
+    email,
+  });
+  if (error) throw error;
+}
+
 export async function getCurrentUser(): Promise<User | null> {
   const { data, error } = await requireSupabase().auth.getUser();
   if (error) return null;

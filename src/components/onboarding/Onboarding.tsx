@@ -184,7 +184,16 @@ export function Onboarding({ user }: { user: User }) {
       const saved = localStorage.getItem(
         `vello-onboarding-property-${user.id}`,
       );
-      if (saved) setProperty({ ...blankProperty, ...JSON.parse(saved) });
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+            setProperty({ ...blankProperty, ...parsed });
+          }
+        } catch {
+          localStorage.removeItem(`vello-onboarding-property-${user.id}`);
+        }
+      }
       if (data) {
         if (data.onboarding_completed && !preview) {
           window.location.replace(appPath("/dashboard"));

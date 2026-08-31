@@ -157,12 +157,24 @@ function Favorite({ id }: { id: string }) {
   const key = "vello:favorites";
   const [saved, setSaved] = useState(false);
   useEffect(() => {
-    setSaved(JSON.parse(localStorage.getItem(key) || "[]").includes(id));
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || "[]");
+      setSaved(Array.isArray(value) && value.includes(id));
+    } catch {
+      localStorage.removeItem(key);
+      setSaved(false);
+    }
   }, [id]);
   const toggle = (event: React.MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
-    const list: string[] = JSON.parse(localStorage.getItem(key) || "[]");
+    let list: string[] = [];
+    try {
+      const value = JSON.parse(localStorage.getItem(key) || "[]");
+      list = Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+    } catch {
+      localStorage.removeItem(key);
+    }
     const next = saved ? list.filter((x) => x !== id) : [...list, id];
     localStorage.setItem(key, JSON.stringify(next));
     setSaved(!saved);
