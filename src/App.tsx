@@ -113,7 +113,7 @@ export default function App() {
   if (path === "/onboarding" && user) return <Onboarding user={user} />;
   if (path === "/admin" && user) return <AdminApp />;
   if (path.startsWith("/dashboard") && user)
-    return <DashboardApp user={user} route={path} locationSearch={location.search} />;
+    return <DashboardApp user={user} route={path} />;
   if (path === "/login") return <AuthPage mode="login" />;
   if (path === "/cadastro") return <AuthPage mode="signup" />;
   if (path === "/esqueci-senha") return <AuthPage mode="forgot" />;
