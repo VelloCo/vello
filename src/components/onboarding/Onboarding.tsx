@@ -1,7 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  Check,
   ChevronLeft,
   Copy,
   ImagePlus,
@@ -9,6 +8,7 @@ import {
   LogOut,
   Pencil,
   Trash2,
+  Trophy,
   Upload,
   X,
 } from "lucide-react";
@@ -1050,10 +1050,18 @@ function SuccessStep({
   const [copied, setCopied] = useState(false);
   const share = `Confira meus imóveis disponíveis na Vello: ${link}`;
   return (
-    <section className="mx-auto max-w-[760px] py-14 text-center sm:py-20">
-      <div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-ink text-paper">
-        <Check size={27} />
-      </div>
+    <section className="mx-auto max-w-[760px] py-12 text-center sm:py-20">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.72, y: 12, rotate: -8 }}
+        animate={{ opacity: 1, scale: 1, y: [0, -5, 0], rotate: [0, 2, 0] }}
+        transition={{ opacity: { duration: 0.25 }, scale: { duration: 0.45, ease: [0.175, 0.885, 0.32, 1.275] }, y: { delay: 0.45, duration: 2.8, repeat: Infinity, ease: "easeInOut" }, rotate: { delay: 0.45, duration: 2.8, repeat: Infinity, ease: "easeInOut" } }}
+        className="relative mx-auto grid h-20 w-20 place-items-center rounded-[26px] bg-ink text-paper shadow-[0_16px_35px_rgba(11,11,10,.18)]"
+        aria-label="Catálogo publicado com sucesso"
+      >
+        <span className="absolute inset-2 rounded-[20px] border border-white/15" />
+        <Trophy size={34} strokeWidth={1.7} />
+        <motion.span animate={{ opacity: [0.35, 0.8, 0.35], scale: [0.9, 1.08, 0.9] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }} className="absolute -right-2 -top-2 h-3 w-3 rounded-full bg-ink ring-4 ring-paper" />
+      </motion.div>
       <p className="mt-7 font-mono text-[10px] uppercase tracking-[0.12em] text-stone">
         Seu primeiro imóvel foi publicado
       </p>
@@ -1102,34 +1110,36 @@ function SuccessStep({
         </div>
       </div>
       <p className="mt-7 font-mono text-[11px] text-ash">{link}</p>
-      <div className="mx-auto mt-6 grid max-w-sm gap-3">
+      <div className="mx-auto mt-6 grid max-w-sm gap-3 rounded-[20px] border border-line bg-white p-3 shadow-[0_16px_45px_rgba(11,11,10,.06)]">
         <a
           href={link}
-          className="flex h-12 items-center justify-center rounded-xl bg-ink font-body text-sm font-semibold text-paper"
+          className="flex h-12 items-center justify-center rounded-[12px] bg-ink font-body text-sm font-semibold text-paper transition hover:bg-charcoal active:scale-[0.98]"
         >
           Ver meu catálogo
         </a>
-        <button
-          onClick={() => {
-            navigator.clipboard.writeText(link);
-            setCopied(true);
-            window.setTimeout(() => setCopied(false), 1800);
-          }}
-          className="flex h-12 items-center justify-center gap-2 rounded-xl border border-line bg-white font-body text-sm font-medium text-ink"
-        >
-          <Copy size={15} /> {copied ? "Link copiado" : "Copiar link"}
-        </button>
-        <a
-          href={`https://wa.me/?text=${encodeURIComponent(share)}`}
-          target="_blank"
-          rel="noreferrer"
-          className="font-body text-sm text-ash underline underline-offset-4 hover:text-ink"
-        >
-          Compartilhar pelo WhatsApp
-        </a>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(link);
+              setCopied(true);
+              window.setTimeout(() => setCopied(false), 1800);
+            }}
+            className="flex h-12 items-center justify-center gap-2 rounded-[12px] border border-line bg-paper font-body text-sm font-medium text-ink transition hover:border-ink active:scale-[0.98]"
+          >
+            <Copy size={15} /> {copied ? "Link copiado" : "Copiar link"}
+          </button>
+          <a
+            href={`https://wa.me/?text=${encodeURIComponent(share)}`}
+            target="_blank"
+            rel="noreferrer"
+            className="flex h-12 items-center justify-center rounded-[12px] border border-line bg-paper font-body text-sm font-medium text-ink transition hover:border-ink active:scale-[0.98]"
+          >
+            Compartilhar no WhatsApp
+          </a>
+        </div>
         <button
           onClick={onDashboard}
-          className="mt-1 flex h-12 items-center justify-center rounded-xl border border-line bg-white font-body text-sm font-semibold text-ink transition hover:border-ink hover:bg-cream active:scale-[0.98]"
+          className="flex h-12 items-center justify-center rounded-[12px] border border-line bg-paper font-body text-sm font-semibold text-ink transition hover:border-ink hover:bg-cream active:scale-[0.98]"
         >
           Ir para o dashboard
         </button>
