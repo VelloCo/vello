@@ -664,23 +664,22 @@ function ProfileStep({
           }}
         />
         <div>
-          <label className={label}>CRECI</label>
-          <div className="flex h-[50px] items-center overflow-hidden rounded-xl border border-line bg-white transition focus-within:border-ink focus-within:ring-2 focus-within:ring-ink/10">
-            <span className="shrink-0 border-r border-line px-3 font-mono text-xs font-semibold text-ash sm:px-4">CRECI</span>
+          <label className={label}>CRECI profissional</label>
+          <div className="flex h-[54px] items-center gap-2 rounded-2xl border border-line bg-white p-1.5 transition focus-within:border-ink focus-within:ring-4 focus-within:ring-ink/10">
+            <span className="grid h-full shrink-0 place-items-center rounded-xl bg-paper px-3 font-mono text-[10px] font-semibold tracking-[.08em] text-ash sm:px-4">CRECI</span>
             <input
               aria-label="Número do CRECI"
               value={creciParts.number}
-              placeholder="123456"
+              placeholder="Número do registro"
               inputMode="numeric"
               onChange={(event) => update("creci", formatCreci(event.target.value.replace(/\D/g, "").slice(0, 8), creciParts.suffix))}
-              className="min-w-0 flex-1 bg-transparent px-3 font-body text-[15px] text-ink outline-none placeholder:text-stone sm:px-4"
+              className="min-w-0 flex-1 bg-transparent px-2 font-body text-[15px] text-ink outline-none placeholder:text-stone"
             />
-            <span className="font-body text-ash">-</span>
             <select
               aria-label="Tipo de inscrição CRECI"
               value={creciParts.suffix}
               onChange={(event) => update("creci", formatCreci(creciParts.number, event.target.value))}
-              className="h-full w-[76px] bg-transparent px-2 font-mono text-[13px] font-semibold text-ink outline-none"
+              className="h-full w-[64px] rounded-xl bg-paper px-2 font-mono text-[13px] font-semibold text-ink outline-none"
             >
               <option value="" disabled>Tipo</option>
               <option value="F">F</option>
