@@ -8,20 +8,22 @@ const login = appPath("/login");
 const propertyImages = ["/landing/property-photo-1.png", "/landing/property-photo-2.png", "/landing/property-photo-3.png"];
 
 export function VelloLandingMinimal() {
-  return <div className="min-h-screen overflow-hidden bg-paper text-ink">
+  return <div className="min-h-screen overflow-hidden bg-paper pb-20 text-ink sm:pb-0">
     <Header />
     <main>
       <Hero />
       <OnboardingFlow />
       <CatalogSection />
+      <Faq />
       <Closing />
     </main>
     <Footer />
+    <a href={signup} className="fixed inset-x-4 bottom-4 z-30 flex h-12 items-center justify-center rounded-[10px] bg-ink font-body text-[14px] font-semibold text-paper shadow-[0_18px_44px_rgba(11,11,10,.26)] sm:hidden">Criar meu catálogo <ArrowRight className="ml-2" size={16} /></a>
   </div>;
 }
 
 function Header() {
-  return <header className="border-b border-line bg-paper"><Container className="flex h-[76px] items-center justify-between"><a href="#inicio" aria-label="Vello — início"><Logo className="origin-left scale-[.86]" /></a><nav className="hidden items-center gap-8 font-body text-[14px] text-ash md:flex"><a href="#como-funciona" className="hover:text-ink">Como funciona</a><a href="#catalogo" className="hover:text-ink">Catálogo</a></nav><div className="flex items-center gap-3"><a href={login} className="hidden px-3 py-2 font-body text-[14px] text-ash hover:text-ink sm:inline">Entrar</a><a href={signup} className="rounded-[10px] bg-ink px-4 py-3 font-body text-[13px] font-semibold text-paper transition hover:bg-charcoal">Criar catálogo</a></div></Container></header>;
+  return <header className="border-b border-line bg-paper"><Container className="flex h-[76px] items-center justify-between"><a href="#inicio" aria-label="Vello — início"><Logo className="origin-left scale-[.86]" /></a><nav className="hidden items-center gap-8 font-body text-[14px] text-ash md:flex"><a href="#como-funciona" className="hover:text-ink">Como funciona</a><a href="#catalogo" className="hover:text-ink">Catálogo</a><a href="#perguntas" className="hover:text-ink">Dúvidas</a></nav><div className="flex items-center gap-3"><a href={login} className="hidden px-3 py-2 font-body text-[14px] text-ash hover:text-ink sm:inline">Entrar</a><a href={signup} className="rounded-[10px] bg-ink px-4 py-3 font-body text-[13px] font-semibold text-paper transition hover:bg-charcoal">Criar catálogo</a></div></Container></header>;
 }
 
 function Hero() {
@@ -46,6 +48,17 @@ function CatalogSection() {
 
 function CatalogPreview() {
   return <div className="overflow-hidden rounded-[24px] border border-line bg-[#f5f2ec] shadow-[0_28px_80px_-48px_rgba(11,11,10,.36)]"><div className="flex h-14 items-center justify-between border-b border-black/10 bg-ink px-5 text-paper"><span className="font-display text-[15px] font-semibold">Vello</span><span className="hidden font-body text-[11px] text-paper/65 sm:inline">Catálogo &nbsp;&nbsp; Imóveis &nbsp;&nbsp; Seleções</span><Share2 size={16} /></div><div className="p-5 sm:p-7"><div className="flex items-center gap-3 rounded-[14px] bg-white p-3 shadow-[0_12px_28px_rgba(11,11,10,.06)]"><span className="grid h-9 w-9 place-items-center rounded-full bg-ink font-display text-xs text-paper">J</span><span><b className="block font-body text-[12px]">Jose</b><small className="block font-body text-[10px] text-ash">Catálogo digital para imóveis</small></span></div><div className="mt-8 flex flex-wrap items-end justify-between gap-4"><div><p className="font-mono text-[9px] uppercase tracking-[.14em] text-stone">Catálogo de imóveis</p><h3 className="mt-2 font-display text-[30px] font-semibold tracking-[-.055em] sm:text-[37px]">Todos os imóveis</h3></div><button className="rounded-full border border-line bg-white px-4 py-2 font-body text-[11px] text-ash">Onde você quer morar?</button></div><div className="mt-5 flex gap-2 overflow-hidden">{["Todos", "Comprar", "Alugar", "Casas"].map((filter, index) => <span key={filter} className={`shrink-0 rounded-full px-3 py-2 font-body text-[10px] ${index === 0 ? "bg-ink text-paper" : "border border-line bg-white text-ash"}`}>{filter}</span>)}</div><div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3">{propertyImages.map((image, index) => <article key={image} className="overflow-hidden rounded-[12px] bg-white"><img src={appPath(image)} alt="Imóvel no catálogo" className="aspect-[1.2/1] w-full object-cover" /><div className="p-3"><p className="font-display text-[14px] font-semibold leading-tight">{["Casa contemporânea", "Apartamento alto", "Cobertura pronta"][index]}</p><p className="mt-2 font-body text-[10px] text-ash">Porto Alegre · RS</p></div></article>)}</div></div></div>;
+}
+
+function Faq() {
+  const questions = [
+    ["Preciso saber criar site?", "Não. A Vello já entrega um catálogo com seu perfil, imóveis e formas de contato."],
+    ["O cliente precisa criar uma conta?", "Não. Ele abre o link do catálogo ou da seleção diretamente no navegador."],
+    ["Posso atualizar os imóveis depois?", "Sim. Você pode editar informações, fotos, valores e disponibilidade pelo painel."],
+    ["Cada cliente pode receber uma seleção diferente?", "Sim. Crie uma seleção com os imóveis certos e envie um link próprio para a conversa."],
+    ["Funciona bem no celular?", "Sim. O catálogo foi pensado para ser aberto e compartilhado pelo celular."],
+  ];
+  return <section id="perguntas" className="border-t border-line bg-cream py-24 md:py-32"><Container className="grid gap-12 lg:grid-cols-[.7fr_1.3fr]"><Reveal><Eyebrow>Perguntas frequentes</Eyebrow><h2 className="mt-5 max-w-[420px] font-display text-[clamp(42px,5vw,66px)] font-semibold leading-[.91] tracking-[-.065em]">Tudo para começar com clareza.</h2></Reveal><div className="border-t border-line">{questions.map(([question, answer]) => <details key={question} className="group border-b border-line py-5"><summary className="flex cursor-pointer list-none items-center justify-between gap-5 font-display text-[20px] font-semibold tracking-[-.035em] marker:hidden"><span>{question}</span><span aria-hidden="true" className="text-ash transition-transform duration-200 group-open:rotate-45">+</span></summary><p className="max-w-[580px] pt-4 font-body text-[15px] leading-relaxed text-ash">{answer}</p></details>)}</div></Container></section>;
 }
 
 function Closing() { return <section className="bg-ink py-24 text-paper md:py-32"><Container><Reveal className="max-w-[760px]"><Eyebrow>Sua Vello</Eyebrow><h2 className="mt-5 font-display text-[clamp(48px,6vw,78px)] font-semibold leading-[.9] tracking-[-.07em]">Seu trabalho merece<br />ser bem apresentado.</h2><p className="mt-7 max-w-[520px] font-body text-[16px] leading-relaxed text-paper/65">Crie uma conta, organize seu portfólio e tenha um catálogo pronto para enviar.</p><a href={signup} className="mt-9 inline-flex h-12 items-center gap-2 rounded-[10px] bg-paper px-5 font-body text-[14px] font-semibold text-ink transition hover:bg-white">Criar meu catálogo <ArrowRight size={16} /></a></Reveal></Container></section>; }

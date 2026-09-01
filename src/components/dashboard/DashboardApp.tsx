@@ -26,7 +26,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { appPath } from "../../lib/paths";
+import { appPath, publicCatalogLabel } from "../../lib/paths";
 import { LoadingScreen } from "../LoadingScreen";
 import { signOut, updatePassword } from "../../lib/auth";
 import {
@@ -477,7 +477,7 @@ function HomePage({
           </p>
           <p className="mt-2 font-body text-sm text-paper/70">
             {profile.slug
-              ? `vello.com.br/${profile.slug}`
+              ? publicCatalogLabel(profile.slug)
               : "Defina seu link público"}
           </p>
           <a
@@ -671,7 +671,7 @@ function PropertyEditor({
   const upload = async (files: FileList | null) => {
     if (!files) return;
     try {
-      const urls = await uploadPropertyImages(user.id, files);
+      const urls = await uploadPropertyImages(user.id, files, 12 - images.length);
       setImages((old) => [...old, ...urls.map((url) => ({ url }))]);
     } catch (error) {
       toast(error instanceof Error ? error.message : "Não foi possível enviar as fotos.");
@@ -1132,7 +1132,7 @@ function SelectionEditor({
           client_whatsapp: whats,
           intro_message: msg,
           status: "active",
-          slug: selection?.slug || slugify(name),
+          slug: selection?.slug || "",
         },
         selected,
       );
@@ -1321,7 +1321,7 @@ function CatalogPage({
         <aside className="rounded-[26px] border border-line bg-white p-6">
           <p className="font-display text-2xl font-semibold">Seu catálogo</p>
           <p className="mt-3 break-all font-mono text-sm text-ash">
-            vello.com.br/{profile.slug}
+            {publicCatalogLabel(profile.slug)}
           </p>
           <div className="mt-6 grid gap-3">
             <a

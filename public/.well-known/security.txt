@@ -1,0 +1,4 @@
+Contact: mailto:vellocorretores@gmail.com
+Preferred-Languages: pt-BR
+Canonical: https://vellocorretores.vercel.app/.well-known/security.txt
+Expires: 2027-09-01T00:00:00.000Z

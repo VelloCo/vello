@@ -1,11 +1,11 @@
 {
   "name": "Vello — Catálogo digital para corretores",
   "short_name": "Vello",
-  "start_url": "/vello/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#FAF9F6",
   "theme_color": "#0B0B0A",
   "icons": [
-    { "src": "/vello/favicon.png", "sizes": "any", "type": "image/png" }
+    { "src": "/favicon.png", "sizes": "any", "type": "image/png" }
   ]
 }

@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://velloco.github.io/vello/</loc>
+    <loc>https://vellocorretores.vercel.app/</loc>
   </url>
   <url>
-    <loc>https://velloco.github.io/vello/cadastro</loc>
+    <loc>https://vellocorretores.vercel.app/termos</loc>
   </url>
   <url>
-    <loc>https://velloco.github.io/vello/login</loc>
+    <loc>https://vellocorretores.vercel.app/privacidade</loc>
+  </url>
+  <url>
+    <loc>https://vellocorretores.vercel.app/suporte</loc>
   </url>
 </urlset>

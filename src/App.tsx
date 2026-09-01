@@ -56,9 +56,15 @@ export default function App() {
       : ["Catálogo | Vello", "Conheça os imóveis disponíveis neste catálogo Vello."];
     document.title = page[0];
     document.querySelector('meta[name="description"]')?.setAttribute("content", page[1]);
+    const robots = document.querySelector('meta[name="robots"]');
+    robots?.setAttribute("content", authRoute || privateRoute ? "noindex,nofollow" : "index,follow");
+    document.querySelector('link[rel="canonical"]')?.setAttribute(
+      "href",
+      `${window.location.origin}${appPath(path)}`,
+    );
     initAnalytics();
     trackPage(path);
-  }, [path]);
+  }, [authRoute, path, privateRoute]);
 
   useEffect(() => {
     if (!supabase) {

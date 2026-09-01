@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://velloco.github.io/vello/sitemap.xml
+Sitemap: https://vellocorretores.vercel.app/sitemap.xml

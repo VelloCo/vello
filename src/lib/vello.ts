@@ -201,10 +201,15 @@ export async function setSelectionStatus(
 export async function uploadPropertyImages(
   userId: string,
   files: FileList | File[],
+  remainingSlots = 12,
 ) {
   const acceptedTypes = ["image/jpeg", "image/png", "image/webp"];
   const maxSize = 10 * 1024 * 1024;
   const list = [...files];
+  if (!list.length) return [];
+  if (remainingSlots <= 0 || list.length > remainingSlots) {
+    throw new Error(`Você pode ter no máximo 12 fotos por imóvel.`);
+  }
   if (list.some((file) => !acceptedTypes.includes(file.type))) {
     throw new Error("Use apenas imagens JPG, PNG ou WebP.");
   }
@@ -275,7 +280,9 @@ export async function saveSelection(
   const payload = {
     ...selection,
     user_id: userId,
-    slug: selection.slug || slugify(selection.client_name || "selecao"),
+    slug:
+      selection.slug ||
+      `${slugify(selection.client_name || "selecao")}-${crypto.randomUUID().slice(0, 8)}`,
   };
   delete (payload as Partial<Selection>).selection_properties;
   const { data, error } = selection.id

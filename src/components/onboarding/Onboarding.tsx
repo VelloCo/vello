@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { appPath } from "../../lib/paths";
+import { appPath, publicCatalogLabel, PUBLIC_CATALOG_DOMAIN } from "../../lib/paths";
 import { requireSupabase } from "../../lib/supabase";
 import { Logo } from "../Logo";
 import { LoadingScreen } from "../LoadingScreen";
@@ -757,7 +757,7 @@ function ProfileStep({
         <label className={label}>Seu link Vello</label>
         <div className="flex items-center overflow-hidden rounded-xl border border-line bg-paper">
           <span className="whitespace-nowrap border-r border-line px-4 py-3 font-body text-sm text-ash">
-            vello.com.br/
+            {PUBLIC_CATALOG_DOMAIN}/
           </span>
           <input
             value={profile.slug}
@@ -769,7 +769,7 @@ function ProfileStep({
         <p className="mt-3 font-body text-sm text-ash">
           Preview:{" "}
           <span className="text-ink">
-            vello.com.br/{profile.slug || "seu-link"}
+            {publicCatalogLabel(profile.slug || "seu-link")}
           </span>
         </p>
         <p

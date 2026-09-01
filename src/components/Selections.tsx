@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Container, Reveal, Eyebrow } from './Primitives';
 import { properties } from '../data/properties';
 import { PropertyCard } from './PropertyCard';
+import { publicCatalogLabel } from '../lib/paths';
 
 export function Selections() {
   return (
@@ -65,7 +66,7 @@ export function Selections() {
               <ArrowRight size={16} />
             </motion.div>
             <div className="rounded-full border border-line bg-white px-4 py-2 font-mono text-[12px] text-ash shadow-sm">
-              vello.com.br/carlos/mariana
+              {publicCatalogLabel('carlos/mariana')}
             </div>
           </Reveal>
 

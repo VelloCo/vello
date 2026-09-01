@@ -1,5 +1,6 @@
 import { Container, Reveal, Eyebrow } from './Primitives';
 import { properties } from '../data/properties';
+import { publicCatalogLabel } from '../lib/paths';
 
 export function WhatsAppFlow() {
   return (
@@ -20,7 +21,7 @@ export function WhatsAppFlow() {
                 procura 👇
               </div>
               <div className="mt-2 inline-block rounded-2xl rounded-tl-sm bg-ink px-3.5 py-2 font-mono text-[11px] text-paper">
-                vello.com.br/carlos/mariana
+                {publicCatalogLabel('carlos/mariana')}
               </div>
             </StepCard>
           </Reveal>
