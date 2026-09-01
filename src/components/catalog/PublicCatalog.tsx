@@ -205,6 +205,7 @@ function PropertyCard({
   const hasArea = property.area >= 10;
   const hasSpecs = hasBedrooms || hasBathrooms || hasParking || hasArea;
   const isShowcase = style === "editorial";
+  const isDark = style === "classic";
   return (
     <motion.article
       layout
@@ -227,6 +228,7 @@ function PropertyCard({
             Vello
           </div>
         )}
+        {isDark && <><div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" /><div className="pointer-events-none absolute inset-x-4 bottom-4 z-10 text-paper"><div className="flex items-end justify-between gap-3"><div><h2 className="line-clamp-2 font-display text-[23px] font-medium leading-[.98] tracking-[-.04em] sm:text-[27px]">{displayTitle(property.title)}</h2>{propertyLocation(property) && <p className="mt-2 flex items-center gap-1.5 font-body text-[13px] text-paper/75"><MapPin size={14} strokeWidth={1.7} />{propertyLocation(property)}</p>}</div><p className="shrink-0 rounded-full bg-white/15 px-3 py-2 font-body text-[13px] font-medium backdrop-blur-sm">{money(property.price, property.transaction_type === "rent")}</p></div>{hasSpecs && <div className="mt-3 flex flex-wrap gap-x-3 gap-y-1.5 font-body text-[12px] text-paper/80">{hasBedrooms && <span>{property.bedrooms} {property.bedrooms === 1 ? "quarto" : "quartos"}</span>}{hasBathrooms && <span>{property.bathrooms} {property.bathrooms === 1 ? "banheiro" : "banheiros"}</span>}{hasParking && <span>{property.parking_spaces} {property.parking_spaces === 1 ? "vaga" : "vagas"}</span>}{hasArea && <span>{property.area} m²</span>}</div>}</div></>}
         <span className={`pointer-events-none absolute left-3 top-3 z-10 rounded-full px-2.5 py-1 font-mono text-[8px] uppercase tracking-[.16em] backdrop-blur-sm ${isShowcase ? "bg-white/90 text-ink shadow-sm" : "bg-black/70 text-paper"}`}>
           {property.transaction_type === "sale" ? "Venda" : "Aluguel"}
         </span>
@@ -234,8 +236,8 @@ function PropertyCard({
           <Favorite id={property.id} />
         </div>
       </div>
-      <a href={href} className={`relative z-20 block transition duration-300 group-hover:-translate-y-0.5 ${style === "classic" ? "mt-0 rounded-b-[14px] border-x border-b border-black/10 bg-[#f5f2ec] px-5 pb-5 pt-5 sm:px-6" : style === "compact" ? "-mt-3 ml-3 rounded-[16px] bg-[#f5f2ec] px-5 pb-5 pt-5 shadow-[0_12px_24px_rgba(11,11,10,.05)] sm:ml-4 sm:px-6" : "bg-transparent px-1 pb-1 pt-5 sm:px-2"}`} aria-hidden="true" tabIndex={-1}>
-        <div className="flex items-start justify-between gap-5">
+      <a href={href} className={`relative z-20 block transition duration-300 group-hover:-translate-y-0.5 ${isDark ? "mt-0 rounded-b-[14px] border-x border-b border-black/10 bg-white px-4 py-3.5 sm:px-5" : style === "compact" ? "-mt-3 ml-3 rounded-[16px] bg-[#f5f2ec] px-5 pb-5 pt-5 shadow-[0_12px_24px_rgba(11,11,10,.05)] sm:ml-4 sm:px-6" : "bg-transparent px-1 pb-1 pt-5 sm:px-2"}`} aria-hidden="true" tabIndex={-1}>
+        {isDark ? <span className="flex items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 font-body text-[13px] font-medium text-paper">Ver imóvel <ArrowUpRight size={15} /></span> : <><div className="flex items-start justify-between gap-5">
           <div>
             <h2 className={`line-clamp-2 font-display font-medium leading-[.98] tracking-[-.04em] text-ink ${isShowcase ? "text-[23px] sm:text-[27px]" : "text-[27px] sm:text-[32px]"}`}>
               {displayTitle(property.title)}
@@ -245,7 +247,7 @@ function PropertyCard({
         </div>
         {propertyLocation(property) && <p className="mt-3 flex items-center gap-1.5 font-body text-sm text-ash"><MapPin size={15} strokeWidth={1.7} />{propertyLocation(property)}</p>}
         <div className={`mt-5 flex items-end justify-between gap-4 ${isShowcase ? "border-t border-black/[.08] pt-4" : "mt-7"}`}><div><p className="font-mono text-[9px] uppercase tracking-[.16em] text-stone">{property.transaction_type === "rent" ? "Valor mensal" : "Valor do imóvel"}</p><p className="mt-2 font-display text-[25px] font-semibold leading-none tracking-[-.045em] text-ink">{money(property.price, property.transaction_type === "rent")}</p></div>{isShowcase && <span className="rounded-full bg-ink px-4 py-2.5 font-body text-[12px] font-medium text-paper">Ver imóvel</span>}</div>
-        {hasSpecs && <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 font-body text-[13px] text-ash">{hasBedrooms && <span className="inline-flex items-center gap-1.5"><BedDouble size={15} strokeWidth={1.7} />{property.bedrooms} {property.bedrooms === 1 ? "quarto" : "quartos"}</span>}{hasBathrooms && <span className="inline-flex items-center gap-1.5"><Bath size={15} strokeWidth={1.7} />{property.bathrooms} {property.bathrooms === 1 ? "banheiro" : "banheiros"}</span>}{hasParking && <span className="inline-flex items-center gap-1.5"><Car size={15} strokeWidth={1.7} />{property.parking_spaces} {property.parking_spaces === 1 ? "vaga" : "vagas"}</span>}{hasArea && <span>{property.area} m²</span>}</div>}
+        {hasSpecs && <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 font-body text-[13px] text-ash">{hasBedrooms && <span className="inline-flex items-center gap-1.5"><BedDouble size={15} strokeWidth={1.7} />{property.bedrooms} {property.bedrooms === 1 ? "quarto" : "quartos"}</span>}{hasBathrooms && <span className="inline-flex items-center gap-1.5"><Bath size={15} strokeWidth={1.7} />{property.bathrooms} {property.bathrooms === 1 ? "banheiro" : "banheiros"}</span>}{hasParking && <span className="inline-flex items-center gap-1.5"><Car size={15} strokeWidth={1.7} />{property.parking_spaces} {property.parking_spaces === 1 ? "vaga" : "vagas"}</span>}{hasArea && <span>{property.area} m²</span>}</div>}</>}
       </a>
     </motion.article>
   );
