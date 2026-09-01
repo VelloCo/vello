@@ -95,12 +95,6 @@ const money = (price: number, rent = false) => {
 };
 const phone = (value: string | null) => (value || "").replace(/\D/g, "");
 const propertyImage = (property: Property) => property.images?.[0]?.image_url;
-const propertySpecs = (property: Property) =>
-  [
-    property.bedrooms > 0 && `${property.bedrooms} ${property.bedrooms === 1 ? "quarto" : "quartos"}`,
-    property.parking_spaces > 0 && `${property.parking_spaces} ${property.parking_spaces === 1 ? "vaga" : "vagas"}`,
-    property.area >= 10 && `${property.area} m²`,
-  ].filter(Boolean) as string[];
 const propertyLocation = (property: Property) =>
   [property.neighborhood, property.city].filter(Boolean).join(" · ");
 const displayTitle = (title: string) =>
@@ -205,18 +199,21 @@ function PropertyCard({
   style?: CatalogTheme["property_style"];
 }) {
   const href = propertyHref(catalog, property);
-  const specs = propertySpecs(property);
   const hasBedrooms = property.bedrooms > 0;
+  const hasBathrooms = property.bathrooms > 0;
   const hasParking = property.parking_spaces > 0;
+  const hasArea = property.area >= 10;
+  const hasSpecs = hasBedrooms || hasBathrooms || hasParking || hasArea;
+  const isShowcase = style === "editorial";
   return (
     <motion.article
       layout
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: Math.min(index * 0.07, 0.28), ease: [0.22, 1, 0.36, 1] }}
-      className="group relative"
+      className={`group relative ${isShowcase ? "rounded-[26px] border border-black/[.09] bg-white p-3 shadow-[0_12px_35px_rgba(11,11,10,.055)] sm:rounded-[30px] sm:p-4" : ""}`}
     >
-      <div className={`relative overflow-hidden bg-cream ${style === "classic" ? "aspect-[4/3] rounded-[14px]" : style === "compact" ? "aspect-[16/10] rounded-[16px]" : "aspect-[5/4] rounded-[18px] sm:rounded-[22px]"}`}>
+      <div className={`relative overflow-hidden bg-cream ${style === "classic" ? "aspect-[4/3] rounded-[14px]" : style === "compact" ? "aspect-[16/10] rounded-[16px]" : "aspect-[4/3] rounded-[19px] sm:rounded-[23px]"}`}>
         <a href={href} aria-label={`Conhecer ${property.title}`} className="absolute inset-0 z-10 rounded-[18px] focus-visible:ring-2 focus-visible:ring-ink sm:rounded-[22px]" />
         {propertyImage(property) ? (
           <img
@@ -230,25 +227,25 @@ function PropertyCard({
             Vello
           </div>
         )}
-        <span className="pointer-events-none absolute left-3 top-3 z-10 rounded-full bg-black/70 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[.16em] text-paper backdrop-blur-sm">
+        <span className={`pointer-events-none absolute left-3 top-3 z-10 rounded-full px-2.5 py-1 font-mono text-[8px] uppercase tracking-[.16em] backdrop-blur-sm ${isShowcase ? "bg-white/90 text-ink shadow-sm" : "bg-black/70 text-paper"}`}>
           {property.transaction_type === "sale" ? "Venda" : "Aluguel"}
         </span>
         <div className="absolute right-3 top-3 z-20">
           <Favorite id={property.id} />
         </div>
       </div>
-      <a href={href} className={`relative z-20 block bg-[#f5f2ec] px-5 pb-5 pt-5 transition duration-300 group-hover:-translate-y-0.5 sm:px-6 ${style === "classic" ? "mt-0 rounded-b-[14px] border-x border-b border-black/10" : style === "compact" ? "-mt-3 ml-3 rounded-[16px] shadow-[0_12px_24px_rgba(11,11,10,.05)] sm:ml-4" : "-mt-5 ml-4 rounded-[20px] shadow-[0_14px_30px_rgba(11,11,10,.05)] sm:ml-5"}`} aria-hidden="true" tabIndex={-1}>
+      <a href={href} className={`relative z-20 block transition duration-300 group-hover:-translate-y-0.5 ${style === "classic" ? "mt-0 rounded-b-[14px] border-x border-b border-black/10 bg-[#f5f2ec] px-5 pb-5 pt-5 sm:px-6" : style === "compact" ? "-mt-3 ml-3 rounded-[16px] bg-[#f5f2ec] px-5 pb-5 pt-5 shadow-[0_12px_24px_rgba(11,11,10,.05)] sm:ml-4 sm:px-6" : "bg-transparent px-1 pb-1 pt-5 sm:px-2"}`} aria-hidden="true" tabIndex={-1}>
         <div className="flex items-start justify-between gap-5">
           <div>
-            <h2 className="line-clamp-2 font-display text-[27px] font-medium leading-[.98] tracking-[-.04em] text-ink sm:text-[32px]">
+            <h2 className={`line-clamp-2 font-display font-medium leading-[.98] tracking-[-.04em] text-ink ${isShowcase ? "text-[23px] sm:text-[27px]" : "text-[27px] sm:text-[32px]"}`}>
               {displayTitle(property.title)}
             </h2>
           </div>
-          <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-black/15 text-ink transition duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:bg-ink group-hover:text-paper"><ArrowUpRight size={17} /></span>
+          <span className={`mt-0.5 grid shrink-0 place-items-center border border-black/15 text-ink transition duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:bg-ink group-hover:text-paper ${isShowcase ? "h-10 w-10 rounded-[13px]" : "h-9 w-9 rounded-full"}`}><ArrowUpRight size={17} /></span>
         </div>
         {propertyLocation(property) && <p className="mt-3 flex items-center gap-1.5 font-body text-sm text-ash"><MapPin size={15} strokeWidth={1.7} />{propertyLocation(property)}</p>}
-        <div className="mt-7"><p className="font-mono text-[9px] uppercase tracking-[.16em] text-stone">Valor do imóvel</p><p className="mt-2 font-display text-[28px] font-semibold leading-none tracking-[-.045em] text-ink">{money(property.price, property.transaction_type === "rent")}</p></div>
-        {specs.length > 0 && <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 font-body text-sm text-ash">{hasBedrooms && <span className="inline-flex items-center gap-1.5"><BedDouble size={15} strokeWidth={1.7} />{property.bedrooms} {property.bedrooms === 1 ? "quarto" : "quartos"}</span>}{hasParking && <span className="inline-flex items-center gap-1.5"><Car size={15} strokeWidth={1.7} />{property.parking_spaces} {property.parking_spaces === 1 ? "vaga" : "vagas"}</span>}{property.area >= 10 && <span>{property.area} m²</span>}</div>}
+        <div className={`mt-5 flex items-end justify-between gap-4 ${isShowcase ? "border-t border-black/[.08] pt-4" : "mt-7"}`}><div><p className="font-mono text-[9px] uppercase tracking-[.16em] text-stone">{property.transaction_type === "rent" ? "Valor mensal" : "Valor do imóvel"}</p><p className="mt-2 font-display text-[25px] font-semibold leading-none tracking-[-.045em] text-ink">{money(property.price, property.transaction_type === "rent")}</p></div>{isShowcase && <span className="rounded-full bg-ink px-4 py-2.5 font-body text-[12px] font-medium text-paper">Ver imóvel</span>}</div>
+        {hasSpecs && <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 font-body text-[13px] text-ash">{hasBedrooms && <span className="inline-flex items-center gap-1.5"><BedDouble size={15} strokeWidth={1.7} />{property.bedrooms} {property.bedrooms === 1 ? "quarto" : "quartos"}</span>}{hasBathrooms && <span className="inline-flex items-center gap-1.5"><Bath size={15} strokeWidth={1.7} />{property.bathrooms} {property.bathrooms === 1 ? "banheiro" : "banheiros"}</span>}{hasParking && <span className="inline-flex items-center gap-1.5"><Car size={15} strokeWidth={1.7} />{property.parking_spaces} {property.parking_spaces === 1 ? "vaga" : "vagas"}</span>}{hasArea && <span>{property.area} m²</span>}</div>}
       </a>
     </motion.article>
   );
