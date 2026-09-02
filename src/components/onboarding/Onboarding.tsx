@@ -14,7 +14,12 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { appPath, publicCatalogLabel, PUBLIC_CATALOG_DOMAIN } from "../../lib/paths";
+import {
+  appPath,
+  publicCatalogLabel,
+  PUBLIC_CATALOG_DOMAIN,
+  PUBLIC_SITE_ORIGIN,
+} from "../../lib/paths";
 import { requireSupabase } from "../../lib/supabase";
 import { Logo } from "../Logo";
 import { LoadingScreen } from "../LoadingScreen";
@@ -137,7 +142,8 @@ function number(value: string) {
   return Number(value.replace(/\D/g, "")) || 0;
 }
 function publicLink(slug: string) {
-  return `${window.location.origin}${appPath(`/${slug}`)}`;
+  const cleanSlug = slug.replace(/^\/+|\/+$/g, "");
+  return `${PUBLIC_SITE_ORIGIN}/${cleanSlug}`;
 }
 
 async function optimizeImage(file: File) {
