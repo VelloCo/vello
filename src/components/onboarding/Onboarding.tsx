@@ -332,7 +332,7 @@ export function Onboarding({ user }: { user: User }) {
       );
       return;
     }
-    transitionTo(2);
+    transitionTo(3);
   }
 
   async function uploadPhotos(files: FileList | null) {
