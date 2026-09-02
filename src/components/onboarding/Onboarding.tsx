@@ -621,7 +621,7 @@ function ProfileStep({
 }) {
   const creciParts = splitCreci(profile.creci);
   return (
-    <section className="mx-auto max-w-[720px] py-12 sm:py-16">
+    <section className="mx-auto min-w-0 max-w-[720px] py-12 sm:py-16">
       <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-stone">
         {stage === 1 ? "Identidade profissional" : "Contato e endereço público"}
       </p>
@@ -645,7 +645,7 @@ function ProfileStep({
               <img src={appPath("/vello-mascot.png")} alt="Mascote temporário da Vello" className="h-full w-full object-cover object-top" />
             )}
           </span>
-          <div>
+          <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <label className="inline-flex h-10 cursor-pointer items-center gap-2 rounded-full border border-line bg-white px-4 font-body text-sm font-semibold text-ink transition hover:border-ink active:scale-[0.98]">
                 {profile.avatarUrl ? <Pencil size={14} /> : <ImagePlus size={15} />}
@@ -677,7 +677,7 @@ function ProfileStep({
           </div>
         </div>
       </div>
-      <div className="mt-10 grid gap-5 sm:grid-cols-2">
+      <div className="mt-10 grid min-w-0 gap-5 sm:grid-cols-2 [&>*]:min-w-0">
         <Input
           label="Nome profissional"
           value={profile.professionalName}
@@ -706,7 +706,7 @@ function ProfileStep({
               aria-label="Tipo de inscrição CRECI"
               value={creciParts.suffix}
               onChange={(event) => update("creci", formatCreci(creciParts.number, event.target.value))}
-              className="h-full w-[76px] border-l border-line bg-transparent px-3 font-mono text-[12px] font-semibold text-ink outline-none"
+              className="h-full w-[68px] shrink-0 border-l border-line bg-transparent px-2 font-mono text-[11px] font-semibold text-ink outline-none sm:w-[76px] sm:px-3 sm:text-[12px]"
             >
               <option value="" disabled>Tipo</option>
               <option value="F">F · PF</option>
