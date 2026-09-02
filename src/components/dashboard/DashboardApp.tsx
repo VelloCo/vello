@@ -77,9 +77,10 @@ function Toast({ text }: { text: string | null }) {
     <AnimatePresence>
       {text && (
         <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, transform: "translate(-50%, 12px) scale(.97)" }}
+          animate={{ opacity: 1, transform: "translate(-50%, 0) scale(1)" }}
+          exit={{ opacity: 0, transform: "translate(-50%, 8px) scale(.98)" }}
+          transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
           className="fixed bottom-24 left-1/2 z-[70] -translate-x-1/2 rounded-full bg-ink px-5 py-3 font-body text-sm text-paper shadow-xl"
         >
           ✓ {text}
@@ -96,7 +97,7 @@ function Button({
   return (
     <button
       {...props}
-      className={`inline-flex h-11 items-center justify-center gap-2 rounded-full bg-ink px-5 font-body text-sm font-semibold text-paper transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+      className={`vello-action vello-action-dark inline-flex h-11 items-center justify-center gap-2 rounded-full bg-ink px-5 font-body text-sm font-semibold text-paper disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
     >
       {children}
     </button>
@@ -133,7 +134,7 @@ function PropertyCard({
 }) {
   const [open, setOpen] = useState(false);
   return (
-    <article className="group relative overflow-hidden rounded-[22px] border border-line bg-white">
+    <article className="vello-surface group relative overflow-hidden rounded-[22px] border border-line bg-white">
       <div
         className={`relative overflow-hidden bg-cream ${compact ? "aspect-[4/3]" : "aspect-[16/10]"}`}
       >
@@ -142,7 +143,7 @@ function PropertyCard({
             src={cover(property)}
             alt={property.title}
             loading="lazy"
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.035]"
+            className="vello-card-image h-full w-full object-cover"
           />
         ) : (
           <div className="grid h-full place-items-center text-stone">
@@ -160,7 +161,7 @@ function PropertyCard({
           <MoreHorizontal size={17} />
         </button>
         {open && (
-          <div className="absolute right-3 top-12 z-20 w-40 rounded-xl border border-line bg-white p-1.5 text-left shadow-lg">
+          <div className="vello-popover absolute right-3 top-12 z-20 w-40 rounded-xl border border-line bg-white p-1.5 text-left shadow-[0_18px_48px_-18px_rgba(11,11,10,.28)]">
             <button
               onClick={onEdit}
               className="w-full rounded-lg px-3 py-2 text-left font-body text-sm hover:bg-cream"
@@ -306,7 +307,7 @@ function NavItem({
   return (
     <a
       href={appPath(item.href)}
-      className={`flex h-11 items-center gap-3 rounded-xl px-3 font-body text-sm transition ${active ? "bg-ink font-semibold text-paper" : "text-ash hover:bg-cream hover:text-ink"}`}
+      className={`flex h-11 items-center gap-3 rounded-xl px-3 font-body text-sm transition-colors ${active ? "bg-ink font-semibold text-paper" : "text-ash hover:bg-cream hover:text-ink"}`}
     >
       <Icon size={17} strokeWidth={1.8} />
       {item.label}
@@ -1600,12 +1601,15 @@ function Dialog({
   danger?: boolean;
 }) {
   return (
-    <div
+    <motion.div
       role="dialog"
       aria-modal="true"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.16, ease: [0.23, 1, 0.32, 1] }}
       className="fixed inset-0 z-[80] grid place-items-center bg-ink/45 p-5"
     >
-      <div className="w-full max-w-sm rounded-[24px] bg-white p-6 shadow-2xl">
+      <motion.div initial={{ opacity: 0, transform: "translateY(10px) scale(.97)" }} animate={{ opacity: 1, transform: "translateY(0) scale(1)" }} transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }} className="w-full max-w-sm rounded-[24px] border border-line bg-white p-6 shadow-[0_28px_80px_-30px_rgba(11,11,10,.55)]">
         <h2 className="font-display text-2xl font-semibold">{title}</h2>
         <p className="mt-3 font-body text-sm leading-relaxed text-ash">
           {text}
@@ -1624,8 +1628,8 @@ function Dialog({
             {confirm}
           </button>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 

@@ -177,10 +177,10 @@ function Favorite({ id }: { id: string }) {
     <motion.button
       onClick={toggle}
       aria-label={saved ? "Remover dos favoritos" : "Adicionar aos favoritos"}
-      whileTap={{ scale: 0.9 }}
-      animate={{ scale: saved ? 1.06 : 1 }}
+      whileTap={{ transform: "scale(.97)" }}
+      animate={{ transform: saved ? "scale(1.04)" : "scale(1)" }}
       transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-      className="grid h-10 w-10 place-items-center rounded-full border border-black/5 bg-[#f5f2ec]/95 text-ink shadow-[0_4px_16px_rgba(0,0,0,.08)] transition hover:scale-105"
+      className="vello-favorite grid h-10 w-10 place-items-center rounded-full border border-black/5 bg-[#f5f2ec]/95 text-ink shadow-[0_4px_16px_rgba(0,0,0,.08)]"
     >
       <Heart size={18} fill={saved ? "currentColor" : "none"} />
     </motion.button>
@@ -209,9 +209,9 @@ function PropertyCard({
   return (
     <motion.article
       layout
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, delay: Math.min(index * 0.07, 0.28), ease: [0.22, 1, 0.36, 1] }}
+      initial={{ opacity: 0, transform: "translateY(18px)" }}
+      animate={{ opacity: 1, transform: "translateY(0)" }}
+      transition={{ duration: 0.28, delay: Math.min(index * 0.05, 0.2), ease: [0.23, 1, 0.32, 1] }}
       className={`group relative ${isShowcase ? "rounded-[26px] border border-black/[.09] bg-white p-3 shadow-[0_12px_35px_rgba(11,11,10,.055)] sm:rounded-[30px] sm:p-4" : ""}`}
     >
       <div className={`relative overflow-hidden bg-cream ${style === "classic" ? "aspect-[4/3] rounded-[14px]" : style === "compact" ? "aspect-[16/10] rounded-[16px]" : "aspect-[4/3] rounded-[19px] sm:rounded-[23px]"}`}>
@@ -221,7 +221,7 @@ function PropertyCard({
             src={propertyImage(property)}
             alt={property.title}
             loading="lazy"
-            className="h-full w-full object-cover transition duration-700 ease-out group-hover:scale-[1.025]"
+            className="vello-card-image h-full w-full object-cover"
           />
         ) : (
           <div className="grid h-full place-items-center font-mono text-xs text-stone">
@@ -346,9 +346,10 @@ function FilterControls({
             onClick={() => setSheet(false)}
           >
             <motion.div
-              initial={{ y: 32 }}
-              animate={{ y: 0 }}
-              exit={{ y: 32 }}
+            initial={{ transform: "translateY(100%)" }}
+            animate={{ transform: "translateY(0)" }}
+            exit={{ transform: "translateY(100%)" }}
+            transition={{ duration: 0.28, ease: [0.32, 0.72, 0, 1] }}
               onClick={(e) => e.stopPropagation()}
               className="absolute inset-x-0 bottom-0 rounded-t-[28px] bg-paper p-6 shadow-2xl sm:relative sm:w-full sm:max-w-md sm:rounded-[28px]"
             >
@@ -449,7 +450,7 @@ function CatalogHeader({
   const contact = catalog.profile.whatsapp ? waLink(catalog) : null;
   return (
     <header
-      className={`sticky top-0 z-40 transition-all duration-500 ${scrolled ? "border-b border-line/70 bg-[#f5f2ec]/90 backdrop-blur-md" : onHero ? "bg-[#f5f2ec]" : "bg-paper"}`}
+      className={`sticky top-0 z-40 transition-[background-color,border-color,box-shadow] duration-200 ease-[cubic-bezier(.23,1,.32,1)] ${scrolled ? "border-b border-line/70 bg-[#f5f2ec]/90 shadow-[0_8px_28px_-24px_rgba(11,11,10,.32)] backdrop-blur-md" : onHero ? "bg-[#f5f2ec]" : "bg-paper"}`}
     >
       <div className="mx-auto flex h-[68px] max-w-[1400px] items-center justify-between px-5 sm:px-8">
         <Logo />
@@ -529,7 +530,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
       <CatalogHeader catalog={catalog} />
       <main className={`overflow-hidden pb-28 ${palette.page}`} style={customBackground ? { backgroundColor: customBackground } : undefined}>
         <section className="px-5 pb-3 pt-7 sm:px-8 sm:pb-6 sm:pt-10">
-          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} style={customProfileColor ? { backgroundColor: customProfileColor } : undefined} className={`mx-auto flex max-w-[1400px] items-center gap-3 rounded-[28px] border p-3 shadow-[0_14px_35px_rgba(11,11,10,.055)] sm:gap-5 sm:rounded-full sm:p-3.5 ${profileBand} ${customProfileColor ? profileText : ""}`}>
+          <motion.div initial={{ opacity: 0, transform: "translateY(12px)" }} animate={{ opacity: 1, transform: "translateY(0)" }} transition={{ duration: 0.36, ease: [0.23, 1, 0.32, 1] }} style={customProfileColor ? { backgroundColor: customProfileColor } : undefined} className={`mx-auto flex max-w-[1400px] items-center gap-3 rounded-[28px] border p-3 shadow-[0_14px_35px_rgba(11,11,10,.055)] sm:gap-5 sm:rounded-full sm:p-3.5 ${profileBand} ${customProfileColor ? profileText : ""}`}>
             <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-ink sm:h-[72px] sm:w-[72px]">
               {catalog.profile.avatar_url ? <img src={catalog.profile.avatar_url} alt={`Foto de ${catalog.profile.professional_name}`} className="h-full w-full object-cover" /> : <img src={appPath("/vello-mascot.png")} alt="Mascote da Vello" className="h-full w-full object-cover object-top" />}
             </div>

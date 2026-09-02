@@ -94,7 +94,7 @@ const features = [
 ];
 
 const field =
-  "h-12 w-full rounded-xl border border-line bg-white px-4 font-body text-[14px] text-ink outline-none transition placeholder:text-stone focus:border-ink";
+  "vello-field h-12 w-full rounded-xl border border-line bg-white px-4 font-body text-[14px] text-ink outline-none placeholder:text-stone focus:border-ink focus:ring-4 focus:ring-ink/[0.06]";
 const label =
   "mb-3 block font-body text-[11px] font-medium uppercase tracking-[0.08em] text-ash";
 
@@ -532,10 +532,10 @@ export function Onboarding({ user }: { user: User }) {
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.28 }}
+            initial={{ opacity: 0, transform: "translateY(12px)" }}
+            animate={{ opacity: 1, transform: "translateY(0)" }}
+            exit={{ opacity: 0, transform: "translateY(-8px)" }}
+            transition={{ duration: 0.24, ease: [0.23, 1, 0.32, 1] }}
           >
             {page}
           </motion.div>
@@ -575,7 +575,7 @@ function Progress({
         <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-stone">{progress}% concluído</span>
       </div>
       <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-line" aria-label={`Progresso: ${progress}%`}>
-        <span className="block h-full rounded-full bg-ink transition-all duration-500" style={{ width: `${progress}%` }} />
+        <span className="block h-full w-full origin-left rounded-full bg-ink transition-transform duration-300 ease-[cubic-bezier(.23,1,.32,1)]" style={{ transform: `scaleX(${progress / 100})` }} />
       </div>
       <div className="mt-3 flex items-center gap-2" aria-label={`Etapa ${step} de 4`}>
         {items.map((item, index) => {
@@ -591,7 +591,7 @@ function Progress({
               onClick={() => enabled && onSelect(itemStep)}
               disabled={!enabled}
               aria-current={current ? "step" : undefined}
-              className={`h-2.5 rounded-full transition-all duration-300 ${current ? "w-10 bg-ink" : completed ? "w-2.5 bg-ink/50 hover:bg-ink" : "w-2.5 bg-line"} ${enabled ? "cursor-pointer" : "cursor-default"}`}
+              className={`h-2.5 rounded-full transition-[width,background-color,scale] duration-200 ease-[cubic-bezier(.23,1,.32,1)] ${current ? "w-10 bg-ink" : completed ? "w-2.5 bg-ink/50 hover:bg-ink" : "w-2.5 bg-line"} ${enabled ? "cursor-pointer" : "cursor-default"}`}
             />
           );
         })}
@@ -1068,15 +1068,15 @@ function SuccessStep({
   return (
     <section className="mx-auto max-w-[760px] py-12 text-center sm:py-20">
       <motion.div
-        initial={{ opacity: 0, scale: 0.72, y: 12, rotate: -8 }}
-        animate={{ opacity: 1, scale: 1, y: [0, -5, 0], rotate: [0, 2, 0] }}
-        transition={{ opacity: { duration: 0.25 }, scale: { duration: 0.45, ease: [0.175, 0.885, 0.32, 1.275] }, y: { delay: 0.45, duration: 2.8, repeat: Infinity, ease: "easeInOut" }, rotate: { delay: 0.45, duration: 2.8, repeat: Infinity, ease: "easeInOut" } }}
+        initial={{ opacity: 0, transform: "translateY(10px) scale(.94) rotate(-4deg)" }}
+        animate={{ opacity: 1, transform: "translateY(0) scale(1) rotate(0deg)" }}
+        transition={{ duration: 0.5, type: "spring", bounce: 0.18 }}
         className="relative mx-auto grid h-20 w-20 place-items-center rounded-[26px] bg-ink text-paper shadow-[0_16px_35px_rgba(11,11,10,.18)]"
         aria-label="Catálogo publicado com sucesso"
       >
         <span className="absolute inset-2 rounded-[20px] border border-white/15" />
         <Trophy size={34} strokeWidth={1.7} />
-        <motion.span animate={{ opacity: [0.35, 0.8, 0.35], scale: [0.9, 1.08, 0.9] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }} className="absolute -right-2 -top-2 h-3 w-3 rounded-full bg-ink ring-4 ring-paper" />
+        <motion.span initial={{ opacity: 0, transform: "scale(.9)" }} animate={{ opacity: [0, 0.85, 0.45], transform: ["scale(.9)", "scale(1.08)", "scale(1)"] }} transition={{ duration: 0.7, delay: 0.3, ease: [0.23, 1, 0.32, 1] }} className="absolute -right-2 -top-2 h-3 w-3 rounded-full bg-ink ring-4 ring-paper" />
       </motion.div>
       <p className="mt-7 font-mono text-[10px] uppercase tracking-[0.12em] text-stone">
         Seu primeiro imóvel foi publicado
@@ -1234,7 +1234,7 @@ function Segment({
   return (
     <button
       onClick={onClick}
-      className={`rounded-lg px-5 py-2.5 font-body text-sm transition ${active ? "bg-ink text-paper" : "text-ash hover:text-ink"}`}
+      className={`rounded-lg px-5 py-2.5 font-body text-sm transition-colors ${active ? "bg-ink text-paper" : "text-ash hover:text-ink"}`}
     >
       {children}
     </button>
@@ -1255,7 +1255,7 @@ function Button({
     <button
       disabled={loading}
       onClick={onClick}
-      className={`flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-ink px-5 font-body text-sm font-semibold text-paper transition hover:bg-charcoal disabled:opacity-70 ${className}`}
+      className={`vello-action vello-action-dark flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-ink px-5 font-body text-sm font-semibold text-paper hover:bg-charcoal disabled:opacity-70 ${className}`}
     >
       {loading && <LoaderCircle size={16} className="animate-spin" />}
       {loading ? "Salvando..." : children}
