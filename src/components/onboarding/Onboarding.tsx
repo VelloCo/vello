@@ -509,8 +509,8 @@ export function Onboarding({ user }: { user: User }) {
 
   if (loading) return <LoadingScreen label="Preparando seu catálogo" />;
   return (
-    <main className="min-h-screen bg-paper pb-10">
-      <div className="mx-auto max-w-[900px] px-5 py-7 sm:px-8 lg:py-10">
+    <main className="min-h-screen overflow-x-hidden bg-paper pb-10">
+      <div className="mx-auto min-w-0 max-w-[900px] px-5 py-7 sm:px-8 lg:py-10">
         <div className="flex items-center justify-between">
           <a href={appPath("/")}>
             <Logo />
@@ -688,11 +688,11 @@ function ProfileStep({
           }}
         />
         <div>
-          <div className="flex items-end justify-between gap-3">
-            <label className={label}>CRECI profissional</label>
-            <span className="pb-1 font-mono text-[9px] uppercase tracking-[.12em] text-stone">Obrigatório</span>
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <label className="font-body text-[11px] font-medium uppercase tracking-[.08em] text-ash">CRECI profissional</label>
+            <span className="font-mono text-[9px] uppercase tracking-[.12em] text-stone">Obrigatório</span>
           </div>
-          <div className="mt-2 flex h-[54px] items-center overflow-hidden rounded-2xl border border-line bg-white transition focus-within:border-ink focus-within:ring-4 focus-within:ring-ink/10">
+          <div className="flex h-[54px] items-center overflow-hidden rounded-2xl border border-line bg-white transition focus-within:border-ink focus-within:ring-4 focus-within:ring-ink/10">
             <span className="flex h-7 shrink-0 items-center border-r border-line px-3 font-mono text-[10px] font-semibold tracking-[.1em] text-stone sm:px-4">CRECI</span>
             <input
               aria-label="Número do CRECI"
@@ -756,7 +756,7 @@ function ProfileStep({
       {stage === 2 && <div className="mt-8 rounded-2xl border border-line bg-white p-5">
         <label className={label}>Seu link Vello</label>
         <div className="flex items-center overflow-hidden rounded-xl border border-line bg-paper">
-          <span className="whitespace-nowrap border-r border-line px-4 py-3 font-body text-sm text-ash">
+          <span className="max-w-[48%] truncate border-r border-line px-3 py-3 font-body text-sm text-ash sm:max-w-none sm:px-4">
             {PUBLIC_CATALOG_DOMAIN}/
           </span>
           <input
