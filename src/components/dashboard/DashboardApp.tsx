@@ -26,7 +26,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { appPath, publicCatalogLabel } from "../../lib/paths";
+import { appPath, publicCatalogLabel, PUBLIC_SITE_ORIGIN } from "../../lib/paths";
 import { LoadingScreen } from "../LoadingScreen";
 import { signOut, updatePassword } from "../../lib/auth";
 import {
@@ -57,7 +57,8 @@ const nav = [
   { href: "/dashboard/perfil", label: "Perfil", icon: UserRound },
 ];
 const go = (href: string) => (window.location.href = appPath(href));
-const publicCatalogPath = (slug?: string | null) => appPath(`/${slug || ""}`);
+const publicCatalogUrl = (slug?: string | null) =>
+  `${PUBLIC_SITE_ORIGIN}/${(slug || "").replace(/^\/+|\/+$/g, "")}`;
 const publicPropertyPath = (catalogSlug: string, property: Property) =>
   appPath(`/${catalogSlug}/imovel/${property.slug || property.id}`);
 const displayCreci = (creci?: string | null) =>
@@ -454,7 +455,7 @@ function HomePage({
             {[
               ["Adicionar imóvel", "/dashboard/imoveis/novo"],
               ["Criar seleção", "/dashboard/selecoes/nova"],
-              ["Ver meu catálogo", "/dashboard/catalogo"],
+              ["Ver meu catálogo", publicCatalogUrl(profile.slug)],
               ["Copiar link do catálogo", "#"],
             ].map(([text, href]) => (
               <button
@@ -462,9 +463,11 @@ function HomePage({
                 onClick={() =>
                   href === "#"
                     ? navigator.clipboard.writeText(
-                        `${window.location.origin}${publicCatalogPath(profile.slug)}`,
+                        publicCatalogUrl(profile.slug),
                       )
-                    : go(href)
+                    : href.startsWith("http")
+                      ? (window.location.href = href)
+                      : go(href)
                 }
                 className="flex items-center justify-between rounded-xl border border-line px-4 py-3 font-body text-sm text-ink hover:bg-cream"
               >
@@ -487,7 +490,7 @@ function HomePage({
               : "Defina seu link público"}
           </p>
           <a
-            href={publicCatalogPath(profile.slug)}
+            href={publicCatalogUrl(profile.slug)}
             target="_blank"
             rel="noreferrer"
             className="mt-6 inline-flex rounded-full bg-white px-4 py-2 font-body text-sm font-semibold text-ink"
@@ -1283,7 +1286,7 @@ function CatalogPage({
   properties: Property[];
   toast: (s: string) => void;
 }) {
-  const link = `${window.location.origin}${publicCatalogPath(profile.slug)}`;
+  const link = publicCatalogUrl(profile.slug);
   return (
     <>
       <header>
