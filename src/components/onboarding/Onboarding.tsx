@@ -1094,7 +1094,6 @@ function SuccessStep({
       >
         <span className="absolute inset-2 rounded-[20px] border border-white/15" />
         <Trophy size={34} strokeWidth={1.7} />
-        <motion.span initial={{ opacity: 0, transform: "scale(.9)" }} animate={{ opacity: [0, 0.85, 0.45], transform: ["scale(.9)", "scale(1.08)", "scale(1)"] }} transition={{ duration: 0.7, delay: 0.3, ease: [0.23, 1, 0.32, 1] }} className="absolute -right-2 -top-2 h-3 w-3 rounded-full bg-ink ring-4 ring-paper" />
       </motion.div>
       <p className="mt-7 font-mono text-[10px] uppercase tracking-[0.12em] text-stone">
         Seu primeiro imóvel foi publicado
