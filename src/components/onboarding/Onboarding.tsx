@@ -692,7 +692,7 @@ function ProfileStep({
             <label className="font-body text-[11px] font-medium uppercase tracking-[.08em] text-ash">CRECI profissional</label>
             <span className="font-mono text-[9px] uppercase tracking-[.12em] text-stone">Obrigatório</span>
           </div>
-          <div className="flex h-[54px] items-center overflow-hidden rounded-2xl border border-line bg-white transition focus-within:border-ink focus-within:ring-4 focus-within:ring-ink/10">
+          <div className="flex h-12 items-center overflow-hidden rounded-xl border border-line bg-white transition focus-within:border-ink focus-within:ring-4 focus-within:ring-ink/10">
             <span className="flex h-7 shrink-0 items-center border-r border-line px-3 font-mono text-[10px] font-semibold tracking-[.1em] text-stone sm:px-4">CRECI</span>
             <input
               aria-label="Número do CRECI"
