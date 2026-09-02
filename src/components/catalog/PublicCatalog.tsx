@@ -221,6 +221,11 @@ function PropertyCard({
             src={propertyImage(property)}
             alt={property.title}
             loading="lazy"
+            referrerPolicy="no-referrer"
+            onError={(event) => {
+              event.currentTarget.onerror = null;
+              event.currentTarget.src = appPath("/hero-vello-house.png");
+            }}
             className="vello-card-image h-full w-full object-cover"
           />
         ) : (
@@ -605,10 +610,15 @@ function PropertyDetail({
           <section>
             <div className="aspect-[4/3] overflow-hidden rounded-[22px] bg-cream sm:rounded-[30px]">
               {property.images[image] ? (
-                <img
-                  src={property.images[image].image_url}
-                  alt={property.title}
-                  className="h-full w-full object-cover"
+                  <img
+                    src={property.images[image].image_url}
+                    alt={property.title}
+                    referrerPolicy="no-referrer"
+                    onError={(event) => {
+                      event.currentTarget.onerror = null;
+                      event.currentTarget.src = appPath("/hero-vello-house.png");
+                    }}
+                    className="h-full w-full object-cover"
                 />
               ) : (
                 <div className="grid h-full place-items-center text-stone">
@@ -627,6 +637,11 @@ function PropertyDetail({
                     <img
                       src={item.image_url}
                       alt=""
+                      referrerPolicy="no-referrer"
+                      onError={(event) => {
+                        event.currentTarget.onerror = null;
+                        event.currentTarget.src = appPath("/hero-vello-house.png");
+                      }}
                       className="h-full w-full object-cover"
                     />
                   </button>
