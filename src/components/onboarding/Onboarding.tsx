@@ -7,6 +7,7 @@ import {
   LoaderCircle,
   LogOut,
   Pencil,
+  Share2,
   Trash2,
   Trophy,
   Upload,
@@ -1160,8 +1161,9 @@ function SuccessStep({
           href={`https://wa.me/?text=${encodeURIComponent(share)}`}
           target="_blank"
           rel="noreferrer"
-          className="flex h-12 items-center justify-center rounded-[12px] border border-line bg-paper font-body text-sm font-medium text-ink transition hover:border-ink active:scale-[0.98]"
+          className="flex h-12 items-center justify-center gap-2 rounded-[12px] border border-line bg-paper font-body text-sm font-medium text-ink transition hover:border-ink active:scale-[0.98]"
         >
+          <Share2 size={15} />
           Compartilhar no WhatsApp
         </a>
         <button
