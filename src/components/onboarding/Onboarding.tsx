@@ -812,6 +812,7 @@ function PropertyStep({
   onPublish: () => void;
   onSkip: () => void;
 }) {
+  const [descriptionIndex, setDescriptionIndex] = useState(0);
   const toggle = (name: string) =>
     update(
       "features",
@@ -819,6 +820,27 @@ function PropertyStep({
         ? property.features.filter((x) => x !== name)
         : [...property.features, name],
     );
+  const generateDescription = () => {
+    const type = property.type.toLowerCase() || "imóvel";
+    const location = [property.neighborhood, property.city].filter(Boolean).join(", ") || "uma localização especial";
+    const details = [
+      property.bedrooms && `${property.bedrooms} quartos`,
+      property.suites && `${property.suites} suíte${property.suites === "1" ? "" : "s"}`,
+      property.area && `${property.area} m²`,
+    ].filter(Boolean).join(", ");
+    const highlights = property.features.slice(0, 3).join(", ");
+    const descriptions = [
+      `Conheça este ${type} em ${location}, ${details || "com espaços pensados para viver bem"}. ${highlights ? `Entre os diferenciais estão ${highlights.toLowerCase()}.` : "Uma oportunidade para conhecer de perto."}`,
+      `Uma oportunidade ${property.transaction === "rent" ? "para alugar" : "à venda"} em ${location}. Este ${type} combina praticidade e conforto${details ? `, com ${details}` : " para a rotina"}.`,
+      `Este ${type} foi escolhido para quem busca uma nova forma de morar em ${location}. ${details ? `São ${details},` : "Com ambientes bem distribuídos,"} com espaço para adaptar cada ambiente ao seu momento.`,
+      `Localizado em ${location}, este ${type} reúne os elementos essenciais para uma boa escolha. ${highlights ? `O imóvel conta com ${highlights.toLowerCase()}.` : "Confira todos os detalhes e agende uma visita."}`,
+      `Seu próximo endereço pode estar aqui. ${details ? `Com ${details}, ` : "Com uma planta versátil, "}este ${type} em ${location} merece entrar na sua lista de visitas.`,
+      `Uma opção especial em ${location}: um ${type} com proposta prática e acolhedora. ${highlights ? `Destaques como ${highlights.toLowerCase()} completam a experiência.` : "Fale comigo para receber mais informações."}`,
+    ];
+    const nextIndex = (descriptionIndex + 1) % descriptions.length;
+    setDescriptionIndex(nextIndex);
+    update("description", descriptions[nextIndex]);
+  };
   return (
     <section className="mx-auto max-w-[900px] py-12 sm:py-16">
       <div className="mb-8 flex items-center justify-between gap-4">
@@ -1017,15 +1039,10 @@ function PropertyStep({
           />
           <button
             type="button"
-            onClick={() =>
-              update(
-                "description",
-                `Conheça este ${property.type.toLowerCase()} em ${property.neighborhood || property.city || "uma localização especial"}, com ambientes pensados para viver bem.`,
-              )
-            }
+            onClick={generateDescription}
             className="mt-3 font-body text-sm text-ash underline underline-offset-4 hover:text-ink"
           >
-            Gerar descrição
+            {property.description ? "Gerar outra descrição" : "Gerar descrição"}
           </button>
         </div>
         <div>
