@@ -14,6 +14,7 @@ export function VelloLandingMinimal() {
       <Hero />
       <OnboardingFlow />
       <CatalogSection />
+      <Pricing />
       <Faq />
       <Closing />
     </main>
@@ -23,7 +24,7 @@ export function VelloLandingMinimal() {
 }
 
 function Header() {
-  return <header className="border-b border-line bg-paper"><Container className="flex h-[68px] items-center justify-between"><a href="#inicio" aria-label="Vello - início"><Logo className="origin-left scale-[.78]" /></a><nav className="hidden items-center gap-8 font-body text-[14px] text-ash md:flex"><a href="#como-funciona" className="vello-nav-link">Como funciona</a><a href="#catalogo" className="vello-nav-link">Catálogo</a><a href="#perguntas" className="vello-nav-link">Dúvidas</a></nav><a href={login} className="vello-action rounded-full border border-line px-4 py-2.5 font-body text-[13px] font-medium text-ink">Entrar</a></Container></header>;
+  return <header className="border-b border-line bg-paper"><Container className="flex h-[68px] items-center justify-between"><a href="#inicio" aria-label="Vello - início"><Logo className="origin-left scale-[.78]" /></a><nav className="hidden items-center gap-8 font-body text-[14px] text-ash md:flex"><a href="#como-funciona" className="vello-nav-link">Como funciona</a><a href="#catalogo" className="vello-nav-link">Catálogo</a><a href="#plano" className="vello-nav-link">Plano</a><a href="#perguntas" className="vello-nav-link">Dúvidas</a></nav><a href={login} className="vello-action rounded-full border border-line px-4 py-2.5 font-body text-[13px] font-medium text-ink">Entrar</a></Container></header>;
 }
 
 function Hero() {
@@ -39,6 +40,17 @@ function OnboardingFlow() {
 
 function CatalogSection() {
   return <section id="catalogo" className="bg-paper py-24 md:py-32"><Container className="grid gap-14 lg:grid-cols-[.75fr_1.25fr] lg:items-center"><Reveal><h2 className="max-w-[500px] font-display text-[clamp(43px,5vw,68px)] font-semibold leading-[.91] tracking-[-.065em]">Um catálogo que parece seu.</h2><p className="mt-6 max-w-[430px] font-body text-[16px] leading-relaxed text-ash">Escolha a aparência, organize os imóveis e compartilhe uma página que deixa seu trabalho fácil de entender.</p><ul className="mt-8 space-y-3 border-t border-line pt-5 font-body text-[14px] text-ash"><li className="flex gap-3"><Check size={17} className="shrink-0 text-ink" />Perfil profissional e contato sempre visíveis.</li><li className="flex gap-3"><Check size={17} className="shrink-0 text-ink" />Filtros para o cliente encontrar o que procura.</li><li className="flex gap-3"><Check size={17} className="shrink-0 text-ink" />Seleções prontas para cada conversa.</li></ul></Reveal><Reveal delay={.12}><CatalogPreview /></Reveal></Container></section>;
+}
+
+function Pricing() {
+  const features = [
+    "Seu catálogo público com identidade profissional",
+    "Imóveis, fotos e informações sempre organizados",
+    "Seleções prontas para cada cliente",
+    "Link compartilhável e contato em destaque",
+    "Painel simples para atualizar quando quiser",
+  ];
+  return <section id="plano" className="border-y border-line bg-cream py-24 md:py-32"><Container><Reveal className="mx-auto max-w-[620px] text-center"><Eyebrow>Um plano, sem complicação</Eyebrow><h2 className="mt-5 font-display text-[clamp(42px,5vw,68px)] font-semibold leading-[.91] tracking-[-.065em]">Tudo que você precisa para apresentar melhor.</h2><p className="mx-auto mt-6 max-w-[460px] font-body text-[16px] leading-relaxed text-ash">Uma assinatura simples para organizar o seu portfólio e enviar uma Vello profissional para cada cliente.</p></Reveal><Reveal delay={.08} className="mx-auto mt-12 max-w-[760px]"><div className="overflow-hidden rounded-[24px] border border-ink bg-paper shadow-[0_28px_80px_-48px_rgba(11,11,10,.42)]"><div className="grid lg:grid-cols-[.9fr_1.1fr]"><div className="bg-ink p-7 text-paper sm:p-10"><p className="font-mono text-[10px] uppercase tracking-[.15em] text-paper/55">Plano Vello</p><p className="mt-8 font-display text-[clamp(54px,7vw,82px)] font-semibold leading-none tracking-[-.075em]">R$ 65,90</p><p className="mt-2 font-body text-[15px] text-paper/65">por mês</p><p className="mt-8 max-w-[280px] font-body text-[16px] leading-relaxed text-paper/75">A estrutura profissional para o seu catálogo estar pronto quando a oportunidade chegar.</p><a href={signup} className="vello-action mt-9 inline-flex h-12 items-center gap-2 rounded-[10px] bg-paper px-5 font-body text-[14px] font-semibold text-ink">Criar minha conta <ArrowRight className="vello-action-arrow" size={16} /></a></div><div className="p-7 sm:p-10"><p className="font-display text-[24px] font-semibold tracking-[-.045em]">Inclui tudo para começar</p><ul className="mt-8 space-y-4 border-t border-line pt-6">{features.map((feature) => <li key={feature} className="flex items-start gap-3 font-body text-[14px] leading-relaxed text-ash"><Check size={17} className="mt-0.5 shrink-0 text-ink" />{feature}</li>)}</ul><p className="mt-8 border-t border-line pt-5 font-body text-[12px] leading-relaxed text-stone">Sem planos confusos: a Vello cresce junto com a sua rotina.</p></div></div></div></Reveal></Container></section>;
 }
 
 function CatalogPreview() {
