@@ -1150,31 +1150,29 @@ function SuccessStep({
         >
           Ver meu catálogo
         </a>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <button
-            onClick={() => {
-              navigator.clipboard.writeText(link);
-              setCopied(true);
-              window.setTimeout(() => setCopied(false), 1800);
-            }}
-            className="flex h-12 items-center justify-center gap-2 rounded-[12px] border border-line bg-paper font-body text-sm font-medium text-ink transition hover:border-ink active:scale-[0.98]"
-          >
-            <Copy size={15} /> {copied ? "Link copiado" : "Copiar link"}
-          </button>
-          <a
-            href={`https://wa.me/?text=${encodeURIComponent(share)}`}
-            target="_blank"
-            rel="noreferrer"
-            className="flex h-12 items-center justify-center rounded-[12px] border border-line bg-paper font-body text-sm font-medium text-ink transition hover:border-ink active:scale-[0.98]"
-          >
-            Compartilhar no WhatsApp
-          </a>
-        </div>
         <button
           onClick={onDashboard}
           className="flex h-12 items-center justify-center rounded-[12px] border border-line bg-paper font-body text-sm font-semibold text-ink transition hover:border-ink hover:bg-cream active:scale-[0.98]"
         >
           Ir para o dashboard
+        </button>
+        <a
+          href={`https://wa.me/?text=${encodeURIComponent(share)}`}
+          target="_blank"
+          rel="noreferrer"
+          className="flex h-12 items-center justify-center rounded-[12px] border border-line bg-paper font-body text-sm font-medium text-ink transition hover:border-ink active:scale-[0.98]"
+        >
+          Compartilhar no WhatsApp
+        </a>
+        <button
+          onClick={() => {
+            navigator.clipboard.writeText(link);
+            setCopied(true);
+            window.setTimeout(() => setCopied(false), 1800);
+          }}
+          className="flex h-12 items-center justify-center gap-2 rounded-[12px] border border-line bg-paper font-body text-sm font-medium text-ink transition hover:border-ink active:scale-[0.98]"
+        >
+          <Copy size={15} /> {copied ? "Link copiado" : "Copiar link"}
         </button>
       </div>
       <p className="mt-10 font-body text-sm text-stone">Tá bonito, hein?</p>
