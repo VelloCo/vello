@@ -719,9 +719,22 @@ export function PublicCatalog({
 }) {
   const [catalog, setCatalog] = useState<Catalog | null | undefined>(undefined);
   useEffect(() => {
-    requireSupabase()
-      .rpc("get_catalog", { catalog_slug: slug })
-      .then(({ data }) => setCatalog(data as Catalog | null));
+    let active = true;
+    const timeout = window.setTimeout(() => {
+      if (active) setCatalog(null);
+    }, 8000);
+    Promise.resolve(requireSupabase().rpc("get_catalog", { catalog_slug: slug }))
+      .then(({ data }) => {
+        if (active) setCatalog(data as Catalog | null);
+      })
+      .catch(() => {
+        if (active) setCatalog(null);
+      })
+      .finally(() => window.clearTimeout(timeout));
+    return () => {
+      active = false;
+      window.clearTimeout(timeout);
+    };
   }, [slug]);
   if (catalog === undefined) return <LoadingScreen label="Abrindo catálogo" />;
   if (!catalog)
