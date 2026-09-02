@@ -73,6 +73,78 @@ textarea:focus-visible {
   text-wrap: balance;
 }
 
+.vello-action {
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1), border-color 180ms ease, background-color 180ms ease, color 180ms ease, box-shadow 180ms ease;
+}
+
+.vello-action:active {
+  transform: scale(0.97);
+}
+
+.vello-action-arrow {
+  transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.vello-nav-link {
+  position: relative;
+  transition: color 160ms ease;
+}
+
+.vello-nav-link::after {
+  position: absolute;
+  right: 0;
+  bottom: -5px;
+  left: 0;
+  height: 1px;
+  content: '';
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .vello-action:hover {
+    border-color: var(--color-ink);
+    box-shadow: 0 10px 24px -18px rgba(11, 11, 10, 0.55);
+  }
+
+  .vello-action-dark:hover {
+    background: var(--color-charcoal);
+    box-shadow: 0 14px 28px -18px rgba(11, 11, 10, 0.68);
+  }
+
+  .vello-action:hover .vello-action-arrow {
+    transform: translateX(3px);
+  }
+
+  .vello-nav-link:hover {
+    color: var(--color-ink);
+  }
+
+  .vello-nav-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .vello-hero-visual img {
+    transition: transform 700ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .vello-hero-visual:hover img {
+    transform: scale(1.025);
+  }
+
+  .vello-property-card {
+    transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 220ms ease;
+  }
+
+  .vello-property-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 24px -18px rgba(11, 11, 10, 0.45);
+  }
+}
+
 @keyframes vello-phone-float {
   0%, 100% { transform: translateY(0); }
   12.5%, 87.5% { transform: translateY(-1px); }
