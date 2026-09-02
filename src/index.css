@@ -159,6 +159,15 @@ textarea:focus-visible {
   transition: transform 520ms var(--ease-vello-out);
 }
 
+.vello-scrollbar-hidden {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.vello-scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
 .vello-nav-link {
   position: relative;
   transition: color 160ms ease;

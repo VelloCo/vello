@@ -573,7 +573,7 @@ function PropertiesPage({
           />
           {query && <button type="button" onClick={() => setQuery("")} aria-label="Limpar busca" className="grid h-8 w-8 place-items-center rounded-full text-stone transition hover:bg-cream hover:text-ink"><X size={16} /></button>}
         </label>
-        <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+        <div className="vello-scrollbar-hidden mt-3 flex gap-2 overflow-x-auto pb-1">
           {[
             ["all", "Todos"],
             ["available", "Disponíveis"],

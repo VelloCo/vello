@@ -627,7 +627,7 @@ function PropertyDetail({
               )}
             </div>
             {property.images.length > 1 && (
-              <div className="mt-3 flex gap-2 overflow-x-auto">
+              <div className="vello-scrollbar-hidden mt-3 flex gap-2 overflow-x-auto">
                 {property.images.map((item, index) => (
                   <button
                     key={item.image_url}
