@@ -208,11 +208,12 @@ export function Onboarding({ user }: { user: User }) {
         }
         const storedStep = Number(data.onboarding_step);
         setStep([1, 2, 3, 4].includes(requestedStep) ? requestedStep : storedStep === 2 ? 3 : storedStep === 3 ? 4 : 1);
+        const storedWhatsapp = sessionStorage.getItem("vello-signup-whatsapp") || "";
         setProfile({
           fullName: data.full_name ?? "",
           professionalName: data.professional_name ?? "",
           creci: data.creci ?? "",
-          whatsapp: data.whatsapp ?? "",
+          whatsapp: whatsapp(data.whatsapp ?? storedWhatsapp),
           city: data.city ?? "",
           state: data.state ?? "",
           instagram: data.instagram ?? "",
@@ -221,10 +222,12 @@ export function Onboarding({ user }: { user: User }) {
         });
       } else {
         const name = String(user.user_metadata.full_name ?? "").trim();
+        const storedWhatsapp = sessionStorage.getItem("vello-signup-whatsapp") || "";
         setProfile((p) => ({
           ...p,
           fullName: name,
           professionalName: name,
+          whatsapp: whatsapp(storedWhatsapp),
           slug: slugify(name),
         }));
       }
@@ -339,6 +342,7 @@ export function Onboarding({ user }: { user: User }) {
       );
       return;
     }
+    sessionStorage.removeItem("vello-signup-whatsapp");
     transitionTo(3);
   }
 
@@ -731,11 +735,7 @@ function ProfileStep({
           onChange={(v) =>
             update(
               "whatsapp",
-              v
-                .replace(/\D/g, "")
-                .replace(/(\d{2})(\d)/, "($1) $2")
-                .replace(/(\d{5})(\d)/, "$1-$2")
-                .slice(0, 15),
+              whatsapp(v),
             )
           }
         />
