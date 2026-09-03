@@ -362,10 +362,15 @@ function MobileItem({
 function HomePage({
   profile,
   properties,
+  refresh,
+  toast,
 }: {
   profile: Profile;
   properties: Property[];
+  refresh: () => Promise<void>;
+  toast: (s: string) => void;
 }) {
+  const [remove, setRemove] = useState<Property | null>(null);
   const first = profile.professional_name?.split(" ")[0] || "corretor";
   const summary = [
     ["Disponíveis", properties.filter((p) => p.status === "available").length],
@@ -436,6 +441,7 @@ function HomePage({
                 property={p}
                 catalogSlug={profile.slug}
                 onEdit={() => go(`/dashboard/imoveis/${p.id}`)}
+                onDelete={() => setRemove(p)}
               />
             ))}
           </div>
@@ -499,6 +505,7 @@ function HomePage({
           </a>
         </div>
       </section>
+      {remove && <Dialog title="Excluir este imóvel?" text="Essa ação não poderá ser desfeita." confirm="Excluir imóvel" danger onClose={() => setRemove(null)} onConfirm={async () => { try { await deleteProperty(remove.id); toast("Imóvel excluído"); setRemove(null); await refresh(); } catch { toast("Não foi possível excluir o imóvel."); } }} />}
     </>
   );
 }
@@ -1681,7 +1688,7 @@ export function DashboardApp({ user, route }: Props) {
   let page: React.ReactNode;
   if (route === "/dashboard")
     page = (
-      <HomePage profile={profile} properties={properties} />
+      <HomePage profile={profile} properties={properties} refresh={refresh} toast={say} />
     );
   else if (route === "/dashboard/imoveis")
     page = (
