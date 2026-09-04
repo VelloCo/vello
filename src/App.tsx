@@ -44,7 +44,7 @@ export default function App() {
   const privateRoute = path === "/onboarding" || path.startsWith("/dashboard") || path === "/admin";
 
   useEffect(() => {
-    const page = path === "/" ? ["Vello — Seus imóveis no lugar certo", "Organize seu portfólio, crie um catálogo com a sua identidade e envie uma experiência profissional para cada cliente."]
+    const page = path === "/" ? ["Vello — Seu imóvel, do seu jeito", "Organize seus imóveis, crie um catálogo profissional e compartilhe uma experiência melhor com cada cliente."]
       : path === "/login" ? ["Entrar | Vello", "Entre para gerenciar seus imóveis e seu catálogo Vello."]
       : path === "/cadastro" ? ["Criar conta | Vello", "Comece a montar seu catálogo profissional na Vello."]
       : path === "/onboarding" ? ["Configure sua Vello", "Complete seu perfil e publique seu primeiro imóvel."]
