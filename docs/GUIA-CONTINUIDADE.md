@@ -100,3 +100,12 @@ Não atualize todas as dependências apenas por um aviso de versão nova. Não u
 Envie este guia, URL, erro exato e último deploy que funcionou. A arquitetura é React + Vite, Vercel e Supabase; repositório VelloCo/vello. Peça para preservar alterações locais e verificar produção antes de afirmar que algo está resolvido.
 
 Esta revisão não certifica cobrança, isolamento entre contas no banco, recuperação de backups ou todos os fluxos autenticados. Faça o teste completo acima antes de ampliar o grupo.
+
+## Resultado da revisão de 4 de setembro
+
+- Commit de código: 63bbb88; tela de recuperação e correção da fila do Analytics confirmadas no JavaScript servido pela produção.
+- Build aprovado; lint sem erros, com oito avisos existentes. Há aviso de bundle maior que 500 kB.
+- Cinco testes Chromium passaram em produção: landing, links de autenticação, redirecionamento das rotas privadas sem sessão, catálogo inexistente e largura móvel de 390 px.
+- npm audit --omit=dev: nenhuma vulnerabilidade conhecida encontrada nas dependências de produção instaladas. Isso não equivale a auditoria completa de segurança.
+- Analytics: script carregou, fila no formato oficial e solicitação /g/collect observada. A solicitação terminou com net::ERR_ABORTED no navegador de teste; recebimento nos relatórios ainda precisa ser confirmado no Google Analytics → Tempo real. Não considere essa pendência resolvida somente porque a tag aparece.
+- Ajustes de Analytics também evitam pageviews consecutivos duplicados e removem query/hash do page_location enviado manualmente.
