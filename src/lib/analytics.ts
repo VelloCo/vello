@@ -1,5 +1,6 @@
 const domain = import.meta.env.VITE_PLAUSIBLE_DOMAIN as string | undefined;
 const googleAnalyticsId = "G-X51JZE369J";
+let lastPage: string | undefined;
 
 declare global {
   interface Window {
@@ -21,7 +22,7 @@ export function initAnalytics() {
 
   if (googleAnalyticsId && !document.querySelector('script[data-vello-ga]')) {
     window.dataLayer = window.dataLayer || [];
-    window.gtag = (...args: unknown[]) => window.dataLayer?.push(args);
+    window.gtag = function () { window.dataLayer?.push(arguments); };
     window.gtag("js", new Date());
     window.gtag("config", googleAnalyticsId, { send_page_view: false });
     const script = document.createElement("script");
@@ -33,8 +34,14 @@ export function initAnalytics() {
 }
 
 export function trackPage(path: string) {
+  if (lastPage === path) return;
+  lastPage = path;
   window.plausible?.("pageview", { props: { path } });
-  window.gtag?.("event", "page_view", { page_path: path, page_title: document.title });
+  window.gtag?.("event", "page_view", {
+    page_path: path,
+    page_location: window.location.origin + window.location.pathname,
+    page_title: document.title,
+  });
 }
 
 export function trackEvent(name: string, props: Record<string, string> = {}) {
