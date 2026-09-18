@@ -92,9 +92,15 @@ Etapas (trabalho direto na `main` desde 2026-09-18; a branch
    (exclusion constraint impede sobreposição); funções públicas
    `get_public_page`, `get_available_slots`, `book_appointment`; bucket
    `service-images`. Testada num Postgres local (Docker) com 20 cenários.
-   **Não aplicada em produção**: em 2026-09-18 o `apply_migration` pelo
-   conector foi bloqueado pelo classificador de permissões do Claude Code
-   (produção). Aplicar pelo SQL Editor do Supabase ou liberar a permissão.
+   **Aplicada em produção em 2026-09-18** pelo conector Supabase
+   (`apply_migration`, nome `estetica_foundation`), após o usuário liberar a
+   permissão. Conferido: tabelas com RLS, funções públicas, constraint
+   anti-sobreposição, bucket; chamadas anônimas pela API respondem como
+   esperado e `appointments` não vaza para anon.
+   Advisor de segurança: avisos "SECURITY DEFINER executável por anon" em
+   `get_public_page`, `get_available_slots`, `book_appointment` são
+   intencionais (página pública e agendamento sem login; mesmo padrão de
+   `get_catalog`). Pendente: "Leaked password protection" desligado no Auth.
 2. [ ] Tipos em `src/lib/vello.ts` + painel: serviços, horários de
    atendimento, bloqueios e agenda de agendamentos.
 3. [ ] Onboarding (tipo de negócio, endereço, primeiro serviço, horários) e
@@ -110,7 +116,8 @@ sobe `postgres:17` com stubs de `auth`/`storage`/roles e aplica
 
 ## Próximo passo
 
-1. Etapa 2 da mudança para estéticas (tipos + painel).
+1. Etapa 2 da mudança para estéticas (tipos + painel). O banco já está
+   pronto em produção.
 4. Aplicar a migration de estética em produção só junto com o deploy da
    interface nova, com o usuário.
 
