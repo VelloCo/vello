@@ -38,6 +38,8 @@ pessoais de leads: não copiar para o repositório.
 - Cobrança/assinatura não implementada (preço anunciado R$ 65,90/mês, 7 dias grátis).
 - Domínio próprio e SMTP próprio.
 - Aviso de bundle > 500 kB; 8 avisos de lint.
+- Workflow `deploy-pages.yml` (GitHub Pages) falha a cada push em `main`
+  desde antes de 2026-09-18. O site real é a Vercel; avaliar remover o workflow.
 - Conferir no Supabase (produção) se a migration `20260902050303` já foi
   aplicada: `anon` não deve ter EXECUTE em `is_admin()` e
   `get_admin_dashboard()`. Não reaplicar por tentativa.
@@ -76,7 +78,8 @@ Produto:
 - Primeira versão: **uma agenda por conta**. Várias profissionais por clínica
   fica para depois.
 
-Etapas (branch `feat/vello-estetica`, um PR por etapa ou um PR final):
+Etapas (trabalho direto na `main` desde 2026-09-18; a branch
+`feat/vello-estetica` foi incorporada):
 1. [x] Banco: `supabase/migrations/20260918120000_estetica_foundation.sql`
    (aditiva; não toca imóveis/seleções). Tabelas `services`, `service_images`,
    `service_results`, `business_hours`, `schedule_blocks`, `appointments`
@@ -100,7 +103,7 @@ sobe `postgres:17` com stubs de `auth`/`storage`/roles e aplica
 ## Próximo passo
 
 1. Etapa 2 da mudança para estéticas (tipos + painel).
-3. Usuário aprovar merge do PR #1; conferir migration de admin em produção.
+3. Conferir migration de admin em produção.
 4. Aplicar a migration de estética em produção só junto com o deploy da
    interface nova, com o usuário.
 
@@ -108,7 +111,7 @@ sobe `postgres:17` com stubs de `auth`/`storage`/roles e aplica
 
 | Data | Decisão | Por quê |
 |---|---|---|
-| 2026-09-18 | Agentes trabalham local, commitam em branch, fazem push e abrem PR sem pedir; merge em `main` só com ok do usuário | Usuário não quer autorizar cada push; merge publica em produção |
+| 2026-09-18 | Agentes commitam e fazem push direto na `main`, sem pedir | Usuário quer ver e testar cada etapa no site publicado |
 | 2026-09-18 | Playwright roda só Chromium e contra produção | Foi o usado na revisão de 4/set; 3 navegadores triplicava o CI sem ganho |
 | 2026-09-18 | `artifacts/` fora do git | ~794 MB de material de marketing |
 | 2026-09-18 | Vello muda de corretores para estéticas | Decisão de produto do usuário |

@@ -29,9 +29,14 @@ tomadas e o próximo passo concreto. Datas absolutas (ex.: 2026-09-18), não
 - Validar com `npm run build` e `npm run lint` antes de dizer que terminou.
 - Há alterações locais antigas não commitadas (ver `git status`). Não fazer
   `git add -A` nem commitar tudo de uma vez; commitar só o que a tarefa tocou.
-- Fluxo autorizado pelo usuário (2026-09-18): alterar localmente, commitar em
-  branch própria, fazer push e abrir PR sem pedir confirmação.
-- Não fazer push/merge em `main` sem o usuário pedir: isso publica em produção.
+- Fluxo autorizado pelo usuário (2026-09-18): alterar localmente, commitar
+  **direto na `main`** e fazer push sem pedir confirmação. Ele quer ver e
+  testar cada etapa em produção. Cada push em `main` publica na Vercel, então
+  só enviar o que passou em `npm run build` e `npm run lint`, e nunca deixar a
+  produção quebrada entre commits (ex.: interface que depende de migration
+  ainda não aplicada deve funcionar sem ela ou esperar a migration).
+- O Supabase NÃO está ligado ao GitHub: migrations commitadas não são
+  aplicadas sozinhas.
 - Não reexecutar migrations do Supabase por tentativa; arquivo local não prova
   que foi aplicado em produção.
 - Nunca colocar service_role key, senhas ou dados de clientes/leads no repo.
