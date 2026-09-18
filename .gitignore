@@ -22,3 +22,16 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
+# Material de marketing gerado localmente (pesado; não versionar)
+/artifacts/
+
+# Cache local da CLI do Supabase
+/supabase/.temp/
