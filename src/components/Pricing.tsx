@@ -22,7 +22,7 @@ export function Pricing() {
         </Reveal>
 
         <Reveal delay={0.12} className="mt-12 w-full max-w-[520px]">
-          <article className="relative overflow-hidden rounded-[26px] bg-ink p-7 text-paper shadow-[0_35px_90px_-35px_rgba(11,11,10,0.65)] md:p-9">
+          <article className="relative overflow-hidden rounded-[26px] bg-ink p-7 text-paper shadow-[0_35px_90px_-35px_rgba(18,40,58,0.65)] md:p-9">
             <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/[0.07] blur-3xl" />
             <div className="relative">
               <div className="flex items-start justify-between gap-4"><div><div className="flex items-center gap-2"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10"><Sparkles size={16} /></span><p className="font-mono text-[10px] uppercase tracking-[0.13em] text-paper/60">Plano completo</p></div><h3 className="mt-6 font-display text-[30px] font-semibold tracking-[-0.03em]">Vello Pro</h3></div><span className="rounded-full bg-paper px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.1em] text-ink">Lançamento</span></div>

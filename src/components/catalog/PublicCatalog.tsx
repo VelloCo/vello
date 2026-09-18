@@ -180,7 +180,7 @@ function Favorite({ id }: { id: string }) {
       whileTap={{ transform: "scale(.97)" }}
       animate={{ transform: saved ? "scale(1.04)" : "scale(1)" }}
       transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-      className="vello-favorite grid h-10 w-10 place-items-center rounded-full border border-black/5 bg-[#f5f2ec]/95 text-ink shadow-[0_4px_16px_rgba(0,0,0,.08)]"
+      className="vello-favorite grid h-10 w-10 place-items-center rounded-full border border-black/5 bg-[#EFF5FA]/95 text-ink shadow-[0_4px_16px_rgba(0,0,0,.08)]"
     >
       <Heart size={18} fill={saved ? "currentColor" : "none"} />
     </motion.button>
@@ -212,7 +212,7 @@ function PropertyCard({
       initial={{ opacity: 0, transform: "translateY(18px)" }}
       animate={{ opacity: 1, transform: "translateY(0)" }}
       transition={{ duration: 0.28, delay: Math.min(index * 0.05, 0.2), ease: [0.23, 1, 0.32, 1] }}
-      className={`group relative ${isShowcase ? "rounded-[26px] border border-black/[.09] bg-white p-3 shadow-[0_12px_35px_rgba(11,11,10,.055)] sm:rounded-[30px] sm:p-4" : ""}`}
+      className={`group relative ${isShowcase ? "rounded-[26px] border border-black/[.09] bg-white p-3 shadow-[0_12px_35px_rgba(18,40,58,.055)] sm:rounded-[30px] sm:p-4" : ""}`}
     >
       <div className={`relative overflow-hidden bg-cream ${style === "classic" ? "aspect-[4/3] rounded-[14px]" : style === "compact" ? "aspect-[16/10] rounded-[16px]" : "aspect-[4/3] rounded-[19px] sm:rounded-[23px]"}`}>
         <a href={href} aria-label={`Conhecer ${property.title}`} className="absolute inset-0 z-10 rounded-[18px] focus-visible:ring-2 focus-visible:ring-ink sm:rounded-[22px]" />
@@ -241,7 +241,7 @@ function PropertyCard({
           <Favorite id={property.id} />
         </div>
       </div>
-      <a href={href} className={`relative z-20 block transition duration-300 group-hover:-translate-y-0.5 ${isDark ? "mt-0 rounded-b-[14px] border-x border-b border-black/10 bg-white px-4 py-3.5 sm:px-5" : style === "compact" ? "-mt-3 ml-3 rounded-[16px] bg-[#f5f2ec] px-5 pb-5 pt-5 shadow-[0_12px_24px_rgba(11,11,10,.05)] sm:ml-4 sm:px-6" : "bg-transparent px-1 pb-1 pt-5 sm:px-2"}`} aria-hidden="true" tabIndex={-1}>
+      <a href={href} className={`relative z-20 block transition duration-300 group-hover:-translate-y-0.5 ${isDark ? "mt-0 rounded-b-[14px] border-x border-b border-black/10 bg-white px-4 py-3.5 sm:px-5" : style === "compact" ? "-mt-3 ml-3 rounded-[16px] bg-[#EFF5FA] px-5 pb-5 pt-5 shadow-[0_12px_24px_rgba(18,40,58,.05)] sm:ml-4 sm:px-6" : "bg-transparent px-1 pb-1 pt-5 sm:px-2"}`} aria-hidden="true" tabIndex={-1}>
         {isDark ? <span className="flex items-center justify-center gap-2 rounded-full bg-ink px-4 py-3 font-body text-[13px] font-medium text-paper">Ver imóvel <ArrowUpRight size={15} /></span> : <><div className="flex items-start justify-between gap-5">
           <div>
             <h2 className={`line-clamp-2 font-display font-medium leading-[.98] tracking-[-.04em] text-ink ${isShowcase ? "text-[23px] sm:text-[27px]" : "text-[27px] sm:text-[32px]"}`}>
@@ -455,7 +455,7 @@ function CatalogHeader({
   const contact = catalog.profile.whatsapp ? waLink(catalog) : null;
   return (
     <header
-      className={`sticky top-0 z-40 transition-[background-color,border-color,box-shadow] duration-200 ease-[cubic-bezier(.23,1,.32,1)] ${scrolled ? "border-b border-line/70 bg-[#f5f2ec]/90 shadow-[0_8px_28px_-24px_rgba(11,11,10,.32)] backdrop-blur-md" : onHero ? "bg-[#f5f2ec]" : "bg-paper"}`}
+      className={`sticky top-0 z-40 transition-[background-color,border-color,box-shadow] duration-200 ease-[cubic-bezier(.23,1,.32,1)] ${scrolled ? "border-b border-line/70 bg-[#EFF5FA]/90 shadow-[0_8px_28px_-24px_rgba(18,40,58,.32)] backdrop-blur-md" : onHero ? "bg-[#EFF5FA]" : "bg-paper"}`}
     >
       <div className="mx-auto flex h-[68px] max-w-[1400px] items-center justify-between px-5 sm:px-8">
         <Logo />
@@ -510,13 +510,13 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
   const contact = catalog.profile.whatsapp ? waLink(catalog) : null;
   const theme = catalog.profile.catalog_theme || defaultCatalogTheme;
   const palette = {
-    warm: { page: "bg-[#f5f2ec]", heading: "text-ink", copy: "text-ash" },
+    warm: { page: "bg-[#EFF5FA]", heading: "text-ink", copy: "text-ash" },
     paper: { page: "bg-white", heading: "text-ink", copy: "text-ash" },
     charcoal: { page: "bg-[#1b1b19]", heading: "text-paper", copy: "text-paper/60" },
   }[theme.palette];
   const profileBand = {
     light: "border-black/10 bg-white text-ink",
-    contrast: "border-[#d7d0c4] bg-[#e9e4da] text-ink",
+    contrast: "border-[#d7d0c4] bg-[#E3EDF5] text-ink",
     dark: "border-white/10 bg-ink text-paper",
   }[theme.profile_band];
   const customBackground = hexColor(theme.background_color);
@@ -529,13 +529,13 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
       ? "bg-[#1b1b19]/95"
       : theme.palette === "paper"
         ? "bg-white/95"
-        : "bg-[#f5f2ec]/95";
+        : "bg-[#EFF5FA]/95";
   return (
     <>
       <CatalogHeader catalog={catalog} />
       <main className={`overflow-hidden pb-28 ${palette.page}`} style={customBackground ? { backgroundColor: customBackground } : undefined}>
         <section className="px-5 pb-3 pt-7 sm:px-8 sm:pb-6 sm:pt-10">
-          <motion.div initial={{ opacity: 0, transform: "translateY(12px)" }} animate={{ opacity: 1, transform: "translateY(0)" }} transition={{ duration: 0.36, ease: [0.23, 1, 0.32, 1] }} style={customProfileColor ? { backgroundColor: customProfileColor } : undefined} className={`mx-auto flex max-w-[1400px] items-center gap-3 rounded-[28px] border p-3 shadow-[0_14px_35px_rgba(11,11,10,.055)] sm:gap-5 sm:rounded-full sm:p-3.5 ${profileBand} ${customProfileColor ? profileText : ""}`}>
+          <motion.div initial={{ opacity: 0, transform: "translateY(12px)" }} animate={{ opacity: 1, transform: "translateY(0)" }} transition={{ duration: 0.36, ease: [0.23, 1, 0.32, 1] }} style={customProfileColor ? { backgroundColor: customProfileColor } : undefined} className={`mx-auto flex max-w-[1400px] items-center gap-3 rounded-[28px] border p-3 shadow-[0_14px_35px_rgba(18,40,58,.055)] sm:gap-5 sm:rounded-full sm:p-3.5 ${profileBand} ${customProfileColor ? profileText : ""}`}>
             <div className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-ink sm:h-[72px] sm:w-[72px]">
               {catalog.profile.avatar_url ? <img src={catalog.profile.avatar_url} alt={`Foto de ${catalog.profile.professional_name}`} className="h-full w-full object-cover" /> : <img src={appPath("/vello-mascot.png")} alt="Mascote da Vello" className="h-full w-full object-cover object-top" />}
             </div>
@@ -553,7 +553,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
             <div className="border-b border-black/10 pb-8">
               <div><h2 className={`font-display text-[42px] font-medium leading-[.92] tracking-[-.05em] sm:text-6xl ${palette.heading}`}>Todos os imóveis</h2><p className={`mt-4 font-body text-[16px] ${palette.copy}`}>Explore todas as opções disponíveis.</p></div>
             </div>
-            <div style={customBackground ? { backgroundColor: customBackground } : undefined} className={`sticky top-[68px] z-30 -mx-5 px-5 py-4 shadow-[0_8px_18px_rgba(11,11,10,.035)] backdrop-blur-md sm:-mx-8 sm:px-8 ${filterBackground}`}><div className="mx-auto max-w-[1400px]"><label className="flex h-12 max-w-xl items-center gap-3 rounded-full border border-black/10 bg-white/65 px-4 font-body text-sm transition focus-within:border-black/40 focus-within:bg-white"><Search size={18} className="text-stone" /><input value={filters.query} onChange={(e) => { setFilters((filter) => ({ ...filter, query: e.target.value })); setVisible(12); }} placeholder="Onde você quer morar?" className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-stone" /></label><div className="mt-3"><FilterControls filters={filters} setFilters={setFilters} total={properties.length} /></div></div></div>
+            <div style={customBackground ? { backgroundColor: customBackground } : undefined} className={`sticky top-[68px] z-30 -mx-5 px-5 py-4 shadow-[0_8px_18px_rgba(18,40,58,.035)] backdrop-blur-md sm:-mx-8 sm:px-8 ${filterBackground}`}><div className="mx-auto max-w-[1400px]"><label className="flex h-12 max-w-xl items-center gap-3 rounded-full border border-black/10 bg-white/65 px-4 font-body text-sm transition focus-within:border-black/40 focus-within:bg-white"><Search size={18} className="text-stone" /><input value={filters.query} onChange={(e) => { setFilters((filter) => ({ ...filter, query: e.target.value })); setVisible(12); }} placeholder="Onde você quer morar?" className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-stone" /></label><div className="mt-3"><FilterControls filters={filters} setFilters={setFilters} total={properties.length} /></div></div></div>
             {properties.length > 0 ? <motion.div layout className={`mt-10 grid gap-x-7 gap-y-14 ${properties.length === 1 ? "max-w-[920px]" : theme.property_style === "compact" ? "sm:grid-cols-2 xl:grid-cols-3" : theme.property_style === "classic" ? "sm:grid-cols-2 xl:grid-cols-3" : "md:grid-cols-2"}`}>
               {properties.slice(0, visible).map((property, index) => <PropertyCard key={property.id} property={property} catalog={catalog} index={index} style={theme.property_style} />)}
             </motion.div> : <div className="mt-12 max-w-2xl border-y border-black/10 py-16"><p className="font-mono text-[10px] uppercase tracking-[.18em] text-stone">Sem resultados</p><h3 className="mt-5 font-display text-4xl font-semibold tracking-[-.05em]">Novas oportunidades em breve.</h3><p className="mt-5 max-w-lg font-body leading-relaxed text-ash">No momento não há imóveis que combinem com essa busca. Se você procura algo específico, fale diretamente com {catalog.profile.professional_name}.</p><button onClick={() => setFilters(initial)} className="mt-8 font-body text-sm font-semibold underline underline-offset-4">Limpar filtros</button></div>}
@@ -573,7 +573,7 @@ function CatalogHome({ catalog }: { catalog: Catalog }) {
           <MessageCircle size={17} /> Falar com {catalog.profile.professional_name.split(" ")[0]}
         </a>
       )}
-      <footer style={customBackground ? { backgroundColor: customBackground } : undefined} className={`border-t px-5 py-8 pb-24 text-center font-body text-xs sm:px-8 sm:pb-8 ${darkPage ? "border-white/10 text-paper/55" : "border-black/10 bg-[#f5f2ec] text-stone"}`}>
+      <footer style={customBackground ? { backgroundColor: customBackground } : undefined} className={`border-t px-5 py-8 pb-24 text-center font-body text-xs sm:px-8 sm:pb-8 ${darkPage ? "border-white/10 text-paper/55" : "border-black/10 bg-[#EFF5FA] text-stone"}`}>
         {catalog.profile.professional_name}{catalog.profile.creci ? ` · CRECI ${displayCreci(catalog.profile.creci)}` : ""}{catalog.profile.instagram && <a href={`https://instagram.com/${catalog.profile.instagram.replace("@", "")}`} target="_blank" rel="noreferrer" className="ml-3 inline-flex items-center gap-1 underline underline-offset-4"><AtSign size={12} />Instagram</a>}<span className="px-2">·</span>Criado com Vello
       </footer>
     </>
@@ -598,7 +598,7 @@ function PropertyDetail({
   return (
     <>
       <CatalogHeader catalog={catalog} />
-      <main className="min-h-screen bg-[#f5f2ec] px-5 pb-28 pt-7 sm:px-8 sm:pt-10">
+      <main className="min-h-screen bg-[#EFF5FA] px-5 pb-28 pt-7 sm:px-8 sm:pt-10">
         <div className="mx-auto max-w-[1400px]">
         <a
           href={appPath(`/${catalog.profile.slug}`)}

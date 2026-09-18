@@ -26,7 +26,7 @@ export function PropertyForm() {
         </Reveal>
 
         <Reveal delay={0.1}>
-          <div className="mt-14 grid gap-0 overflow-hidden rounded-[20px] border border-line/70 bg-white shadow-[0_40px_90px_-45px_rgba(11,11,10,0.35)] md:grid-cols-[0.9fr_1.1fr]">
+          <div className="mt-14 grid gap-0 overflow-hidden rounded-[20px] border border-line/70 bg-white shadow-[0_40px_90px_-45px_rgba(18,40,58,0.35)] md:grid-cols-[0.9fr_1.1fr]">
             {/* Drag and drop */}
             <div className="flex flex-col justify-center border-b border-line/70 p-8 md:border-b-0 md:border-r md:p-10">
               <span className="font-mono text-[10.5px] uppercase tracking-wide text-stone">Fotos</span>

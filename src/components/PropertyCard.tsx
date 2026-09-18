@@ -10,7 +10,7 @@ export function PropertyCard({
   liked?: boolean;
 }) {
   return (
-    <div className="group overflow-hidden rounded-[14px] bg-white border border-line/70 transition-shadow hover:shadow-[0_20px_40px_-24px_rgba(11,11,10,0.35)]">
+    <div className="group overflow-hidden rounded-[14px] bg-white border border-line/70 transition-shadow hover:shadow-[0_20px_40px_-24px_rgba(18,40,58,0.35)]">
       <div className={`relative overflow-hidden ${compact ? 'h-[120px]' : 'h-[170px]'}`}>
         <img
           src={property.image}
@@ -18,7 +18,7 @@ export function PropertyCard({
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-[600ms] ease-out group-hover:scale-[1.035]"
           onError={(e) => {
-            (e.target as HTMLImageElement).style.background = '#E7E4DD';
+            (e.target as HTMLImageElement).style.background = '#E3EDF5';
           }}
         />
         <span className="absolute left-2.5 top-2.5 rounded-full bg-ink/85 px-2.5 py-1 font-mono text-[10px] tracking-wide text-paper backdrop-blur-sm">

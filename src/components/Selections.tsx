@@ -21,7 +21,7 @@ export function Selections() {
         <div className="mt-16 grid gap-8 lg:grid-cols-[1fr_auto_1fr] lg:items-center">
           {/* Step 1: builder UI */}
           <Reveal delay={0.05}>
-            <div className="rounded-[18px] border border-line/70 bg-white p-6 shadow-[0_30px_70px_-40px_rgba(11,11,10,0.3)]">
+            <div className="rounded-[18px] border border-line/70 bg-white p-6 shadow-[0_30px_70px_-40px_rgba(18,40,58,0.3)]">
               <div className="flex items-center justify-between">
                 <span className="font-display text-[15px] font-semibold text-ink">Nova seleção</span>
                 <span className="font-mono text-[10px] text-stone">passo 1 de 1</span>

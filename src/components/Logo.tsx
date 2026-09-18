@@ -10,10 +10,10 @@ export function Logo({ variant = 'dark', className = '' }: LogoProps) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <img
-        src={`${appPath('/vello-logo.png')}?v=3`}
+        src={`${appPath('/vello-logo.png')}?v=4`}
         alt=""
         aria-hidden="true"
-        className={`h-14 w-14 object-contain ${variant === 'light' ? 'invert' : 'mix-blend-multiply'}`}
+        className="h-10 w-10 object-contain"
       />
       <span className={`font-display text-[22px] font-semibold tracking-[-0.02em] ${color}`}>
         Vello

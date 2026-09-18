@@ -58,7 +58,7 @@ export function RevealComparison({ before, after, beforeLabel = 'Antes', afterLa
       <div className="absolute left-4 top-4 z-20 rounded-full bg-ink/80 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-paper backdrop-blur-sm">{beforeLabel}</div>
       <div className="absolute right-4 top-4 z-20 rounded-full bg-ink/80 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-paper backdrop-blur-sm">{afterLabel}</div>
 
-      <div className={`absolute bottom-0 top-0 z-10 w-[3px] -translate-x-1/2 bg-paper shadow-[0_0_18px_rgba(11,11,10,0.2)] ${dragging ? 'bg-white' : ''}`} style={{ left: `${position}%` }}>
+      <div className={`absolute bottom-0 top-0 z-10 w-[3px] -translate-x-1/2 bg-paper shadow-[0_0_18px_rgba(18,40,58,0.2)] ${dragging ? 'bg-white' : ''}`} style={{ left: `${position}%` }}>
         <div className={`absolute left-1/2 top-1/2 flex h-10 w-10 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-ink bg-paper shadow-xl transition-transform ${dragging ? 'scale-110' : ''}`}>
           <GripVertical size={18} className="text-ink" />
         </div>

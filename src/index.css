@@ -2,14 +2,20 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #0B0B0A;
-  --color-charcoal: #171716;
-  --color-paper: #FAF9F6;
-  --color-cream: #F3F1EC;
-  --color-mist: #E7E4DD;
-  --color-line: #DEDBD3;
-  --color-stone: #8B8880;
-  --color-ash: #5C5A54;
+  --color-ink: #12283A;
+  --color-charcoal: #1C3A52;
+  --color-paper: #F7FAFD;
+  --color-cream: #EEF4F9;
+  --color-mist: #E3EDF5;
+  --color-line: #D6E3ED;
+  --color-stone: #6B7E8D;
+  --color-ash: #4A5D6C;
+
+  /* Marca: azul da logo (#7EAFD0) e branco. O azul claro não tem contraste
+     para texto; use sky-deep para links e ink para texto e botões. */
+  --color-sky: #7EAFD0;
+  --color-sky-deep: #3A739C;
+  --color-sky-soft: #E8F1F8;
 
   --font-display: 'Inter Tight', 'Inter', system-ui, sans-serif;
   --font-body: 'Inter', system-ui, sans-serif;
@@ -189,12 +195,12 @@ textarea:focus-visible {
 @media (hover: hover) and (pointer: fine) {
   .vello-action:hover {
     border-color: var(--color-ink);
-    box-shadow: 0 10px 24px -18px rgba(11, 11, 10, 0.55);
+    box-shadow: 0 10px 24px -18px rgba(18,40,58, 0.55);
   }
 
   .vello-action-dark:hover {
     background: var(--color-charcoal);
-    box-shadow: 0 14px 28px -18px rgba(11, 11, 10, 0.68);
+    box-shadow: 0 14px 28px -18px rgba(18,40,58, 0.68);
   }
 
   .vello-action:hover .vello-action-arrow {
@@ -224,12 +230,12 @@ textarea:focus-visible {
 
   .vello-property-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 14px 24px -18px rgba(11, 11, 10, 0.45);
+    box-shadow: 0 14px 24px -18px rgba(18,40,58, 0.45);
   }
 
   .vello-surface:hover {
     border-color: color-mix(in srgb, var(--color-ink) 18%, var(--color-line));
-    box-shadow: 0 18px 40px -30px rgba(11, 11, 10, 0.42);
+    box-shadow: 0 18px 40px -30px rgba(18,40,58, 0.42);
   }
 
   .group:hover .vello-card-image {

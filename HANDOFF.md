@@ -51,6 +51,17 @@ A Vello deixa de ser para corretores e passa a ser para **estéticas**
 logo e cores vão mudar (usuário vai enviar). Contas atuais em produção são só
 de teste: podem ser descartadas.
 
+Marca (recebida em 2026-09-18, aplicada no commit de marca da branch):
+- Logo: símbolo "V" em folhas azuis. Original em
+  `design/brand/vello-logo-original.png`; `scripts/build-brand-assets.py`
+  gera `public/vello-logo.png`, `favicon.png`, `apple-touch-icon.png`,
+  `icon-512.png` (remove só o branco externo, preserva vincos internos).
+- Paleta do usuário: **#7EAFD0** e **#FFFFFF** (ele escreveu "#7EAFDO";
+  interpretado como D0). Tokens em `src/index.css`: `sky` #7EAFD0,
+  `sky-deep` #3A739C (links, contraste 5,1), `sky-soft` #E8F1F8; neutros
+  quentes trocados por azulados (`ink` #12283A para texto e botões, pois o
+  azul claro sobre branco tem só 2,35:1).
+
 Produto:
 - Catálogo público de **serviços** (categoria, preço fixo / "a partir de" /
   sob consulta, duração, fotos) no lugar de imóveis.
@@ -77,7 +88,8 @@ Etapas (branch `feat/vello-estetica`, um PR por etapa ou um PR final):
    atendimento, bloqueios e agenda de agendamentos.
 3. [ ] Onboarding (tipo de negócio, endereço, primeiro serviço, horários) e
    página pública com fluxo de agendamento.
-4. [ ] Landing, SEO, textos, Termos/Privacidade, logo e cores novas.
+4. [ ] Landing, SEO, textos, Termos/Privacidade, imagem de compartilhamento
+   (og) e uso do azul da marca em destaques. (Logo e tokens de cor: feito.)
 5. [ ] Migration de limpeza (remover imóveis/seleções e colunas CRECI),
    ajustar `get_admin_dashboard` e painel `/admin`.
 
@@ -88,7 +100,6 @@ sobe `postgres:17` com stubs de `auth`/`storage`/roles e aplica
 ## Próximo passo
 
 1. Etapa 2 da mudança para estéticas (tipos + painel).
-2. Receber do usuário a logo e as cores novas (etapa 4).
 3. Usuário aprovar merge do PR #1; conferir migration de admin em produção.
 4. Aplicar a migration de estética em produção só junto com o deploy da
    interface nova, com o usuário.

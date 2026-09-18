@@ -1,11 +1,12 @@
 {
-  "name": "Vello — Catálogo digital para corretores",
+  "name": "Vello — Agenda e catálogo para estéticas",
   "short_name": "Vello",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FAF9F6",
-  "theme_color": "#0B0B0A",
+  "background_color": "#FFFFFF",
+  "theme_color": "#7EAFD0",
   "icons": [
-    { "src": "/vello-logo.png", "sizes": "any", "type": "image/png" }
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }

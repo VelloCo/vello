@@ -27,7 +27,7 @@ export function SelectionsShowcase() {
           </Reveal>
 
           <Reveal delay={0.1} className="min-w-0">
-            <motion.article initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }} whileHover={{ y: -5 }} className="relative overflow-hidden rounded-[24px] border border-line bg-paper p-4 shadow-[0_32px_90px_-48px_rgba(11,11,10,0.35)] sm:p-6">
+            <motion.article initial={{ opacity: 0, y: 22 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }} whileHover={{ y: -5 }} className="relative overflow-hidden rounded-[24px] border border-line bg-paper p-4 shadow-[0_32px_90px_-48px_rgba(18,40,58,0.35)] sm:p-6">
               <div className="absolute -right-16 -top-16 h-40 w-40 rounded-full bg-ink/[0.04] blur-2xl" />
               <div className="relative flex items-start justify-between gap-4 border-b border-line pb-5">
                 <div>
@@ -56,5 +56,5 @@ export function SelectionsShowcase() {
 }
 
 function Detail({ icon, text }: { icon: ReactNode; text: string }) {
-  return <p className="flex items-center gap-3 font-body text-[14px] text-ink"><span className="grid h-7 w-7 place-items-center rounded-full bg-paper text-ink shadow-[0_4px_12px_rgba(11,11,10,0.08)]">{icon}</span>{text}</p>;
+  return <p className="flex items-center gap-3 font-body text-[14px] text-ink"><span className="grid h-7 w-7 place-items-center rounded-full bg-paper text-ink shadow-[0_4px_12px_rgba(18,40,58,0.08)]">{icon}</span>{text}</p>;
 }

@@ -21,7 +21,7 @@ export function Catalog() {
             </div>
           </Reveal>
           <Reveal className="min-w-0">
-            <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }} className="overflow-hidden rounded-[24px] border border-line bg-cream shadow-[0_32px_90px_-46px_rgba(11,11,10,0.42)]">
+            <motion.div whileHover={{ y: -5 }} transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }} className="overflow-hidden rounded-[24px] border border-line bg-cream shadow-[0_32px_90px_-46px_rgba(18,40,58,0.42)]">
               <motion.img initial={{ opacity: 0, scale: 0.975 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, margin: '-80px' }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }} src={appPath('/landing/catalog-real.png')} alt="Catálogo público da Vello mostrando o perfil do corretor e os filtros de imóveis" className="block w-full" />
             </motion.div>
           </Reveal>

@@ -97,7 +97,7 @@ export function Header() {
       )}
 
     </header>
-    {!open && <a href={appPath('/cadastro')} className="fixed bottom-3 left-1/2 z-40 flex h-14 w-[calc(100%-2.5rem)] max-w-sm -translate-x-1/2 items-center justify-center rounded-full border border-ink/15 bg-white px-5 font-body text-[15px] font-semibold text-ink shadow-[0_12px_30px_rgba(11,11,10,0.18)] transition-transform active:scale-[0.98] md:hidden">Criar meu catálogo</a>}
+    {!open && <a href={appPath('/cadastro')} className="fixed bottom-3 left-1/2 z-40 flex h-14 w-[calc(100%-2.5rem)] max-w-sm -translate-x-1/2 items-center justify-center rounded-full border border-ink/15 bg-white px-5 font-body text-[15px] font-semibold text-ink shadow-[0_12px_30px_rgba(18,40,58,0.18)] transition-transform active:scale-[0.98] md:hidden">Criar meu catálogo</a>}
     </>
   );
 }

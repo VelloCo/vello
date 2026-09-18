@@ -1095,7 +1095,7 @@ function SuccessStep({
         initial={{ opacity: 0, transform: "translateY(10px) scale(.94) rotate(-4deg)" }}
         animate={{ opacity: 1, transform: "translateY(0) scale(1) rotate(0deg)" }}
         transition={{ duration: 0.5, type: "spring", bounce: 0.18 }}
-        className="relative mx-auto grid h-20 w-20 place-items-center rounded-[26px] bg-ink text-paper shadow-[0_16px_35px_rgba(11,11,10,.18)]"
+        className="relative mx-auto grid h-20 w-20 place-items-center rounded-[26px] bg-ink text-paper shadow-[0_16px_35px_rgba(18,40,58,.18)]"
         aria-label="Catálogo publicado com sucesso"
       >
         <span className="absolute inset-2 rounded-[20px] border border-white/15" />
@@ -1111,7 +1111,7 @@ function SuccessStep({
         Seu primeiro imóvel já está publicado e sua página Vello está pronta
         para compartilhar.
       </p>
-      <div className="mx-auto mt-10 max-w-sm overflow-hidden rounded-[24px] border border-line bg-white text-left shadow-[0_24px_60px_rgba(11,11,10,0.1)]">
+      <div className="mx-auto mt-10 max-w-sm overflow-hidden rounded-[24px] border border-line bg-white text-left shadow-[0_24px_60px_rgba(18,40,58,0.1)]">
         <div className="aspect-[16/9] bg-cream">
           {photos[0] ? (
             <img src={photos[0].url} className="h-full w-full object-cover" />
@@ -1149,7 +1149,7 @@ function SuccessStep({
         </div>
       </div>
       <p className="mt-7 font-mono text-[11px] text-ash">{link}</p>
-      <div className="mx-auto mt-6 grid max-w-sm gap-3 rounded-[20px] border border-line bg-white p-3 shadow-[0_16px_45px_rgba(11,11,10,.06)]">
+      <div className="mx-auto mt-6 grid max-w-sm gap-3 rounded-[20px] border border-line bg-white p-3 shadow-[0_16px_45px_rgba(18,40,58,.06)]">
         <a
           href={link}
           className="flex h-12 items-center justify-center rounded-[12px] bg-ink font-body text-sm font-semibold text-paper transition hover:bg-charcoal active:scale-[0.98]"
