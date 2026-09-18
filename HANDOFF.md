@@ -38,11 +38,17 @@ pessoais de leads: não copiar para o repositório.
 - Cobrança/assinatura não implementada (preço anunciado R$ 65,90/mês, 7 dias grátis).
 - Domínio próprio e SMTP próprio.
 - Aviso de bundle > 500 kB; 8 avisos de lint.
+- Migration de admin `20260902050303` confirmada em produção em 2026-09-18
+  (`anon` sem EXECUTE em `is_admin`/`get_admin_dashboard`).
 - Workflow `deploy-pages.yml` (GitHub Pages) falha a cada push em `main`
   desde antes de 2026-09-18. O site real é a Vercel; avaliar remover o workflow.
-- Conferir no Supabase (produção) se a migration `20260902050303` já foi
-  aplicada: `anon` não deve ter EXECUTE em `is_admin()` e
-  `get_admin_dashboard()`. Não reaplicar por tentativa.
+- Supabase pausa sozinho no plano gratuito após ~7 dias sem uso. Em
+  2026-09-18 o projeto `vello` (scqlyropbykktnzlsdwh) estava INACTIVE (site
+  sem login/catálogo); foi reativado pelo conector do Supabase e voltou em
+  ~4 min. Plano gratuito: máx. 2 projetos ativos (o outro é "Lembrancinha").
+- Conector Supabase do claude.ai está autorizado (2026-09-18). A tabela
+  `supabase_migrations.schema_migrations` está vazia: as migrations antigas
+  foram aplicadas por fora do histórico; conferir o banco, não a lista.
 
 ## Em andamento
 
@@ -86,7 +92,9 @@ Etapas (trabalho direto na `main` desde 2026-09-18; a branch
    (exclusion constraint impede sobreposição); funções públicas
    `get_public_page`, `get_available_slots`, `book_appointment`; bucket
    `service-images`. Testada num Postgres local (Docker) com 20 cenários.
-   **Não aplicada em produção.**
+   **Não aplicada em produção**: em 2026-09-18 o `apply_migration` pelo
+   conector foi bloqueado pelo classificador de permissões do Claude Code
+   (produção). Aplicar pelo SQL Editor do Supabase ou liberar a permissão.
 2. [ ] Tipos em `src/lib/vello.ts` + painel: serviços, horários de
    atendimento, bloqueios e agenda de agendamentos.
 3. [ ] Onboarding (tipo de negócio, endereço, primeiro serviço, horários) e
@@ -103,7 +111,6 @@ sobe `postgres:17` com stubs de `auth`/`storage`/roles e aplica
 ## Próximo passo
 
 1. Etapa 2 da mudança para estéticas (tipos + painel).
-3. Conferir migration de admin em produção.
 4. Aplicar a migration de estética em produção só junto com o deploy da
    interface nova, com o usuário.
 
