@@ -4,9 +4,10 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
-2026-09-18 — Claude Code. Início da mudança da Vello de corretores para
-estéticas (branch `feat/vello-estetica`, etapa 1 de 5 feita). Antes disso,
-pendências locais organizadas no PR #1 (`chore/organizar-pendencias-locais`).
+2026-09-20 — Codex. Etapa 2 iniciada/concluída parcialmente: tipos e funções
+cliente para serviços/agenda, painel principal orientado a estéticas, telas de
+serviços e agenda. Antes disso, Claude Code iniciou a mudança da Vello de
+corretores para estéticas em 2026-09-18.
 
 ## Estado atual
 
@@ -101,8 +102,14 @@ Etapas (trabalho direto na `main` desde 2026-09-18; a branch
    `get_public_page`, `get_available_slots`, `book_appointment` são
    intencionais (página pública e agendamento sem login; mesmo padrão de
    `get_catalog`). Pendente: "Leaked password protection" desligado no Auth.
-2. [ ] Tipos em `src/lib/vello.ts` + painel: serviços, horários de
-   atendimento, bloqueios e agenda de agendamentos.
+2. [x] Tipos em `src/lib/vello.ts` + painel inicial: serviços, horários de
+   atendimento e agenda de agendamentos. Em 2026-09-20 foram adicionados tipos
+   e helpers para `services`, `service_images`, `business_hours` e
+   `appointments`; o dashboard passou a carregar esses dados; a navegação
+   principal passou para Serviços/Agenda; foram criadas telas para listar,
+   criar, editar e excluir serviços, salvar horários de atendimento e atualizar
+   status de agendamentos. Ainda não há tela para bloqueios manuais de agenda
+   (`schedule_blocks`) nem criação manual de agendamento pelo painel.
 3. [ ] Onboarding (tipo de negócio, endereço, primeiro serviço, horários) e
    página pública com fluxo de agendamento.
 4. [ ] Landing, SEO, textos, Termos/Privacidade, imagem de compartilhamento
@@ -116,10 +123,12 @@ sobe `postgres:17` com stubs de `auth`/`storage`/roles e aplica
 
 ## Próximo passo
 
-1. Etapa 2 da mudança para estéticas (tipos + painel). O banco já está
-   pronto em produção.
-4. Aplicar a migration de estética em produção só junto com o deploy da
-   interface nova, com o usuário.
+1. Etapa 3 da mudança para estéticas: onboarding (tipo de negócio, endereço,
+   primeiro serviço, horários) e página pública com fluxo de agendamento.
+2. Etapa 4: landing, SEO, textos, Termos/Privacidade, imagem de
+   compartilhamento e revisão dos textos antigos de corretores/imóveis.
+3. Etapa 5: migration de limpeza para remover imóveis/seleções/CRECI depois
+   que a troca estiver validada.
 
 ## Decisões
 

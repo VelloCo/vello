@@ -4,9 +4,12 @@ import {
   ArrowDown,
   ArrowUp,
   Archive,
+  Ban,
   Building2,
+  CalendarDays,
   Check,
   ChevronLeft,
+  Clock3,
   Copy,
   ExternalLink,
   FolderHeart,
@@ -21,6 +24,7 @@ import {
   Plus,
   Search,
   Share2,
+  Sparkles,
   Trash2,
   UserRound,
   X,
@@ -31,27 +35,36 @@ import { LoadingScreen } from "../LoadingScreen";
 import { signOut, updatePassword } from "../../lib/auth";
 import {
   brl,
+  brlCents,
   dateBR,
   deleteProperty,
+  deleteService,
   deleteSelection,
+  getAppointments,
+  getBusinessHours,
   getProfile,
   getProperties,
   getSelections,
+  getServices,
+  replaceBusinessHours,
+  saveService,
   saveProfile,
   saveProperty,
   saveSelection,
+  setAppointmentStatus,
   setSelectionStatus,
   slugify,
   uploadAvatar,
   uploadPropertyImages,
+  uploadServiceImages,
 } from "../../lib/vello";
-import type { CatalogTheme, Profile, Property, Selection } from "../../lib/vello";
+import type { Appointment, BusinessHour, CatalogTheme, Profile, Property, Selection, Service } from "../../lib/vello";
 
 type Props = { user: User; route: string };
 const nav = [
   { href: "/dashboard", label: "Início", icon: Home },
-  { href: "/dashboard/imoveis", label: "Imóveis", icon: Building2 },
-  { href: "/dashboard/selecoes", label: "Seleções", icon: FolderHeart },
+  { href: "/dashboard/servicos", label: "Serviços", icon: Sparkles },
+  { href: "/dashboard/agenda", label: "Agenda", icon: CalendarDays },
   { href: "/dashboard/catalogo", label: "Meu catálogo", icon: ExternalLink },
   { href: "/dashboard/personalizar", label: "Personalizar catálogo", icon: Palette },
   { href: "/dashboard/perfil", label: "Perfil", icon: UserRound },
@@ -66,12 +79,42 @@ const displayCreci = (creci?: string | null) =>
 const cover = (p: Property) =>
   p.property_images?.find((i) => i.is_cover)?.image_url ||
   p.property_images?.[0]?.image_url;
+const serviceCover = (service: Service) =>
+  service.service_images?.find((image) => image.is_cover)?.image_url ||
+  service.service_images?.[0]?.image_url;
 const statusLabel: Record<Property["status"], string> = {
   available: "Disponível",
   reserved: "Reservado",
   sold: "Vendido",
   rented: "Alugado",
 };
+const serviceCategoryLabel: Record<Service["category"], string> = {
+  facial: "Facial",
+  corporal: "Corporal",
+  depilacao: "Depilação",
+  sobrancelhas_cilios: "Sobrancelhas e cílios",
+  unhas: "Unhas",
+  cabelo: "Cabelo",
+  massagem: "Massagem",
+  harmonizacao: "Harmonização",
+  outros: "Outros",
+};
+const appointmentStatusLabel: Record<Appointment["status"], string> = {
+  pending: "Pendente",
+  confirmed: "Confirmado",
+  cancelled: "Cancelado",
+  completed: "Concluído",
+  no_show: "Não compareceu",
+};
+const weekdays = [
+  "Domingo",
+  "Segunda",
+  "Terça",
+  "Quarta",
+  "Quinta",
+  "Sexta",
+  "Sábado",
+];
 
 function Toast({ text }: { text: string | null }) {
   return (
@@ -244,10 +287,10 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
             item={item}
             active={
               route === item.href ||
-              (item.href === "/dashboard/imoveis" &&
-                route.startsWith("/dashboard/imoveis")) ||
-              (item.href === "/dashboard/selecoes" &&
-                route.startsWith("/dashboard/selecoes"))
+              (item.href === "/dashboard/servicos" &&
+                route.startsWith("/dashboard/servicos")) ||
+              (item.href === "/dashboard/agenda" &&
+                route.startsWith("/dashboard/agenda"))
             }
           />
         ))}
@@ -329,8 +372,8 @@ function MobileNav({ route }: { route: string }) {
         <MobileItem key={i.href} item={i} active={route.startsWith(i.href)} />
       ))}
       <a
-        href={appPath("/dashboard/imoveis/novo")}
-        aria-label="Novo imóvel"
+        href={appPath("/dashboard/servicos/novo")}
+        aria-label="Novo serviço"
         className="-mt-8 grid h-14 w-14 place-items-center rounded-full bg-ink text-paper shadow-lg"
       >
         <Plus size={23} />
@@ -360,156 +403,6 @@ function MobileItem({
   );
 }
 
-function HomePage({
-  profile,
-  properties,
-  refresh,
-  toast,
-}: {
-  profile: Profile;
-  properties: Property[];
-  refresh: () => Promise<void>;
-  toast: (s: string) => void;
-}) {
-  const [remove, setRemove] = useState<Property | null>(null);
-  const first = profile.professional_name?.split(" ")[0] || "corretor";
-  const summary = [
-    ["Disponíveis", properties.filter((p) => p.status === "available").length],
-    ["Reservados", properties.filter((p) => p.status === "reserved").length],
-    [
-      "Vendidos / alugados",
-      properties.filter((p) => ["sold", "rented"].includes(p.status)).length,
-    ],
-    ["Total", properties.length],
-  ];
-  return (
-    <>
-      <header className="flex flex-wrap items-end justify-between gap-5">
-        <div>
-          <p className="font-body text-sm text-ash">Boa tarde, {first}.</p>
-          <h1 className="mt-1 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
-            Seus imóveis estão todos por aqui.
-          </h1>
-        </div>
-        <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:justify-end">
-          <a
-            href={appPath("/dashboard/personalizar")}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-line bg-white px-4 font-body text-sm font-semibold text-ink transition hover:border-ink"
-          >
-            <Palette size={16} /> Personalizar catálogo
-          </a>
-          <Button onClick={() => go("/dashboard/imoveis/novo")}>
-            <Plus size={17} /> Novo imóvel
-          </Button>
-        </div>
-      </header>
-      <section className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {summary.map(([label, value]) => (
-          <button
-            key={String(label)}
-            onClick={() => go("/dashboard/imoveis")}
-            className="rounded-2xl border border-line bg-white p-4 text-left transition hover:border-ink"
-          >
-            <span className="font-mono text-[10px] uppercase tracking-wide text-stone">
-              {label}
-            </span>
-            <b className="mt-3 block font-display text-3xl text-ink">{value}</b>
-          </button>
-        ))}
-      </section>
-      <section className="mt-12">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="font-display text-2xl font-semibold text-ink">
-              Seus imóveis
-            </p>
-            <p className="mt-1 font-body text-sm text-ash">
-              Os mais recentes do seu catálogo.
-            </p>
-          </div>
-          <a
-            href={appPath("/dashboard/imoveis")}
-            className="font-body text-sm underline underline-offset-4"
-          >
-            Ver todos
-          </a>
-        </div>
-        {properties.length ? (
-          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-            {properties.slice(0, 6).map((p) => (
-              <PropertyCard
-                key={p.id}
-                property={p}
-                catalogSlug={profile.slug}
-                onEdit={() => go(`/dashboard/imoveis/${p.id}`)}
-                onDelete={() => setRemove(p)}
-              />
-            ))}
-          </div>
-        ) : (
-          <Empty
-            title="Seu catálogo ainda está vazio."
-            text="Adicione seu primeiro imóvel para começar."
-            action="Adicionar imóvel"
-            onAction={() => go("/dashboard/imoveis/novo")}
-          />
-        )}
-      </section>
-      <section className="mt-12 grid gap-5 xl:grid-cols-[1.25fr_.75fr]">
-        <div className="rounded-[24px] border border-line bg-white p-6">
-          <p className="font-display text-xl font-semibold">Ações rápidas</p>
-          <div className="mt-5 grid gap-2 sm:grid-cols-2">
-            {[
-              ["Adicionar imóvel", "/dashboard/imoveis/novo"],
-              ["Criar seleção", "/dashboard/selecoes/nova"],
-              ["Ver meu catálogo", publicCatalogUrl(profile.slug)],
-              ["Copiar link do catálogo", "#"],
-            ].map(([text, href]) => (
-              <button
-                key={text}
-                onClick={() =>
-                  href === "#"
-                    ? navigator.clipboard.writeText(
-                        publicCatalogUrl(profile.slug),
-                      )
-                    : href.startsWith("http")
-                      ? (window.location.href = href)
-                      : go(href)
-                }
-                className="flex items-center justify-between rounded-xl border border-line px-4 py-3 font-body text-sm text-ink hover:bg-cream"
-              >
-                {text}
-                <span>→</span>
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="rounded-[24px] bg-ink p-6 text-paper">
-          <p className="font-mono text-[10px] uppercase tracking-wide text-paper/60">
-            Seu catálogo
-          </p>
-          <p className="mt-3 font-display text-2xl">
-            Pronto para compartilhar.
-          </p>
-          <p className="mt-2 font-body text-sm text-paper/70">
-            {profile.slug
-              ? publicCatalogLabel(profile.slug)
-              : "Defina seu link público"}
-          </p>
-          <a
-            href={publicCatalogUrl(profile.slug)}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-6 inline-flex rounded-full bg-white px-4 py-2 font-body text-sm font-semibold text-ink"
-          >
-            Abrir catálogo
-          </a>
-        </div>
-      </section>
-      {remove && <Dialog title="Excluir este imóvel?" text="Essa ação não poderá ser desfeita." confirm="Excluir imóvel" danger onClose={() => setRemove(null)} onConfirm={async () => { try { await deleteProperty(remove.id); toast("Imóvel excluído"); setRemove(null); await refresh(); } catch { toast("Não foi possível excluir o imóvel."); } }} />}
-    </>
-  );
-}
 function Empty({
   title,
   text,
@@ -978,6 +871,886 @@ function SelectField({
         ))}
       </select>
     </label>
+  );
+}
+
+function formatServicePrice(service: Pick<Service, "price_type" | "price">) {
+  if (service.price_type === "on_request") return "Sob consulta";
+  const price = brlCents(service.price);
+  return service.price_type === "from" ? `A partir de ${price}` : price;
+}
+
+function appointmentTime(value: string) {
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function EsteticaHomePage({
+  profile,
+  services,
+  appointments,
+}: {
+  profile: Profile;
+  services: Service[];
+  appointments: Appointment[];
+}) {
+  const first = profile.professional_name?.split(" ")[0] || "profissional";
+  const today = new Date().toISOString().slice(0, 10);
+  const todaysAppointments = appointments.filter((appointment) =>
+    appointment.starts_at.startsWith(today),
+  );
+  const published = services.filter(
+    (service) => service.publication_status === "published",
+  ).length;
+  const pending = appointments.filter(
+    (appointment) => appointment.status === "pending",
+  ).length;
+  const nextAppointment = appointments.find((appointment) =>
+    ["pending", "confirmed"].includes(appointment.status),
+  );
+
+  return (
+    <>
+      <header className="flex flex-wrap items-end justify-between gap-5">
+        <div>
+          <p className="font-body text-sm text-ash">Boa tarde, {first}.</p>
+          <h1 className="mt-1 font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
+            Sua agenda e seus serviços ficam por aqui.
+          </h1>
+        </div>
+        <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:justify-end">
+          <a
+            href={appPath("/dashboard/agenda")}
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-full border border-line bg-white px-4 font-body text-sm font-semibold text-ink transition hover:border-ink"
+          >
+            <CalendarDays size={16} /> Ver agenda
+          </a>
+          <Button onClick={() => go("/dashboard/servicos/novo")}>
+            <Plus size={17} /> Novo serviço
+          </Button>
+        </div>
+      </header>
+
+      <section className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {[
+          ["Serviços publicados", published],
+          ["Total de serviços", services.length],
+          ["Agendamentos hoje", todaysAppointments.length],
+          ["Pendentes", pending],
+        ].map(([label, value]) => (
+          <button
+            key={String(label)}
+            onClick={() =>
+              String(label).includes("Serviços")
+                ? go("/dashboard/servicos")
+                : go("/dashboard/agenda")
+            }
+            className="rounded-2xl border border-line bg-white p-4 text-left transition hover:border-ink"
+          >
+            <span className="font-mono text-[10px] uppercase tracking-wide text-stone">
+              {label}
+            </span>
+            <b className="mt-3 block font-display text-3xl text-ink">{value}</b>
+          </button>
+        ))}
+      </section>
+
+      <section className="mt-12 grid gap-5 xl:grid-cols-[1.1fr_.9fr]">
+        <div className="rounded-[24px] border border-line bg-white p-6">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="font-display text-2xl font-semibold text-ink">
+                Próximos horários
+              </p>
+              <p className="mt-1 font-body text-sm text-ash">
+                O que precisa da sua atenção agora.
+              </p>
+            </div>
+            <a
+              href={appPath("/dashboard/agenda")}
+              className="font-body text-sm underline underline-offset-4"
+            >
+              Abrir agenda
+            </a>
+          </div>
+          {appointments.length ? (
+            <div className="mt-5 divide-y divide-line">
+              {appointments.slice(0, 5).map((appointment) => (
+                <div
+                  key={appointment.id}
+                  className="flex flex-wrap items-center justify-between gap-3 py-4"
+                >
+                  <div>
+                    <p className="font-body text-sm font-semibold text-ink">
+                      {appointment.client_name}
+                    </p>
+                    <p className="mt-1 font-body text-xs text-ash">
+                      {appointment.service_title} · {appointmentTime(appointment.starts_at)}
+                    </p>
+                  </div>
+                  <span className="rounded-full bg-cream px-3 py-1 font-mono text-[10px] uppercase tracking-wide text-stone">
+                    {appointmentStatusLabel[appointment.status]}
+                  </span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Empty
+              title="Nenhum agendamento ainda."
+              text="Quando a página pública estiver com agendamento ativo, os horários aparecem aqui."
+              action="Configurar agenda"
+              onAction={() => go("/dashboard/agenda")}
+            />
+          )}
+        </div>
+
+        <div className="rounded-[24px] bg-ink p-6 text-paper">
+          <p className="font-mono text-[10px] uppercase tracking-wide text-paper/60">
+            Catálogo público
+          </p>
+          <p className="mt-3 font-display text-2xl">
+            {nextAppointment
+              ? `Próximo atendimento: ${appointmentTime(nextAppointment.starts_at)}`
+              : "Pronto para receber serviços."}
+          </p>
+          <p className="mt-2 font-body text-sm text-paper/70">
+            {profile.slug
+              ? publicCatalogLabel(profile.slug)
+              : "Defina seu link público no perfil"}
+          </p>
+          <div className="mt-6 grid gap-2">
+            {[
+              ["Adicionar serviço", "/dashboard/servicos/novo"],
+              ["Horários de atendimento", "/dashboard/agenda"],
+              ["Abrir catálogo", publicCatalogUrl(profile.slug)],
+            ].map(([text, href]) => (
+              <button
+                key={text}
+                onClick={() =>
+                  href.startsWith("http") ? (window.location.href = href) : go(href)
+                }
+                className="flex items-center justify-between rounded-xl border border-white/10 px-4 py-3 font-body text-sm text-paper hover:bg-white/10"
+              >
+                {text}
+                <span>→</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+
+function ServiceCard({
+  service,
+  onEdit,
+  onDelete,
+}: {
+  service: Service;
+  onEdit: () => void;
+  onDelete: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <article className="vello-surface group relative overflow-hidden rounded-[22px] border border-line bg-white">
+      <div className="relative aspect-[16/10] overflow-hidden bg-cream">
+        {serviceCover(service) ? (
+          <img
+            src={serviceCover(service)}
+            alt={service.title}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            className="vello-card-image h-full w-full object-cover"
+          />
+        ) : (
+          <div className="grid h-full place-items-center text-stone">
+            <Sparkles size={26} />
+          </div>
+        )}
+        <div className="absolute left-3 top-3 flex gap-2">
+          <span className="rounded-full bg-white/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-ink">
+            {serviceCategoryLabel[service.category]}
+          </span>
+          {service.publication_status === "draft" && (
+            <span className="rounded-full bg-ink/85 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-paper">
+              Rascunho
+            </span>
+          )}
+        </div>
+        <button
+          aria-label={`Ações para ${service.title}`}
+          onClick={() => setOpen(!open)}
+          className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/90 text-ink shadow-sm"
+        >
+          <MoreHorizontal size={17} />
+        </button>
+        {open && (
+          <div className="vello-popover absolute right-3 top-12 z-20 w-40 rounded-xl border border-line bg-white p-1.5 text-left shadow-[0_18px_48px_-18px_rgba(18,40,58,.28)]">
+            <button
+              onClick={onEdit}
+              className="w-full rounded-lg px-3 py-2 text-left font-body text-sm hover:bg-cream"
+            >
+              Editar
+            </button>
+            <button
+              onClick={onDelete}
+              className="w-full rounded-lg px-3 py-2 text-left font-body text-sm text-red-700 hover:bg-red-50"
+            >
+              Excluir
+            </button>
+          </div>
+        )}
+      </div>
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-3">
+          <h3 className="line-clamp-1 font-display text-lg font-semibold text-ink">
+            {service.title}
+          </h3>
+          <span className="shrink-0 rounded-full border border-line px-2 py-1 font-mono text-[9px] text-stone">
+            {service.duration_minutes} min
+          </span>
+        </div>
+        <p className="mt-1 font-mono text-sm text-ink">
+          {formatServicePrice(service)}
+        </p>
+        <p className="mt-2 line-clamp-2 min-h-10 font-body text-sm text-ash">
+          {service.description || "Sem descrição cadastrada."}
+        </p>
+        <p className="mt-3 font-body text-xs text-ash">
+          {service.bookable ? "Agendamento online ativo" : "Sem agendamento online"}
+        </p>
+      </div>
+    </article>
+  );
+}
+
+function ServicesPage({
+  services,
+  refresh,
+  toast,
+}: {
+  services: Service[];
+  refresh: () => Promise<void>;
+  toast: (s: string) => void;
+}) {
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("all");
+  const [remove, setRemove] = useState<Service | null>(null);
+  const filtered = services.filter(
+    (service) =>
+      (category === "all" || service.category === category) &&
+      `${service.title} ${service.description} ${service.category}`
+        .toLowerCase()
+        .includes(query.toLowerCase()),
+  );
+  return (
+    <>
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="font-display text-4xl font-semibold tracking-tight">
+            Serviços
+          </h1>
+          <p className="mt-2 font-body text-ash">
+            Organize o que aparece no catálogo e o que pode ser agendado.
+          </p>
+        </div>
+        <Button onClick={() => go("/dashboard/servicos/novo")}>
+          <Plus size={17} /> Novo serviço
+        </Button>
+      </header>
+      <div className="mt-8">
+        <label className="flex h-14 w-full items-center gap-3 rounded-2xl border border-line bg-white p-1.5 pr-3 shadow-[0_8px_22px_rgba(18,40,58,.035)] transition focus-within:border-ink focus-within:shadow-[0_10px_26px_rgba(18,40,58,.07)]">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-cream text-ash">
+            <Search size={18} strokeWidth={1.8} />
+          </span>
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Busque por serviço, descrição ou categoria"
+            className="min-w-0 flex-1 bg-transparent font-body text-sm text-ink outline-none placeholder:text-stone"
+          />
+          {query && <button type="button" onClick={() => setQuery("")} aria-label="Limpar busca" className="grid h-8 w-8 place-items-center rounded-full text-stone transition hover:bg-cream hover:text-ink"><X size={16} /></button>}
+        </label>
+        <div className="vello-scrollbar-hidden mt-3 flex gap-2 overflow-x-auto pb-1">
+          {[["all", "Todos"], ...Object.entries(serviceCategoryLabel)].map(
+            ([value, label]) => (
+              <button
+                key={value}
+                onClick={() => setCategory(value)}
+                className={`h-11 whitespace-nowrap rounded-full border px-4 font-body text-sm ${category === value ? "border-ink bg-ink text-paper" : "border-line bg-white text-ash"}`}
+              >
+                {label}
+              </button>
+            ),
+          )}
+        </div>
+      </div>
+      <p className="mt-6 font-mono text-xs text-stone">
+        {filtered.length} serviços
+      </p>
+      {filtered.length ? (
+        <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          {filtered.map((service) => (
+            <ServiceCard
+              key={service.id}
+              service={service}
+              onEdit={() => go(`/dashboard/servicos/${service.id}`)}
+              onDelete={() => setRemove(service)}
+            />
+          ))}
+        </div>
+      ) : (
+        <Empty
+          title="Nenhum serviço encontrado."
+          text="Cadastre tratamentos, procedimentos ou atendimentos para montar o catálogo."
+          action="Adicionar serviço"
+          onAction={() => go("/dashboard/servicos/novo")}
+        />
+      )}
+      {remove && (
+        <Dialog
+          title="Excluir este serviço?"
+          text="Ele deixará de aparecer no catálogo. Agendamentos antigos continuam preservados com o nome do serviço."
+          confirm="Excluir serviço"
+          danger
+          onClose={() => setRemove(null)}
+          onConfirm={async () => {
+            try {
+              await deleteService(remove.id);
+              toast("Serviço excluído");
+              setRemove(null);
+              await refresh();
+            } catch {
+              toast("Não foi possível excluir o serviço.");
+            }
+          }}
+        />
+      )}
+    </>
+  );
+}
+
+function ServiceEditor({
+  user,
+  service,
+  toast,
+  refresh,
+}: {
+  user: User;
+  service?: Service;
+  toast: (s: string) => void;
+  refresh: () => Promise<void>;
+}) {
+  const [form, setForm] = useState<Partial<Service>>(
+    service || {
+      title: "",
+      description: "",
+      category: "facial",
+      price_type: "fixed",
+      price: 0,
+      duration_minutes: 60,
+      publication_status: "published",
+      bookable: true,
+      position: 0,
+    },
+  );
+  const [images, setImages] = useState<Array<{ url: string; id?: string }>>(
+    (service?.service_images || []).map((image) => ({
+      url: image.image_url,
+      id: image.id,
+    })),
+  );
+  const [saving, setSaving] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const update = (key: keyof Service, value: unknown) =>
+    setForm((current) => ({ ...current, [key]: value }));
+  const upload = async (files: FileList | null) => {
+    if (!files) return;
+    try {
+      const urls = await uploadServiceImages(user.id, files, 8 - images.length);
+      setImages((old) => [...old, ...urls.map((url) => ({ url }))]);
+    } catch (error) {
+      toast(error instanceof Error ? error.message : "Não foi possível enviar as fotos.");
+    }
+  };
+  const save = async () => {
+    if (!form.title || !form.duration_minutes) {
+      toast("Preencha nome e duração do serviço.");
+      return;
+    }
+    if (form.price_type !== "on_request" && Number(form.price || 0) < 0) {
+      toast("Informe um preço válido.");
+      return;
+    }
+    setSaving(true);
+    try {
+      const id = await saveService(user.id, form, images);
+      toast(form.publication_status === "draft" ? "Rascunho salvo" : "Serviço salvo");
+      await refresh();
+      go(`/dashboard/servicos/${id}`);
+    } catch {
+      toast("Não foi possível salvar o serviço.");
+    } finally {
+      setSaving(false);
+    }
+  };
+  return (
+    <>
+      <button
+        onClick={() => go("/dashboard/servicos")}
+        className="mb-7 inline-flex items-center gap-1 font-body text-sm text-ash"
+      >
+        <ChevronLeft size={16} /> Serviços
+      </button>
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="font-display text-4xl font-semibold tracking-tight">
+            {service ? "Editar serviço" : "Novo serviço"}
+          </h1>
+          <p className="mt-2 font-body text-ash">
+            Defina o que a cliente verá e poderá agendar.
+          </p>
+        </div>
+        <Button onClick={save} disabled={saving}>
+          {saving ? (
+            <LoaderCircle className="animate-spin" size={16} />
+          ) : (
+            <Check size={16} />
+          )}{" "}
+          {saving ? "Salvando..." : "Salvar alterações"}
+        </Button>
+      </header>
+      <div className="mt-9 grid gap-7 xl:grid-cols-[1fr_340px]">
+        <div className="space-y-6">
+          <section className="rounded-[24px] border border-line bg-white p-5 sm:p-6">
+            <p className="font-display text-xl font-semibold">Fotos</p>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple
+              className="hidden"
+              onChange={(event) => upload(event.target.files)}
+            />
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="mt-4 flex min-h-36 w-full flex-col items-center justify-center rounded-2xl border border-dashed border-line bg-cream/40 font-body text-sm text-ash hover:border-ink"
+            >
+              <ImagePlus size={23} />
+              <span className="mt-2">Adicionar fotos do serviço</span>
+            </button>
+            {images.length > 0 && (
+              <div className="mt-4 grid grid-cols-3 gap-3">
+                {images.map((image, index) => (
+                  <div key={image.url} className="relative aspect-square overflow-hidden rounded-xl">
+                    <img src={image.url} className="h-full w-full object-cover" />
+                    <button
+                      onClick={() => setImages((items) => items.filter((_, itemIndex) => itemIndex !== index))}
+                      className="absolute right-1 top-1 rounded-full bg-white p-1.5"
+                    >
+                      <X size={13} />
+                    </button>
+                    {index === 0 && (
+                      <span className="absolute bottom-1 left-1 rounded bg-ink px-1.5 py-1 font-mono text-[9px] text-paper">
+                        CAPA
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+          <section className="rounded-[24px] border border-line bg-white p-5 sm:p-6">
+            <p className="font-display text-xl font-semibold">Informações</p>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <Field
+                label="Nome do serviço"
+                value={form.title || ""}
+                onChange={(value) => update("title", value)}
+                className="sm:col-span-2"
+              />
+              <SelectField
+                label="Categoria"
+                value={form.category || "facial"}
+                onChange={(value) => update("category", value)}
+                options={Object.entries(serviceCategoryLabel)}
+              />
+              <Field
+                label="Duração em minutos"
+                type="number"
+                value={String(form.duration_minutes || "")}
+                onChange={(value) => update("duration_minutes", Number(value))}
+              />
+              <SelectField
+                label="Tipo de preço"
+                value={form.price_type || "fixed"}
+                onChange={(value) => update("price_type", value)}
+                options={[
+                  ["fixed", "Preço fixo"],
+                  ["from", "A partir de"],
+                  ["on_request", "Sob consulta"],
+                ]}
+              />
+              <Field
+                label="Preço"
+                type="number"
+                value={String(form.price || "")}
+                onChange={(value) => update("price", Number(value))}
+              />
+            </div>
+            <label className="mt-5 block">
+              <span className="mb-3 block font-body text-[11px] font-medium uppercase tracking-[0.08em] text-ash">
+                Descrição
+              </span>
+              <textarea
+                value={form.description || ""}
+                onChange={(event) => update("description", event.target.value)}
+                className="min-h-36 w-full rounded-xl border border-line p-3 font-body text-sm outline-none focus:border-ink"
+                placeholder="Explique para quem é indicado, o que está incluso e qualquer cuidado importante."
+              />
+            </label>
+          </section>
+        </div>
+        <aside className="space-y-6">
+          <section className="rounded-[24px] border border-line bg-white p-5">
+            <p className="font-display text-xl font-semibold">Publicação</p>
+            <label className="mt-5 flex items-center justify-between font-body text-sm">
+              Publicar no catálogo
+              <input
+                type="checkbox"
+                checked={form.publication_status === "published"}
+                onChange={(event) =>
+                  update("publication_status", event.target.checked ? "published" : "draft")
+                }
+                className="h-4 w-4 accent-black"
+              />
+            </label>
+            <label className="mt-5 flex items-center justify-between font-body text-sm">
+              Permitir agendamento online
+              <input
+                type="checkbox"
+                checked={form.bookable ?? true}
+                onChange={(event) => update("bookable", event.target.checked)}
+                className="h-4 w-4 accent-black"
+              />
+            </label>
+            <Field
+              label="Ordem"
+              type="number"
+              value={String(form.position || 0)}
+              onChange={(value) => update("position", Number(value))}
+              className="mt-5 block"
+            />
+          </section>
+          <section className="rounded-[24px] bg-ink p-5 text-paper">
+            <p className="font-display text-xl font-semibold">Prévia</p>
+            <p className="mt-4 font-body text-sm text-paper/70">
+              {form.title || "Nome do serviço"}
+            </p>
+            <p className="mt-2 font-mono text-sm">
+              {formatServicePrice({
+                price_type: form.price_type || "fixed",
+                price: form.price ?? null,
+              })}
+            </p>
+            <p className="mt-2 font-body text-xs text-paper/60">
+              {form.duration_minutes || 0} min ·{" "}
+              {serviceCategoryLabel[(form.category || "facial") as Service["category"]]}
+            </p>
+          </section>
+        </aside>
+      </div>
+    </>
+  );
+}
+
+function AgendaPage({
+  user,
+  profile,
+  appointments,
+  businessHours,
+  refresh,
+  toast,
+}: {
+  user: User;
+  profile: Profile;
+  appointments: Appointment[];
+  businessHours: BusinessHour[];
+  refresh: () => Promise<void>;
+  toast: (s: string) => void;
+}) {
+  const [hours, setHours] = useState(() =>
+    weekdays.map((_, weekday) => {
+      const found = businessHours.find((hour) => hour.weekday === weekday);
+      return {
+        weekday,
+        enabled: Boolean(found),
+        start_time: found?.start_time?.slice(0, 5) || "09:00",
+        end_time: found?.end_time?.slice(0, 5) || "18:00",
+      };
+    }),
+  );
+  const [settings, setSettings] = useState({
+    booking_enabled: profile.booking_enabled ?? true,
+    booking_auto_confirm: profile.booking_auto_confirm ?? true,
+    booking_slot_minutes: String(profile.booking_slot_minutes || 30),
+    booking_min_notice_minutes: String(profile.booking_min_notice_minutes || 120),
+    booking_max_days_ahead: String(profile.booking_max_days_ahead || 60),
+  });
+  const [saving, setSaving] = useState(false);
+  const changeStatus = async (
+    appointment: Appointment,
+    status: Appointment["status"],
+  ) => {
+    try {
+      await setAppointmentStatus(appointment.id, status);
+      toast("Agendamento atualizado");
+      await refresh();
+    } catch {
+      toast("Não foi possível atualizar o agendamento.");
+    }
+  };
+  const save = async () => {
+    const selected = hours
+      .filter((hour) => hour.enabled)
+      .map((hour) => ({
+        weekday: hour.weekday,
+        start_time: hour.start_time,
+        end_time: hour.end_time,
+      }));
+    if (selected.some((hour) => hour.end_time <= hour.start_time)) {
+      toast("O horário final precisa ser maior que o inicial.");
+      return;
+    }
+    setSaving(true);
+    try {
+      await saveProfile(user.id, {
+        booking_enabled: settings.booking_enabled,
+        booking_auto_confirm: settings.booking_auto_confirm,
+        booking_slot_minutes: Number(settings.booking_slot_minutes),
+        booking_min_notice_minutes: Number(settings.booking_min_notice_minutes),
+        booking_max_days_ahead: Number(settings.booking_max_days_ahead),
+      });
+      await replaceBusinessHours(user.id, selected);
+      toast("Agenda salva");
+      await refresh();
+    } catch {
+      toast("Não foi possível salvar a agenda.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <>
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="font-display text-4xl font-semibold tracking-tight">
+            Agenda
+          </h1>
+          <p className="mt-2 font-body text-ash">
+            Configure atendimento e acompanhe reservas feitas pelo site.
+          </p>
+        </div>
+        <Button onClick={save} disabled={saving}>
+          {saving ? <LoaderCircle className="animate-spin" size={16} /> : <Check size={16} />}
+          {saving ? "Salvando..." : "Salvar agenda"}
+        </Button>
+      </header>
+      <div className="mt-9 grid gap-7 xl:grid-cols-[.95fr_1.05fr]">
+        <section className="rounded-[24px] border border-line bg-white p-5 sm:p-6">
+          <p className="font-display text-xl font-semibold">Horários de atendimento</p>
+          <div className="mt-5 space-y-3">
+            {hours.map((hour, index) => (
+              <div
+                key={hour.weekday}
+                className="grid gap-3 rounded-2xl border border-line p-3 sm:grid-cols-[1fr_120px_120px]"
+              >
+                <label className="flex items-center gap-3 font-body text-sm font-semibold">
+                  <input
+                    type="checkbox"
+                    checked={hour.enabled}
+                    onChange={(event) =>
+                      setHours((current) =>
+                        current.map((item, itemIndex) =>
+                          itemIndex === index
+                            ? { ...item, enabled: event.target.checked }
+                            : item,
+                        ),
+                      )
+                    }
+                    className="h-4 w-4 accent-black"
+                  />
+                  {weekdays[hour.weekday]}
+                </label>
+                <input
+                  type="time"
+                  value={hour.start_time}
+                  disabled={!hour.enabled}
+                  onChange={(event) =>
+                    setHours((current) =>
+                      current.map((item, itemIndex) =>
+                        itemIndex === index
+                          ? { ...item, start_time: event.target.value }
+                          : item,
+                      ),
+                    )
+                  }
+                  className="h-11 rounded-xl border border-line px-3 font-body text-sm disabled:opacity-45"
+                />
+                <input
+                  type="time"
+                  value={hour.end_time}
+                  disabled={!hour.enabled}
+                  onChange={(event) =>
+                    setHours((current) =>
+                      current.map((item, itemIndex) =>
+                        itemIndex === index
+                          ? { ...item, end_time: event.target.value }
+                          : item,
+                      ),
+                    )
+                  }
+                  className="h-11 rounded-xl border border-line px-3 font-body text-sm disabled:opacity-45"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="mt-7 grid gap-4 sm:grid-cols-3">
+            <Field
+              label="Intervalo dos slots"
+              type="number"
+              value={settings.booking_slot_minutes}
+              onChange={(value) =>
+                setSettings((current) => ({ ...current, booking_slot_minutes: value }))
+              }
+            />
+            <Field
+              label="Antecedência mínima"
+              type="number"
+              value={settings.booking_min_notice_minutes}
+              onChange={(value) =>
+                setSettings((current) => ({ ...current, booking_min_notice_minutes: value }))
+              }
+            />
+            <Field
+              label="Dias à frente"
+              type="number"
+              value={settings.booking_max_days_ahead}
+              onChange={(value) =>
+                setSettings((current) => ({ ...current, booking_max_days_ahead: value }))
+              }
+            />
+          </div>
+          <label className="mt-5 flex items-center justify-between rounded-2xl border border-line bg-cream/45 p-4 font-body text-sm">
+            Agendamento online ativo
+            <input
+              type="checkbox"
+              checked={settings.booking_enabled}
+              onChange={(event) =>
+                setSettings((current) => ({
+                  ...current,
+                  booking_enabled: event.target.checked,
+                }))
+              }
+              className="h-4 w-4 accent-black"
+            />
+          </label>
+          <label className="mt-3 flex items-center justify-between rounded-2xl border border-line bg-cream/45 p-4 font-body text-sm">
+            Confirmar automaticamente
+            <input
+              type="checkbox"
+              checked={settings.booking_auto_confirm}
+              onChange={(event) =>
+                setSettings((current) => ({
+                  ...current,
+                  booking_auto_confirm: event.target.checked,
+                }))
+              }
+              className="h-4 w-4 accent-black"
+            />
+          </label>
+        </section>
+
+        <section className="rounded-[24px] border border-line bg-white p-5 sm:p-6">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="font-display text-xl font-semibold">Agendamentos</p>
+              <p className="mt-1 font-body text-sm text-ash">
+                Últimos sete dias e próximos horários.
+              </p>
+            </div>
+            <span className="rounded-full bg-cream px-3 py-1 font-mono text-[10px] uppercase tracking-wide text-stone">
+              {appointments.length} itens
+            </span>
+          </div>
+          {appointments.length ? (
+            <div className="mt-5 divide-y divide-line">
+              {appointments.map((appointment) => (
+                <article key={appointment.id} className="py-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="font-body text-sm font-semibold text-ink">
+                        {appointment.client_name}
+                      </p>
+                      <p className="mt-1 font-body text-xs text-ash">
+                        {appointment.service_title} · {appointmentTime(appointment.starts_at)}
+                      </p>
+                      <p className="mt-1 font-body text-xs text-ash">
+                        WhatsApp: {appointment.client_whatsapp}
+                      </p>
+                      {appointment.client_notes && (
+                        <p className="mt-2 rounded-xl bg-cream px-3 py-2 font-body text-xs text-ash">
+                          {appointment.client_notes}
+                        </p>
+                      )}
+                    </div>
+                    <span className="rounded-full bg-cream px-3 py-1 font-mono text-[10px] uppercase tracking-wide text-stone">
+                      {appointmentStatusLabel[appointment.status]}
+                    </span>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button
+                      onClick={() => changeStatus(appointment, "confirmed")}
+                      disabled={appointment.status === "confirmed"}
+                      className="inline-flex h-9 items-center gap-1 rounded-full border border-line px-3 font-body text-xs disabled:opacity-45"
+                    >
+                      <Check size={14} /> Confirmar
+                    </button>
+                    <button
+                      onClick={() => changeStatus(appointment, "completed")}
+                      disabled={appointment.status === "completed"}
+                      className="inline-flex h-9 items-center gap-1 rounded-full border border-line px-3 font-body text-xs disabled:opacity-45"
+                    >
+                      <Clock3 size={14} /> Concluir
+                    </button>
+                    <button
+                      onClick={() => changeStatus(appointment, "cancelled")}
+                      disabled={appointment.status === "cancelled"}
+                      className="inline-flex h-9 items-center gap-1 rounded-full border border-red-200 px-3 font-body text-xs text-red-700 disabled:opacity-45"
+                    >
+                      <Ban size={14} /> Cancelar
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <Empty
+              title="Sem agendamentos por enquanto."
+              text="Assim que a cliente reservar pelo catálogo, ela aparecerá nesta lista."
+              action="Ver serviços"
+              onAction={() => go("/dashboard/servicos")}
+            />
+          )}
+        </section>
+      </div>
+    </>
   );
 }
 
@@ -1657,6 +2430,9 @@ export function DashboardApp({ user, route }: Props) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [properties, setProperties] = useState<Property[]>([]);
   const [selections, setSelections] = useState<Selection[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [businessHours, setBusinessHours] = useState<BusinessHour[]>([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
   const say = (s: string) => {
@@ -1665,14 +2441,20 @@ export function DashboardApp({ user, route }: Props) {
   };
   const refresh = async () => {
     try {
-      const [p, pr, s] = await Promise.all([
+      const [p, pr, s, sv, ap, bh] = await Promise.all([
         getProfile(user.id),
         getProperties(user.id),
         getSelections(user.id),
+        getServices(user.id),
+        getAppointments(user.id),
+        getBusinessHours(user.id),
       ]);
       setProfile(p);
       setProperties(pr);
       setSelections(s);
+      setServices(sv);
+      setAppointments(ap);
+      setBusinessHours(bh);
     } finally {
       setLoading(false);
     }
@@ -1685,11 +2467,38 @@ export function DashboardApp({ user, route }: Props) {
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
   }, []);
-  if (loading || !profile) return <LoadingScreen label="Organizando seus imóveis" />;
+  if (loading || !profile) return <LoadingScreen label="Organizando sua agenda" />;
   let page: React.ReactNode;
   if (route === "/dashboard")
     page = (
-      <HomePage profile={profile} properties={properties} refresh={refresh} toast={say} />
+      <EsteticaHomePage profile={profile} services={services} appointments={appointments} />
+    );
+  else if (route === "/dashboard/servicos")
+    page = <ServicesPage services={services} refresh={refresh} toast={say} />;
+  else if (route === "/dashboard/servicos/novo")
+    page = <ServiceEditor user={user} toast={say} refresh={refresh} />;
+  else if (route.startsWith("/dashboard/servicos/")) {
+    const service = services.find((item) => item.id === route.split("/").pop());
+    page = service ? (
+      <ServiceEditor user={user} service={service} toast={say} refresh={refresh} />
+    ) : (
+      <Empty
+        title="Serviço não encontrado."
+        text="Ele pode ter sido removido."
+        action="Voltar aos serviços"
+        onAction={() => go("/dashboard/servicos")}
+      />
+    );
+  } else if (route === "/dashboard/agenda")
+    page = (
+      <AgendaPage
+        user={user}
+        profile={profile}
+        appointments={appointments}
+        businessHours={businessHours}
+        refresh={refresh}
+        toast={say}
+      />
     );
   else if (route === "/dashboard/imoveis")
     page = (

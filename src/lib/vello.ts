@@ -26,6 +26,72 @@ export type Profile = {
   show_creci: boolean;
   show_completed_properties: boolean;
   catalog_theme: CatalogTheme;
+  business_type?: "autonoma" | "clinica";
+  neighborhood?: string | null;
+  address?: string | null;
+  show_address?: boolean;
+  timezone?: string;
+  booking_enabled?: boolean;
+  booking_auto_confirm?: boolean;
+  booking_slot_minutes?: number;
+  booking_min_notice_minutes?: number;
+  booking_max_days_ahead?: number;
+  before_after_terms_accepted_at?: string | null;
+};
+export type ServiceImage = {
+  id: string;
+  image_url: string;
+  position: number;
+  is_cover: boolean;
+};
+export type Service = {
+  id: string;
+  user_id: string;
+  title: string;
+  description: string;
+  category:
+    | "facial"
+    | "corporal"
+    | "depilacao"
+    | "sobrancelhas_cilios"
+    | "unhas"
+    | "cabelo"
+    | "massagem"
+    | "harmonizacao"
+    | "outros";
+  price_type: "fixed" | "from" | "on_request";
+  price: number | null;
+  duration_minutes: number;
+  publication_status: "draft" | "published";
+  bookable: boolean;
+  position: number;
+  slug: string | null;
+  created_at: string;
+  updated_at: string;
+  service_images: ServiceImage[];
+};
+export type BusinessHour = {
+  id: string;
+  user_id: string;
+  weekday: number;
+  start_time: string;
+  end_time: string;
+  created_at: string;
+};
+export type Appointment = {
+  id: string;
+  user_id: string;
+  service_id: string | null;
+  service_title: string;
+  client_name: string;
+  client_whatsapp: string;
+  client_notes: string;
+  starts_at: string;
+  ends_at: string;
+  status: "pending" | "confirmed" | "cancelled" | "completed" | "no_show";
+  source: "online" | "manual";
+  created_at: string;
+  updated_at: string;
 };
 export type PropertyImage = {
   id: string;
@@ -75,6 +141,8 @@ export type Selection = {
 };
 export const brl = (value: number, monthly = false) =>
   `${new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL", maximumFractionDigits: 0 }).format(Number(value || 0))}${monthly ? "/mês" : ""}`;
+export const brlCents = (value: number | null | undefined) =>
+  new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(Number(value || 0));
 export const dateBR = (value: string) =>
   new Intl.DateTimeFormat("pt-BR", {
     day: "2-digit",
@@ -104,6 +172,151 @@ export async function saveProfile(userId: string, values: Partial<Profile>) {
     .from("profiles")
     .update(values)
     .eq("user_id", userId);
+  if (error) throw error;
+}
+export async function getServices(userId: string) {
+  const { data, error } = await requireSupabase()
+    .from("services")
+    .select("*,service_images(*)")
+    .eq("user_id", userId)
+    .order("position", { ascending: true })
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return ((data || []) as Service[]).map((service) => ({
+    ...service,
+    service_images: [...(service.service_images || [])].sort(
+      (a, b) => a.position - b.position,
+    ),
+  }));
+}
+export async function saveService(
+  userId: string,
+  service: Partial<Service>,
+  images: Array<{ url: string; id?: string }>,
+) {
+  const payload = {
+    ...service,
+    user_id: userId,
+    slug: service.slug || slugify(service.title || "servico"),
+    price: service.price_type === "on_request" ? null : Number(service.price || 0),
+  };
+  delete (payload as Partial<Service>).service_images;
+  const client = requireSupabase();
+  const { data, error } = service.id
+    ? await client
+        .from("services")
+        .update(payload)
+        .eq("id", service.id)
+        .select()
+        .single()
+    : await client.from("services").insert(payload).select().single();
+  if (error) throw error;
+  const id = data.id;
+  await client.from("service_images").delete().eq("service_id", id);
+  if (images.length) {
+    const { error: imagesError } = await client
+      .from("service_images")
+      .insert(
+        images.map((image, position) => ({
+          service_id: id,
+          image_url: image.url,
+          position,
+          is_cover: position === 0,
+        })),
+      );
+    if (imagesError) throw imagesError;
+  }
+  return id as string;
+}
+export async function deleteService(id: string) {
+  const { error } = await requireSupabase()
+    .from("services")
+    .delete()
+    .eq("id", id);
+  if (error) throw error;
+}
+export async function uploadServiceImages(
+  userId: string,
+  files: FileList | File[],
+  remainingSlots = 8,
+) {
+  const acceptedTypes = ["image/jpeg", "image/png", "image/webp"];
+  const maxSize = 10 * 1024 * 1024;
+  const list = [...files];
+  if (!list.length) return [];
+  if (remainingSlots <= 0 || list.length > remainingSlots) {
+    throw new Error("Você pode ter no máximo 8 fotos por serviço.");
+  }
+  if (list.some((file) => !acceptedTypes.includes(file.type))) {
+    throw new Error("Use apenas imagens JPG, PNG ou WebP.");
+  }
+  if (list.some((file) => file.size > maxSize)) {
+    throw new Error("Cada imagem deve ter no máximo 10 MB.");
+  }
+  const client = requireSupabase();
+  const uploads = await Promise.all(
+    list.map(async (file) => {
+      const ext = file.name.split(".").pop() || "jpg";
+      const path = `${userId}/${crypto.randomUUID()}.${ext}`;
+      const { error } = await client.storage
+        .from("service-images")
+        .upload(path, file, { upsert: false, contentType: file.type });
+      if (error) throw error;
+      return client.storage.from("service-images").getPublicUrl(path).data
+        .publicUrl;
+    }),
+  );
+  return uploads;
+}
+export async function getBusinessHours(userId: string) {
+  const { data, error } = await requireSupabase()
+    .from("business_hours")
+    .select("*")
+    .eq("user_id", userId)
+    .order("weekday", { ascending: true })
+    .order("start_time", { ascending: true });
+  if (error) throw error;
+  return (data || []) as BusinessHour[];
+}
+export async function replaceBusinessHours(
+  userId: string,
+  hours: Array<Pick<BusinessHour, "weekday" | "start_time" | "end_time">>,
+) {
+  const client = requireSupabase();
+  const { error: deleteError } = await client
+    .from("business_hours")
+    .delete()
+    .eq("user_id", userId);
+  if (deleteError) throw deleteError;
+  if (!hours.length) return;
+  const { error } = await client.from("business_hours").insert(
+    hours.map((hour) => ({
+      ...hour,
+      user_id: userId,
+    })),
+  );
+  if (error) throw error;
+}
+export async function getAppointments(userId: string) {
+  const from = new Date();
+  from.setDate(from.getDate() - 7);
+  const { data, error } = await requireSupabase()
+    .from("appointments")
+    .select("*")
+    .eq("user_id", userId)
+    .gte("starts_at", from.toISOString())
+    .order("starts_at", { ascending: true });
+  if (error) throw error;
+  return (data || []) as Appointment[];
+}
+export async function setAppointmentStatus(
+  id: string,
+  status: Appointment["status"],
+) {
+  const { error } = await requireSupabase()
+    .from("appointments")
+    .update({ status })
+    .eq("id", id);
   if (error) throw error;
 }
 export async function getProperties(userId: string) {
