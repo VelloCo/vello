@@ -299,7 +299,7 @@ export async function replaceBusinessHours(
 }
 export async function getAppointments(userId: string) {
   const from = new Date();
-  from.setDate(from.getDate() - 7);
+  from.setDate(from.getDate() - 30);
   const { data, error } = await requireSupabase()
     .from("appointments")
     .select("*")

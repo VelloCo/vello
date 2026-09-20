@@ -1503,6 +1503,24 @@ function AgendaPage({
     booking_max_days_ahead: String(profile.booking_max_days_ahead || 60),
   });
   const [saving, setSaving] = useState(false);
+  const [appointmentFilter, setAppointmentFilter] = useState<"upcoming" | "today" | "pending" | "history">("upcoming");
+  const now = new Date();
+  const calendarKey = (date: Date) => `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+  const todayKey = calendarKey(now);
+  const isToday = (appointment: Appointment) =>
+    calendarKey(new Date(appointment.starts_at)) === todayKey;
+  const activeAppointments = appointments.filter((appointment) =>
+    ["pending", "confirmed"].includes(appointment.status),
+  );
+  const pendingAppointments = appointments.filter((appointment) => appointment.status === "pending");
+  const todayAppointments = activeAppointments.filter(isToday);
+  const visibleAppointments = appointments.filter((appointment) => {
+    const startsAt = new Date(appointment.starts_at);
+    if (appointmentFilter === "today") return isToday(appointment);
+    if (appointmentFilter === "pending") return appointment.status === "pending";
+    if (appointmentFilter === "history") return startsAt < now || !["pending", "confirmed"].includes(appointment.status);
+    return startsAt >= now && ["pending", "confirmed"].includes(appointment.status);
+  });
   const changeStatus = async (
     appointment: Appointment,
     status: Appointment["status"],
@@ -1550,11 +1568,10 @@ function AgendaPage({
     <>
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-4xl font-semibold tracking-tight">
-            Agenda
-          </h1>
+          <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">Atendimentos</p>
+          <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">Sua agenda</h1>
           <p className="mt-2 font-body text-ash">
-            Configure atendimento e acompanhe reservas feitas pelo site.
+            Veja quem vem hoje, confirme pendências e acompanhe cada atendimento.
           </p>
         </div>
         <Button onClick={save} disabled={saving}>
@@ -1562,8 +1579,15 @@ function AgendaPage({
           {saving ? "Salvando..." : "Salvar agenda"}
         </Button>
       </header>
-      <div className="mt-9 grid gap-7 xl:grid-cols-[.95fr_1.05fr]">
-        <section className="rounded-[24px] border border-line bg-white p-5 sm:p-6">
+      <section className="mt-8 grid gap-3 sm:grid-cols-3">
+        {[
+          ["Hoje", todayAppointments.length, "atendimentos ativos", "bg-[#E8F1F8]"],
+          ["A confirmar", pendingAppointments.length, "aguardando sua resposta", "bg-[#FFF7E8]"],
+          ["Próximo", activeAppointments.find((appointment) => new Date(appointment.starts_at) >= now)?.starts_at ? appointmentTime(activeAppointments.find((appointment) => new Date(appointment.starts_at) >= now)!.starts_at) : "Livre", "seu próximo horário", "bg-ink text-paper"],
+        ].map(([label, value, detail, tone]) => <div key={String(label)} className={`rounded-[20px] border border-line p-5 ${tone}`}><p className="font-mono text-[10px] uppercase tracking-[.14em] opacity-60">{label}</p><p className="mt-3 font-display text-3xl font-semibold tracking-[-.04em]">{value}</p><p className="mt-1 font-body text-xs opacity-65">{detail}</p></div>)}
+      </section>
+      <div className="mt-7 grid gap-7 xl:grid-cols-[.82fr_1.18fr]">
+        <section className="order-2 rounded-[24px] border border-line bg-white p-5 sm:p-6">
           <p className="font-display text-xl font-semibold">Horários de atendimento</p>
           <div className="mt-5 space-y-3">
             {hours.map((hour, index) => (
@@ -1677,61 +1701,58 @@ function AgendaPage({
           </label>
         </section>
 
-        <section className="rounded-[24px] border border-line bg-white p-5 sm:p-6">
+        <section className="order-1 rounded-[24px] border border-line bg-white p-5 shadow-[0_18px_45px_-38px_rgba(18,40,58,.28)] sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="font-display text-xl font-semibold">Agendamentos</p>
+              <p className="font-display text-2xl font-semibold tracking-[-.035em]">Agendamentos</p>
               <p className="mt-1 font-body text-sm text-ash">
-                Últimos sete dias e próximos horários.
+                Organize os próximos atendimentos sem perder nenhuma cliente.
               </p>
             </div>
             <span className="rounded-full bg-cream px-3 py-1 font-mono text-[10px] uppercase tracking-wide text-stone">
-              {appointments.length} itens
+              {activeAppointments.length} ativos
             </span>
           </div>
-          {appointments.length ? (
+          <div className="mt-5 flex gap-2 overflow-x-auto pb-1">
+            {([['upcoming', 'Próximos', activeAppointments.filter((appointment) => new Date(appointment.starts_at) >= now).length], ['today', 'Hoje', todayAppointments.length], ['pending', 'Pendentes', pendingAppointments.length], ['history', 'Histórico', appointments.filter((appointment) => new Date(appointment.starts_at) < now || !['pending', 'confirmed'].includes(appointment.status)).length]] as const).map(([value, label, count]) => <button key={value} type="button" onClick={() => setAppointmentFilter(value)} className={`shrink-0 rounded-full border px-3 py-2 font-body text-xs font-medium transition ${appointmentFilter === value ? 'border-ink bg-ink text-paper' : 'border-line bg-white text-ash hover:border-ink hover:text-ink'}`}>{label} <span className="ml-1 opacity-65">{count}</span></button>)}
+          </div>
+          {visibleAppointments.length ? (
             <div className="mt-5 divide-y divide-line">
-              {appointments.map((appointment) => (
-                <article key={appointment.id} className="py-4">
+              {visibleAppointments.map((appointment) => (
+                <article key={appointment.id} className="py-5 first:pt-0">
                   <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="font-body text-sm font-semibold text-ink">
-                        {appointment.client_name}
-                      </p>
-                      <p className="mt-1 font-body text-xs text-ash">
-                        {appointment.service_title} · {appointmentTime(appointment.starts_at)}
-                      </p>
-                      <p className="mt-1 font-body text-xs text-ash">
-                        WhatsApp: {appointment.client_whatsapp}
-                      </p>
-                      {appointment.client_notes && (
-                        <p className="mt-2 rounded-xl bg-cream px-3 py-2 font-body text-xs text-ash">
-                          {appointment.client_notes}
-                        </p>
-                      )}
+                    <div className="flex min-w-0 gap-3">
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#E8F1F8] font-display text-sm font-semibold text-ink">{appointment.client_name.slice(0, 1).toUpperCase()}</span>
+                      <div className="min-w-0">
+                        <p className="font-body text-sm font-semibold text-ink">{appointment.client_name}</p>
+                        <p className="mt-1 font-body text-xs text-ash">{appointment.service_title}</p>
+                        <p className="mt-1 font-mono text-[11px] uppercase tracking-[.06em] text-stone">{appointmentTime(appointment.starts_at)}</p>
+                      </div>
                     </div>
-                    <span className="rounded-full bg-cream px-3 py-1 font-mono text-[10px] uppercase tracking-wide text-stone">
+                    <span className={`rounded-full px-3 py-1 font-mono text-[10px] uppercase tracking-wide ${appointment.status === 'pending' ? 'bg-[#FFF1D6] text-[#8C5A11]' : appointment.status === 'confirmed' ? 'bg-[#E8F1F8] text-[#245D85]' : appointment.status === 'completed' ? 'bg-[#E8F6ED] text-[#276541]' : 'bg-cream text-stone'}`}>
                       {appointmentStatusLabel[appointment.status]}
                     </span>
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-2">
+                  {appointment.client_notes && <p className="mt-3 rounded-xl bg-cream px-3 py-2 font-body text-xs leading-relaxed text-ash">{appointment.client_notes}</p>}
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <a href={`https://wa.me/${appointment.client_whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="inline-flex h-9 items-center gap-1 rounded-full border border-line px-3 font-body text-xs text-ash transition hover:border-ink hover:text-ink"><MessageCircle size={14} /> WhatsApp</a>
                     <button
                       onClick={() => changeStatus(appointment, "confirmed")}
-                      disabled={appointment.status === "confirmed"}
+                      disabled={appointment.status !== "pending"}
                       className="inline-flex h-9 items-center gap-1 rounded-full border border-line px-3 font-body text-xs disabled:opacity-45"
                     >
                       <Check size={14} /> Confirmar
                     </button>
                     <button
                       onClick={() => changeStatus(appointment, "completed")}
-                      disabled={appointment.status === "completed"}
+                      disabled={!["pending", "confirmed"].includes(appointment.status)}
                       className="inline-flex h-9 items-center gap-1 rounded-full border border-line px-3 font-body text-xs disabled:opacity-45"
                     >
                       <Clock3 size={14} /> Concluir
                     </button>
                     <button
                       onClick={() => changeStatus(appointment, "cancelled")}
-                      disabled={appointment.status === "cancelled"}
+                      disabled={!["pending", "confirmed"].includes(appointment.status)}
                       className="inline-flex h-9 items-center gap-1 rounded-full border border-red-200 px-3 font-body text-xs text-red-700 disabled:opacity-45"
                     >
                       <Ban size={14} /> Cancelar
@@ -1742,8 +1763,8 @@ function AgendaPage({
             </div>
           ) : (
             <Empty
-              title="Sem agendamentos por enquanto."
-              text="Assim que a cliente reservar pelo catálogo, ela aparecerá nesta lista."
+              title={appointmentFilter === "upcoming" ? "Nenhum atendimento futuro." : "Nenhum agendamento nesta lista."}
+              text={appointmentFilter === "upcoming" ? "Assim que uma cliente reservar pelo catálogo, ela aparecerá aqui." : "Mude o filtro para ver outros agendamentos."}
               action="Ver serviços"
               onAction={() => go("/dashboard/servicos")}
             />

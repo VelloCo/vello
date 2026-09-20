@@ -8,8 +8,10 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 cliente para serviços/agenda, painel principal orientado a estéticas, telas de
 serviços e agenda. Também foram ajustadas a tela de carregamento e a aba de
 perfil: esta agora reúne identidade da estética, contato, endereço e controles
-de visibilidade, sem campos de CRECI/imóveis. Antes disso, Claude Code iniciou
-a mudança da Vello de corretores para estéticas em 2026-09-18.
+de visibilidade, sem campos de CRECI/imóveis. A Agenda foi reorganizada para
+priorizar atendimentos, com resumo diário, filtros, histórico de 30 dias e
+ações de status/WhatsApp. Antes disso, Claude Code iniciou a mudança da Vello
+de corretores para estéticas em 2026-09-18.
 
 ## Estado atual
 
