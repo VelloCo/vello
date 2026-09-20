@@ -6,9 +6,10 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 2026-09-20 — Codex. Etapa 2 iniciada/concluída parcialmente: tipos e funções
 cliente para serviços/agenda, painel principal orientado a estéticas, telas de
-serviços e agenda. Também foi ajustada a tela de carregamento para usar a
-marca nova sem mascote/imagem antiga. Antes disso, Claude Code iniciou a
-mudança da Vello de corretores para estéticas em 2026-09-18.
+serviços e agenda. Também foram ajustadas a tela de carregamento e a aba de
+perfil: esta agora reúne identidade da estética, contato, endereço e controles
+de visibilidade, sem campos de CRECI/imóveis. Antes disso, Claude Code iniciou
+a mudança da Vello de corretores para estéticas em 2026-09-18.
 
 ## Estado atual
 

@@ -319,7 +319,7 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
               {profile.professional_name || "Seu perfil"}
             </b>
             <small className="block truncate font-mono text-[10px] text-stone">
-              {profile.creci || "CRECI"}
+              {profile.business_type === "clinica" ? "Clínica" : "Profissional autônoma"}
             </small>
           </span>
         </button>
@@ -2171,15 +2171,19 @@ function ProfilePage({
   const [form, setForm] = useState(profile);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [saving, setSaving] = useState(false);
   const [passwordSaving, setPasswordSaving] = useState(false);
   const [avatarSaving, setAvatarSaving] = useState(false);
   const avatarInput = useRef<HTMLInputElement>(null);
   const save = async () => {
+    setSaving(true);
     try {
       await saveProfile(user.id, form);
       toast("Alterações salvas");
     } catch {
       toast("Não foi possível salvar.");
+    } finally {
+      setSaving(false);
     }
   };
   const changePassword = async () => {
@@ -2220,35 +2224,35 @@ function ProfilePage({
   return (
     <>
       <header>
-        <h1 className="font-display text-4xl font-semibold">
-          Perfil
-        </h1>
+        <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">Sua estética</p>
+        <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">Perfil público</h1>
         <p className="mt-2 font-body text-ash">
-          Seus dados e as preferências de exibição do catálogo.
+          Defina como sua marca, contato e localização aparecem para suas clientes.
         </p>
       </header>
-      <section className="mt-9 max-w-2xl rounded-[24px] border border-line bg-white p-5 sm:p-7">
+      <section className="mt-9 max-w-3xl rounded-[24px] border border-line bg-white p-5 sm:p-7">
         <div className="mb-7 flex items-center gap-4 border-b border-line pb-7">
           <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full bg-cream font-display text-xl">
-            {form.avatar_url ? <img src={form.avatar_url} alt="Foto de perfil" className="h-full w-full object-cover" /> : <img src={appPath("/vello-mascot.png")} alt="Mascote da Vello" className="h-full w-full object-cover object-top" />}
+            {form.avatar_url ? <img src={form.avatar_url} alt="Foto do perfil" className="h-full w-full object-cover" /> : <img src={appPath("/vello-logo.png")} alt="Logo Vello" className="h-10 w-10 object-contain" />}
           </span>
           <span>
             <b className="block font-body text-sm">Foto de perfil</b>
-            <span className="mt-1 block font-body text-xs text-ash">JPG, PNG ou WebP · até 5 MB</span>
+            <span className="mt-1 block font-body text-xs text-ash">Use uma foto sua, da equipe ou da fachada. JPG, PNG ou WebP · até 5 MB.</span>
             <input ref={avatarInput} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(event) => changeAvatar(event.target.files?.[0])} />
             <button type="button" disabled={avatarSaving} onClick={() => avatarInput.current?.click()} className="mt-3 inline-flex items-center gap-1.5 font-body text-sm font-semibold underline underline-offset-4 disabled:opacity-50"><ImagePlus size={15} /> {avatarSaving ? "Enviando..." : form.avatar_url ? "Trocar foto" : "Adicionar foto"}</button>
           </span>
         </div>
+        <div className="mb-7 rounded-2xl bg-[#E8F1F8] p-4">
+          <p className="font-body text-sm font-semibold text-ink">Qual é o seu negócio?</p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {([['autonoma', 'Profissional autônoma', 'Você atende por conta própria.'], ['clinica', 'Clínica ou espaço', 'Você representa um local de atendimento.']] as const).map(([value, label, detail]) => <button key={value} type="button" onClick={() => setForm((current) => ({ ...current, business_type: value }))} className={`rounded-xl border p-3 text-left transition ${form.business_type === value || (!form.business_type && value === 'autonoma') ? 'border-ink bg-white ring-1 ring-ink' : 'border-transparent bg-white/60 hover:border-[#7EAFD0]'}`}><b className="block font-body text-sm">{label}</b><span className="mt-1 block font-body text-xs text-ash">{detail}</span></button>)}
+          </div>
+        </div>
         <div className="grid gap-5 sm:grid-cols-2">
           <Field
-            label="Nome profissional"
+            label="Nome da estética ou profissional"
             value={form.professional_name || ""}
             onChange={(v) => setForm((x) => ({ ...x, professional_name: v }))}
-          />
-          <Field
-            label="CRECI"
-            value={form.creci || ""}
-            onChange={(v) => setForm((x) => ({ ...x, creci: v }))}
           />
           <Field
             label="WhatsApp"
@@ -2259,6 +2263,16 @@ function ProfilePage({
             label="Cidade"
             value={form.city || ""}
             onChange={(v) => setForm((x) => ({ ...x, city: v }))}
+          />
+          <Field
+            label="Estado"
+            value={form.state || ""}
+            onChange={(v) => setForm((x) => ({ ...x, state: v.toUpperCase().slice(0, 2) }))}
+          />
+          <Field
+            label="Bairro"
+            value={form.neighborhood || ""}
+            onChange={(v) => setForm((x) => ({ ...x, neighborhood: v }))}
           />
           <Field
             label="Instagram"
@@ -2272,22 +2286,26 @@ function ProfilePage({
           />
         </div>
         <label className="mt-5 block">
+          <span className="mb-3 block font-body text-[11px] font-medium uppercase tracking-[.08em] text-ash">Endereço do atendimento</span>
+          <input value={form.address || ""} onChange={(event) => setForm((current) => ({ ...current, address: event.target.value }))} placeholder="Rua, número, complemento" className="h-11 w-full rounded-xl border border-line px-3 font-body text-sm outline-none transition focus:border-ink" />
+          <span className="mt-2 block font-body text-xs text-ash">O endereço completo só aparece na página pública se você autorizar abaixo.</span>
+        </label>
+        <label className="mt-5 block">
           <span className="mb-3 block font-display text-xs font-extrabold uppercase">
-            Bio curta
+            Sobre seu atendimento
           </span>
           <textarea
             value={form.bio || ""}
             onChange={(e) => setForm((x) => ({ ...x, bio: e.target.value }))}
             className="min-h-28 w-full rounded-xl border border-line p-3 font-body text-sm"
-            placeholder="Especialista em imóveis residenciais..."
+            placeholder="Conte brevemente sobre sua especialidade e sua forma de atender..."
           />
         </label>
         <div className="mt-6 border-t border-line pt-6">
-            <p className="font-display text-lg font-semibold">
-              Exibição do catálogo
-            </p>
-            <label className="mt-4 flex justify-between font-body text-sm">
-              Mostrar Instagram
+            <p className="font-display text-lg font-semibold">O que aparece na sua página</p>
+            <p className="mt-1 font-body text-sm text-ash">Você mantém o controle sobre as informações visíveis para clientes.</p>
+            <label className="mt-5 flex items-center justify-between gap-4 rounded-xl border border-line px-4 py-3 font-body text-sm">
+              <span><b className="block">Mostrar Instagram</b><small className="mt-1 block text-xs text-ash">Exibe um atalho para seu perfil.</small></span>
               <input
                 type="checkbox"
                 checked={form.show_instagram}
@@ -2296,35 +2314,22 @@ function ProfilePage({
                 }
               />
             </label>
-            <label className="mt-4 flex justify-between font-body text-sm">
-              Mostrar CRECI
+            <label className="mt-3 flex items-center justify-between gap-4 rounded-xl border border-line px-4 py-3 font-body text-sm">
+              <span><b className="block">Mostrar endereço completo</b><small className="mt-1 block text-xs text-ash">Se desligado, mostramos apenas cidade e bairro.</small></span>
               <input
                 type="checkbox"
-                checked={form.show_creci}
+                checked={form.show_address ?? false}
                 onChange={(e) =>
-                  setForm((x) => ({ ...x, show_creci: e.target.checked }))
+                  setForm((x) => ({ ...x, show_address: e.target.checked }))
                 }
               />
             </label>
-            <label className="mt-4 flex justify-between font-body text-sm">
-              Mostrar imóveis vendidos/alugados
-              <input
-                type="checkbox"
-                checked={form.show_completed_properties}
-                onChange={(e) =>
-                  setForm((x) => ({
-                    ...x,
-                    show_completed_properties: e.target.checked,
-                  }))
-                }
-              />
-            </label>
-            <div className="mt-8 rounded-xl bg-cream p-4 font-body text-sm text-ash">
-              Plano atual: <b className="text-ink">Acesso de teste</b>
+            <div className="mt-5 rounded-xl bg-cream p-4 font-body text-sm text-ash">
+              Os horários, confirmação e disponibilidade de agendamento ficam na <a href={appPath("/dashboard/agenda")} className="font-semibold text-ink underline underline-offset-4">Agenda</a>.
             </div>
         </div>
-        <Button onClick={save} className="mt-7">
-          Salvar alterações
+        <Button onClick={save} disabled={saving} className="mt-7">
+          {saving ? "Salvando..." : "Salvar alterações"}
         </Button>
         <section className="mt-9 border-t border-line pt-7">
           <p className="font-display text-lg font-semibold">Segurança</p>
