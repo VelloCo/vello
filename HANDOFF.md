@@ -10,8 +10,9 @@ serviços e agenda. Também foram ajustadas a tela de carregamento e a aba de
 perfil: esta agora reúne identidade da estética, contato, endereço e controles
 de visibilidade, sem campos de CRECI/imóveis. A Agenda foi reorganizada para
 priorizar atendimentos, com resumo diário, filtros, histórico de 30 dias e
-ações de status/WhatsApp. Antes disso, Claude Code iniciou a mudança da Vello
-de corretores para estéticas em 2026-09-18.
+ações de status/WhatsApp. O catálogo do painel e a página pública pelo link
+da estética agora exibem serviços, em vez de imóveis. Antes disso, Claude Code
+iniciou a mudança da Vello de corretores para estéticas em 2026-09-18.
 
 ## Estado atual
 
@@ -115,7 +116,8 @@ Etapas (trabalho direto na `main` desde 2026-09-18; a branch
    status de agendamentos. Ainda não há tela para bloqueios manuais de agenda
    (`schedule_blocks`) nem criação manual de agendamento pelo painel.
 3. [ ] Onboarding (tipo de negócio, endereço, primeiro serviço, horários) e
-   página pública com fluxo de agendamento.
+   fluxo de agendamento público (a página pública de serviços já foi criada;
+   falta a escolha de data/horário e a reserva pelo próprio site).
 4. [ ] Landing, SEO, textos, Termos/Privacidade, imagem de compartilhamento
    (og) e uso do azul da marca em destaques. (Logo e tokens de cor: feito.)
 5. [ ] Migration de limpeza (remover imóveis/seleções e colunas CRECI),

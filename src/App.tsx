@@ -5,6 +5,7 @@ import { LegalPage, NotFoundPage, SupportPage } from "./components/LaunchPages";
 import { AuthPage } from "./components/auth/AuthPage";
 import { Onboarding } from "./components/onboarding/Onboarding";
 import { PublicCatalog } from "./components/catalog/PublicCatalog";
+import { PublicServiceCatalog } from "./components/catalog/PublicServiceCatalog";
 import { PublicSelection } from "./components/catalog/PublicSelection";
 import { DashboardApp } from "./components/dashboard/DashboardApp";
 import { LoadingScreen } from "./components/LoadingScreen";
@@ -53,7 +54,7 @@ export default function App() {
       : path === "/termos" ? ["Termos de Uso | Vello", "Termos de uso da Vello."]
       : path === "/privacidade" ? ["Política de Privacidade | Vello", "Política de privacidade da Vello."]
       : path === "/suporte" ? ["Suporte | Vello", "Fale com o suporte da Vello."]
-      : ["Catálogo | Vello", "Conheça os imóveis disponíveis neste catálogo Vello."];
+      : ["Serviços | Vello", "Conheça os serviços disponíveis nesta estética Vello."];
     document.title = page[0];
     document.querySelector('meta[name="description"]')?.setAttribute("content", page[1]);
     const robots = document.querySelector('meta[name="robots"]');
@@ -136,6 +137,8 @@ export default function App() {
     return <PublicSelection slug={path.replace("/selecao/", "")} />;
   const publicRoute = path.match(/^\/([^/]+)(?:\/imovel\/([^/]+))?$/);
   if (publicRoute)
-    return <PublicCatalog slug={publicRoute[1]} propertySlug={publicRoute[2]} />;
+    return publicRoute[2]
+      ? <PublicCatalog slug={publicRoute[1]} propertySlug={publicRoute[2]} />
+      : <PublicServiceCatalog slug={publicRoute[1]} />;
   return path === "/" ? <Landing /> : <NotFoundPage />;
 }

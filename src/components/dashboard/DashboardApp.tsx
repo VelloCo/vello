@@ -2081,65 +2081,53 @@ function SelectionEditor({
 }
 function CatalogPage({
   profile,
-  properties,
+  services,
   toast,
 }: {
   profile: Profile;
-  properties: Property[];
+  services: Service[];
   toast: (s: string) => void;
 }) {
   const link = publicCatalogUrl(profile.slug);
+  const published = services.filter((service) => service.publication_status === "published");
   return (
     <>
       <header>
-        <h1 className="font-display text-4xl font-semibold">Meu catálogo</h1>
+        <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">Página pública</p>
+        <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">Meus serviços</h1>
         <p className="mt-2 font-body text-ash">
-          Seu espaço público para apresentar imóveis com clareza.
+          Uma página pronta para apresentar seus cuidados e receber novos contatos.
         </p>
       </header>
       <div className="mt-9 grid gap-7 xl:grid-cols-[1fr_360px]">
         <section className="overflow-hidden rounded-[26px] border border-line bg-white">
-          <div className="bg-ink p-7 text-paper">
+          <div className="bg-ink p-7 text-paper sm:p-8">
             <p className="font-mono text-[10px] uppercase tracking-wide text-paper/60">
-              Prévia do catálogo
+              Prévia da página pública
             </p>
-            <p className="mt-3 font-display text-3xl">
+            <p className="mt-3 font-display text-3xl tracking-[-.04em]">
               {profile.professional_name}
             </p>
             <p className="mt-1 font-body text-sm text-paper/70">
-              {profile.city}, {profile.state}
+              {[profile.neighborhood, profile.city, profile.state].filter(Boolean).join(" · ") || "Sua localização"}
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-3 p-4">
-            {properties
-              .filter((p) => p.publication_status === "published")
-              .slice(0, 4)
-              .map((p) => (
-                <div key={p.id} className="overflow-hidden rounded-xl bg-cream">
-                  <div className="aspect-[4/3]">
-                    {cover(p) && (
-                      <img
-                        src={cover(p)}
-                        className="h-full w-full object-cover"
-                      />
-                    )}
-                  </div>
-                  <p className="truncate p-2 font-body text-xs">{p.title}</p>
-                </div>
-              ))}
+          <div className="grid grid-cols-2 gap-3 p-4 sm:p-5">
+            {published.slice(0, 4).map((service) => <div key={service.id} className="overflow-hidden rounded-2xl border border-line bg-white"><div className="aspect-[4/3] bg-[#E8F1F8]">{serviceCover(service) && <img src={serviceCover(service)} alt="" className="h-full w-full object-cover" />}</div><div className="p-3"><p className="truncate font-body text-xs font-semibold">{service.title}</p><p className="mt-1 font-body text-[11px] text-ash">{formatServicePrice(service)} · {service.duration_minutes} min</p></div></div>)}
+            {!published.length && <div className="col-span-2 rounded-2xl border border-dashed border-line bg-[#F7FAFC] p-8 text-center"><p className="font-display text-xl font-semibold">Seus serviços aparecerão aqui.</p><a href={appPath("/dashboard/servicos/novo")} className="mt-3 inline-flex font-body text-sm font-semibold underline underline-offset-4">Cadastrar primeiro serviço</a></div>}
           </div>
         </section>
         <aside className="rounded-[26px] border border-line bg-white p-6">
-          <p className="font-display text-2xl font-semibold">Seu catálogo</p>
+          <p className="font-display text-2xl font-semibold">Seu link público</p>
           <p className="mt-3 break-all font-mono text-sm text-ash">
             {publicCatalogLabel(profile.slug)}
           </p>
           <div className="mt-6 grid gap-3">
             <a
-              href={appPath("/dashboard/personalizar")}
+              href={appPath("/dashboard/servicos")}
               className="flex h-12 items-center justify-center gap-2 rounded-full bg-ink font-body text-sm font-semibold text-paper transition hover:scale-[1.01]"
             >
-              <Palette size={16} /> Personalizar catálogo
+              <Sparkles size={16} /> Gerenciar serviços
             </a>
             <a
               href={link}
@@ -2166,14 +2154,7 @@ function CatalogPage({
             </a>
           </div>
           <p className="mt-7 font-body text-sm text-ash">
-            {
-              properties.filter(
-                (p) =>
-                  p.status === "available" &&
-                  p.publication_status === "published",
-              ).length
-            }{" "}
-            imóveis disponíveis
+            {published.length} {published.length === 1 ? "serviço publicado" : "serviços publicados"}
           </p>
         </aside>
       </div>
@@ -2568,7 +2549,7 @@ export function DashboardApp({ user, route }: Props) {
     );
   } else if (route === "/dashboard/catalogo")
     page = (
-      <CatalogPage profile={profile} properties={properties} toast={say} />
+      <CatalogPage profile={profile} services={services} toast={say} />
     );
   else if (route === "/dashboard/personalizar")
     page = <CatalogCustomizationPage user={user} profile={profile} properties={properties} toast={say} />;
