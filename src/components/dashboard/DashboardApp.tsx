@@ -367,17 +367,12 @@ function NavItem({
   );
 }
 function MobileNav({ route }: { route: string }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const items = [nav[0], nav[1], nav[2], nav[3], nav[4], nav[5], nav[6]];
-  useEffect(() => {
-    scrollRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
-  }, [route]);
+  const items = [nav[0], nav[1], nav[2], nav[6]];
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 h-[74px] overflow-hidden border-t border-line bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-      <div ref={scrollRef} className="flex h-full snap-x snap-mandatory items-center gap-2 overflow-x-auto px-[calc(50%-32px)] [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {items.map((i) => <MobileItem key={i.href} item={i} active={i.href === "/dashboard" ? route === i.href : route.startsWith(i.href)} />)}
-      </div>
-      <a href={appPath("/dashboard/servicos/novo")} aria-label="Novo serviço" className="absolute left-1/2 top-0 grid h-14 w-14 -translate-x-1/2 -translate-y-5 place-items-center rounded-full bg-ink text-paper shadow-[0_10px_24px_rgba(18,40,58,.28)] transition hover:bg-[#245D85]"><Plus size={22} strokeWidth={2} /></a>
+    <nav className="fixed inset-x-0 bottom-0 z-40 grid h-[72px] grid-cols-5 items-center border-t border-line bg-white/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
+      {items.slice(0, 2).map((i) => <MobileItem key={i.href} item={i} active={i.href === "/dashboard" ? route === i.href : route.startsWith(i.href)} />)}
+      <a href={appPath("/dashboard/servicos/novo")} aria-label="Novo serviço" className="-mt-8 grid h-14 w-14 place-self-center place-items-center rounded-full bg-ink text-paper shadow-[0_10px_24px_rgba(18,40,58,.28)] transition hover:bg-[#245D85]"><Plus size={22} strokeWidth={2} /></a>
+      {items.slice(2).map((i) => <MobileItem key={i.href} item={i} active={route.startsWith(i.href)} />)}
     </nav>
   );
 }
@@ -393,7 +388,7 @@ function MobileItem({
     <a
       href={appPath(item.href)}
       aria-current={active ? "page" : undefined}
-      className={`grid w-16 shrink-0 snap-center justify-items-center gap-1 px-1 font-body text-[10px] leading-none transition duration-200 ${active ? "scale-105 text-ink" : "text-stone opacity-55"}`}
+      className={`grid w-full justify-items-center gap-1 px-1 font-body text-[10px] leading-none ${active ? "text-ink" : "text-stone"}`}
     >
       <Icon size={18} strokeWidth={1.9} />
       <span>{item.label}</span>
