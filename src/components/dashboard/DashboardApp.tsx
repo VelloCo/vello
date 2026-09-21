@@ -1470,40 +1470,14 @@ function ServiceEditor({
 }
 
 function AgendaPage({
-  user,
-  profile,
   appointments,
-  businessHours,
   refresh,
   toast,
 }: {
-  user: User;
-  profile: Profile;
   appointments: Appointment[];
-  businessHours: BusinessHour[];
   refresh: () => Promise<void>;
   toast: (s: string) => void;
 }) {
-  const [hours, setHours] = useState(() =>
-    weekdays.map((_, weekday) => {
-      const found = businessHours.find((hour) => hour.weekday === weekday);
-      return {
-        weekday,
-        enabled: Boolean(found),
-        start_time: found?.start_time?.slice(0, 5) || "09:00",
-        end_time: found?.end_time?.slice(0, 5) || "18:00",
-      };
-    }),
-  );
-  const [settings, setSettings] = useState({
-    booking_enabled: profile.booking_enabled ?? true,
-    booking_auto_confirm: profile.booking_auto_confirm ?? true,
-    booking_slot_minutes: String(profile.booking_slot_minutes || 30),
-    booking_min_notice_minutes: String(profile.booking_min_notice_minutes || 120),
-    booking_max_days_ahead: String(profile.booking_max_days_ahead || 60),
-  });
-  const [saving, setSaving] = useState(false);
-  const [agendaView, setAgendaView] = useState<"appointments" | "settings">("appointments");
   const [appointmentFilter, setAppointmentFilter] = useState<"upcoming" | "today" | "pending" | "history">("upcoming");
   const now = new Date();
   const calendarKey = (date: Date) => `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
@@ -1534,37 +1508,6 @@ function AgendaPage({
       toast("Não foi possível atualizar o agendamento.");
     }
   };
-  const save = async () => {
-    const selected = hours
-      .filter((hour) => hour.enabled)
-      .map((hour) => ({
-        weekday: hour.weekday,
-        start_time: hour.start_time,
-        end_time: hour.end_time,
-      }));
-    if (selected.some((hour) => hour.end_time <= hour.start_time)) {
-      toast("O horário final precisa ser maior que o inicial.");
-      return;
-    }
-    setSaving(true);
-    try {
-      await saveProfile(user.id, {
-        booking_enabled: settings.booking_enabled,
-        booking_auto_confirm: settings.booking_auto_confirm,
-        booking_slot_minutes: Number(settings.booking_slot_minutes),
-        booking_min_notice_minutes: Number(settings.booking_min_notice_minutes),
-        booking_max_days_ahead: Number(settings.booking_max_days_ahead),
-      });
-      await replaceBusinessHours(user.id, selected);
-      toast("Agenda salva");
-      await refresh();
-    } catch {
-      toast("Não foi possível salvar a agenda.");
-    } finally {
-      setSaving(false);
-    }
-  };
-
   return (
     <>
       <header className="flex flex-wrap items-end justify-between gap-4">
@@ -1575,10 +1518,6 @@ function AgendaPage({
             Veja quem vem hoje, confirme pendências e acompanhe cada atendimento.
           </p>
         </div>
-        {agendaView === "settings" && <Button onClick={save} disabled={saving}>
-          {saving ? <LoaderCircle className="animate-spin" size={16} /> : <Check size={16} />}
-          {saving ? "Salvando..." : "Salvar agenda"}
-        </Button>}
       </header>
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {[
@@ -1587,128 +1526,8 @@ function AgendaPage({
           ["Próximo", activeAppointments.find((appointment) => new Date(appointment.starts_at) >= now)?.starts_at ? appointmentTime(activeAppointments.find((appointment) => new Date(appointment.starts_at) >= now)!.starts_at) : "Livre", "seu próximo horário", "bg-ink text-paper"],
         ].map(([label, value, detail, tone]) => <div key={String(label)} className={`rounded-[20px] border border-line p-5 ${tone}`}><p className="font-mono text-[10px] uppercase tracking-[.14em] opacity-60">{label}</p><p className="mt-3 font-display text-3xl font-semibold tracking-[-.04em]">{value}</p><p className="mt-1 font-body text-xs opacity-65">{detail}</p></div>)}
       </section>
-      <nav className="mt-8 flex gap-2 border-b border-line" aria-label="Seções da agenda">
-        {([['appointments', 'Atendimentos'], ['settings', 'Disponibilidade']] as const).map(([value, label]) => <button key={value} type="button" onClick={() => setAgendaView(value)} className={`border-b-2 px-4 py-3 font-body text-sm font-semibold transition ${agendaView === value ? 'border-ink text-ink' : 'border-transparent text-ash hover:text-ink'}`}>{label}</button>)}
-      </nav>
-      <div className="mt-7 grid gap-7">
-        {agendaView === "settings" && <section className="rounded-[24px] border border-line bg-white p-5 sm:p-6">
-          <div>
-          <p className="font-display text-lg font-semibold">Horários de atendimento</p>
-          <p className="mt-1 font-body text-sm text-ash">Escolha os dias e intervalos em que clientes podem encontrar horários livres.</p>
-          <div className="mt-5 space-y-3">
-            {hours.map((hour, index) => (
-              <div
-                key={hour.weekday}
-                className="grid gap-3 rounded-2xl border border-line p-3 sm:grid-cols-[1fr_120px_120px]"
-              >
-                <label className="flex items-center gap-3 font-body text-sm font-semibold">
-                  <input
-                    type="checkbox"
-                    checked={hour.enabled}
-                    onChange={(event) =>
-                      setHours((current) =>
-                        current.map((item, itemIndex) =>
-                          itemIndex === index
-                            ? { ...item, enabled: event.target.checked }
-                            : item,
-                        ),
-                      )
-                    }
-                    className="h-4 w-4 accent-black"
-                  />
-                  {weekdays[hour.weekday]}
-                </label>
-                <input
-                  type="time"
-                  value={hour.start_time}
-                  disabled={!hour.enabled}
-                  onChange={(event) =>
-                    setHours((current) =>
-                      current.map((item, itemIndex) =>
-                        itemIndex === index
-                          ? { ...item, start_time: event.target.value }
-                          : item,
-                      ),
-                    )
-                  }
-                  className="h-11 rounded-xl border border-line px-3 font-body text-sm disabled:opacity-45"
-                />
-                <input
-                  type="time"
-                  value={hour.end_time}
-                  disabled={!hour.enabled}
-                  onChange={(event) =>
-                    setHours((current) =>
-                      current.map((item, itemIndex) =>
-                        itemIndex === index
-                          ? { ...item, end_time: event.target.value }
-                          : item,
-                      ),
-                    )
-                  }
-                  className="h-11 rounded-xl border border-line px-3 font-body text-sm disabled:opacity-45"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="mt-7 grid gap-4 sm:grid-cols-3">
-            <Field
-              label="Intervalo (minutos)"
-              type="number"
-              value={settings.booking_slot_minutes}
-              onChange={(value) =>
-                setSettings((current) => ({ ...current, booking_slot_minutes: value }))
-              }
-            />
-            <Field
-              label="Aviso mínimo (minutos)"
-              type="number"
-              value={settings.booking_min_notice_minutes}
-              onChange={(value) =>
-                setSettings((current) => ({ ...current, booking_min_notice_minutes: value }))
-              }
-            />
-            <Field
-              label="Agenda aberta (dias)"
-              type="number"
-              value={settings.booking_max_days_ahead}
-              onChange={(value) =>
-                setSettings((current) => ({ ...current, booking_max_days_ahead: value }))
-              }
-            />
-          </div>
-          <label className="mt-5 flex items-center justify-between rounded-2xl border border-line bg-cream/45 p-4 font-body text-sm">
-            <span><b className="block">Agendamento online</b><small className="mt-1 block text-xs text-ash">Permite reservas pela sua página pública.</small></span>
-            <input
-              type="checkbox"
-              checked={settings.booking_enabled}
-              onChange={(event) =>
-                setSettings((current) => ({
-                  ...current,
-                  booking_enabled: event.target.checked,
-                }))
-              }
-              className="h-4 w-4 accent-black"
-            />
-          </label>
-          <label className="mt-3 flex items-center justify-between rounded-2xl border border-line bg-cream/45 p-4 font-body text-sm">
-            <span><b className="block">Confirmar automaticamente</b><small className="mt-1 block text-xs text-ash">Caso desligado, cada reserva fica pendente até sua confirmação.</small></span>
-            <input
-              type="checkbox"
-              checked={settings.booking_auto_confirm}
-              onChange={(event) =>
-                setSettings((current) => ({
-                  ...current,
-                  booking_auto_confirm: event.target.checked,
-                }))
-              }
-              className="h-4 w-4 accent-black"
-            />
-          </label>
-          </div>
-        </section>}
-
-        {agendaView === "appointments" && <section className="rounded-[24px] border border-line bg-white p-5 shadow-[0_18px_45px_-38px_rgba(18,40,58,.28)] sm:p-6">
+      <div className="mt-7">
+        <section className="rounded-[24px] border border-line bg-white p-5 shadow-[0_18px_45px_-38px_rgba(18,40,58,.28)] sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="font-display text-2xl font-semibold tracking-[-.035em]">Agendamentos</p>
@@ -1776,7 +1595,7 @@ function AgendaPage({
               onAction={() => go("/dashboard/servicos")}
             />
           )}
-        </section>}
+        </section>
       </div>
     </>
   );
@@ -2171,10 +1990,14 @@ function CatalogPage({
 function ProfilePage({
   user,
   profile,
+  businessHours,
+  refresh,
   toast,
 }: {
   user: User;
   profile: Profile;
+  businessHours: BusinessHour[];
+  refresh: () => Promise<void>;
   toast: (s: string) => void;
 }) {
   const [form, setForm] = useState(profile);
@@ -2183,7 +2006,21 @@ function ProfilePage({
   const [saving, setSaving] = useState(false);
   const [passwordSaving, setPasswordSaving] = useState(false);
   const [avatarSaving, setAvatarSaving] = useState(false);
-  const [profileView, setProfileView] = useState<"identity" | "public" | "security">("identity");
+  const [profileView, setProfileView] = useState<"identity" | "public" | "availability" | "security">("identity");
+  const [hours, setHours] = useState(() =>
+    weekdays.map((_, weekday) => {
+      const found = businessHours.find((hour) => hour.weekday === weekday);
+      return { weekday, enabled: Boolean(found), start_time: found?.start_time?.slice(0, 5) || "09:00", end_time: found?.end_time?.slice(0, 5) || "18:00" };
+    }),
+  );
+  const [bookingSettings, setBookingSettings] = useState({
+    booking_enabled: profile.booking_enabled ?? true,
+    booking_auto_confirm: profile.booking_auto_confirm ?? true,
+    booking_slot_minutes: String(profile.booking_slot_minutes || 30),
+    booking_min_notice_minutes: String(profile.booking_min_notice_minutes || 120),
+    booking_max_days_ahead: String(profile.booking_max_days_ahead || 60),
+  });
+  const [availabilitySaving, setAvailabilitySaving] = useState(false);
   const avatarInput = useRef<HTMLInputElement>(null);
   const save = async () => {
     setSaving(true);
@@ -2231,6 +2068,30 @@ function ProfilePage({
       setAvatarSaving(false);
     }
   };
+  const saveAvailability = async () => {
+    const selected = hours.filter((hour) => hour.enabled).map((hour) => ({ weekday: hour.weekday, start_time: hour.start_time, end_time: hour.end_time }));
+    if (selected.some((hour) => hour.end_time <= hour.start_time)) {
+      toast("O horário final precisa ser maior que o inicial.");
+      return;
+    }
+    setAvailabilitySaving(true);
+    try {
+      await saveProfile(user.id, {
+        booking_enabled: bookingSettings.booking_enabled,
+        booking_auto_confirm: bookingSettings.booking_auto_confirm,
+        booking_slot_minutes: Number(bookingSettings.booking_slot_minutes),
+        booking_min_notice_minutes: Number(bookingSettings.booking_min_notice_minutes),
+        booking_max_days_ahead: Number(bookingSettings.booking_max_days_ahead),
+      });
+      await replaceBusinessHours(user.id, selected);
+      await refresh();
+      toast("Disponibilidade salva");
+    } catch {
+      toast("Não foi possível salvar a disponibilidade.");
+    } finally {
+      setAvailabilitySaving(false);
+    }
+  };
   return (
     <>
       <header>
@@ -2239,11 +2100,12 @@ function ProfilePage({
         <p className="mt-2 font-body text-ash">
           {profileView === "identity" && "Comece pelos dados que identificam seu atendimento."}
           {profileView === "public" && "Controle o que suas clientes encontram na sua página pública."}
+          {profileView === "availability" && "Defina quando e como clientes podem reservar um horário."}
           {profileView === "security" && "Mantenha o acesso à sua conta protegido."}
         </p>
       </header>
       <nav className="mt-8 flex gap-2 overflow-x-auto border-b border-line" aria-label="Seções do perfil">
-        {([['identity', 'Perfil'], ['public', 'Página pública'], ['security', 'Segurança']] as const).map(([value, label]) => (
+        {([['identity', 'Perfil'], ['public', 'Página pública'], ['availability', 'Disponibilidade'], ['security', 'Segurança']] as const).map(([value, label]) => (
           <button key={value} type="button" onClick={() => setProfileView(value)} className={`shrink-0 border-b-2 px-3 pb-3 font-body text-sm font-medium transition ${profileView === value ? "border-ink text-ink" : "border-transparent text-ash hover:text-ink"}`}>
             {label}
           </button>
@@ -2351,9 +2213,43 @@ function ProfilePage({
             </div>
         </div>
         </>}
-        {profileView !== "security" && <Button onClick={save} disabled={saving} className="mt-7">
+        {(profileView === "identity" || profileView === "public") && <Button onClick={save} disabled={saving} className="mt-7">
           {saving ? "Salvando..." : "Salvar alterações"}
         </Button>}
+        {profileView === "availability" && <section>
+          <p className="font-display text-xl font-semibold">Horários de atendimento</p>
+          <p className="mt-1 font-body text-sm text-ash">Escolha os dias e intervalos em que clientes podem encontrar horários livres.</p>
+          <div className="mt-5 space-y-3">
+            {hours.map((hour, index) => (
+              <div key={hour.weekday} className="grid gap-3 rounded-2xl border border-line p-3 sm:grid-cols-[1fr_120px_120px]">
+                <label className="flex items-center gap-3 font-body text-sm font-semibold">
+                  <input type="checkbox" checked={hour.enabled} onChange={(event) => setHours((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, enabled: event.target.checked } : item))} className="h-4 w-4 accent-black" />
+                  {weekdays[hour.weekday]}
+                </label>
+                <input type="time" value={hour.start_time} disabled={!hour.enabled} onChange={(event) => setHours((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, start_time: event.target.value } : item))} className="h-11 rounded-xl border border-line px-3 font-body text-sm disabled:opacity-45" />
+                <input type="time" value={hour.end_time} disabled={!hour.enabled} onChange={(event) => setHours((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, end_time: event.target.value } : item))} className="h-11 rounded-xl border border-line px-3 font-body text-sm disabled:opacity-45" />
+              </div>
+            ))}
+          </div>
+          <div className="mt-7 grid gap-4 sm:grid-cols-3">
+            <Field label="Intervalo (minutos)" type="number" value={bookingSettings.booking_slot_minutes} onChange={(value) => setBookingSettings((current) => ({ ...current, booking_slot_minutes: value }))} />
+            <Field label="Aviso mínimo (minutos)" type="number" value={bookingSettings.booking_min_notice_minutes} onChange={(value) => setBookingSettings((current) => ({ ...current, booking_min_notice_minutes: value }))} />
+            <Field label="Agenda aberta (dias)" type="number" value={bookingSettings.booking_max_days_ahead} onChange={(value) => setBookingSettings((current) => ({ ...current, booking_max_days_ahead: value }))} />
+          </div>
+          <div className="mt-6 border-t border-line pt-6">
+            <label className="flex items-center justify-between gap-4 rounded-2xl border border-line bg-cream/45 p-4 font-body text-sm">
+              <span><b className="block">Agendamento online</b><small className="mt-1 block text-xs text-ash">Permite reservas pela sua página pública.</small></span>
+              <input type="checkbox" checked={bookingSettings.booking_enabled} onChange={(event) => setBookingSettings((current) => ({ ...current, booking_enabled: event.target.checked }))} className="h-4 w-4 accent-black" />
+            </label>
+            <label className="mt-3 flex items-center justify-between gap-4 rounded-2xl border border-line bg-cream/45 p-4 font-body text-sm">
+              <span><b className="block">Confirmar automaticamente</b><small className="mt-1 block text-xs text-ash">Caso desligado, cada reserva fica pendente até sua confirmação.</small></span>
+              <input type="checkbox" checked={bookingSettings.booking_auto_confirm} onChange={(event) => setBookingSettings((current) => ({ ...current, booking_auto_confirm: event.target.checked }))} className="h-4 w-4 accent-black" />
+            </label>
+          </div>
+          <Button onClick={saveAvailability} disabled={availabilitySaving} className="mt-7">
+            {availabilitySaving ? "Salvando..." : "Salvar disponibilidade"}
+          </Button>
+        </section>}
         {profileView === "security" && <section>
           <p className="font-display text-lg font-semibold">Segurança</p>
           <p className="mt-1 font-body text-sm text-ash">Atualize a senha de acesso quando precisar.</p>
@@ -2520,10 +2416,7 @@ export function DashboardApp({ user, route }: Props) {
   } else if (route === "/dashboard/agenda")
     page = (
       <AgendaPage
-        user={user}
-        profile={profile}
         appointments={appointments}
-        businessHours={businessHours}
         refresh={refresh}
         toast={say}
       />
@@ -2575,8 +2468,8 @@ export function DashboardApp({ user, route }: Props) {
   else if (route === "/dashboard/personalizar")
     page = <CatalogCustomizationPage user={user} profile={profile} properties={properties} toast={say} />;
   else if (route === "/dashboard/perfil")
-    page = <ProfilePage user={user} profile={profile} toast={say} />;
-  else page = <ProfilePage user={user} profile={profile} toast={say} />;
+    page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} />;
+  else page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} />;
   return (
     <div className="min-h-screen bg-paper">
       <Sidebar profile={profile} route={route} />

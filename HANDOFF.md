@@ -5,8 +5,10 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 ## Última atualização
 
 2026-09-21 — Codex. A navegação interna da Agenda e do Perfil foi reconstruída
-para reduzir densidade: Agenda separa Atendimentos de Disponibilidade; Perfil
-separa identidade, página pública e segurança. Etapa 2 iniciada/concluída parcialmente: tipos e funções
+para reduzir densidade: a Agenda agora é exclusivamente operacional
+(atendimentos, filtros e ações); Perfil separa identidade, página pública,
+disponibilidade e segurança. Horários, regras de reserva e confirmação foram
+movidos para Perfil → Disponibilidade. Etapa 2 iniciada/concluída parcialmente: tipos e funções
 cliente para serviços/agenda, painel principal orientado a estéticas, telas de
 serviços e agenda. Também foram ajustadas a tela de carregamento e a aba de
 perfil: esta agora reúne identidade da estética, contato, endereço e controles
