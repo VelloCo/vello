@@ -4,7 +4,10 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
-2026-09-21 — Codex. A etapa de serviços do onboarding foi refinada com
+2026-09-21 — Codex. Início da aplicação dos princípios Apple na Vello:
+material translúcido acessível, tipografia com sizing óptico e resposta tátil
+mais clara nas ações; onboarding adotou a nova superfície e CTA com profundidade.
+A etapa de serviços do onboarding foi refinada com
 revelação progressiva: sugestões são a escolha principal, mostram contagem
 de itens selecionados e o formulário manual só abre por ação explícita.
 Onboarding agora permite pré-selecionar vários serviços

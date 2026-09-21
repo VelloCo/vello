@@ -119,7 +119,7 @@ function PrimaryButton({
   return (
     <button
       {...props}
-      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 font-body text-sm font-semibold text-paper transition hover:bg-[#245D85] disabled:cursor-not-allowed disabled:opacity-60"
+      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 font-body text-sm font-semibold text-paper shadow-[0_12px_24px_-14px_rgba(18,40,58,.72)] transition hover:bg-[#245D85] disabled:cursor-not-allowed disabled:opacity-60"
     >
       {children}
     </button>
@@ -355,7 +355,7 @@ export function Onboarding({ user }: { user: User }) {
             Sair e continuar depois
           </a>
         </header>
-        <section className="mt-10 rounded-[28px] border border-line bg-white p-5 shadow-[0_22px_70px_-48px_rgba(18,40,58,.34)] sm:p-9">
+        <section className="vello-material mt-10 rounded-[28px] p-5 shadow-[0_22px_70px_-48px_rgba(18,40,58,.34)] sm:p-9">
           <div className="flex items-center justify-between gap-5">
             <p className="font-mono text-[10px] uppercase tracking-[.15em] text-stone">
               Etapa {step} de 4
