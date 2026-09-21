@@ -298,7 +298,7 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
         ))}
         <div className="h-6" />
         {nav.slice(4).map((item) => (
-          <NavItem key={item.href} item={item} active={route === item.href} />
+          <NavItem key={item.href} item={item} active={route === item.href || (item.href === "/dashboard/perfil" && route.startsWith("/dashboard/perfil"))} />
         ))}
       </nav>
       <div className="relative mt-auto border-t border-line pt-4">
@@ -1979,6 +1979,7 @@ function ProfilePage({
   toast,
   initialView = "identity",
   settingsMode = false,
+  fixedView = false,
 }: {
   user: User;
   profile: Profile;
@@ -1987,6 +1988,7 @@ function ProfilePage({
   toast: (s: string) => void;
   initialView?: "identity" | "public" | "availability" | "security";
   settingsMode?: boolean;
+  fixedView?: boolean;
 }) {
   const [form, setForm] = useState(profile);
   const [newPassword, setNewPassword] = useState("");
@@ -2084,7 +2086,7 @@ function ProfilePage({
     <>
       <header>
         <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">Sua estética</p>
-        <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">{settingsMode ? "Configurações" : "Seu perfil"}</h1>
+        <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">{settingsMode ? "Configurações" : profileView === "public" ? "Página pública" : "Perfil da estética"}</h1>
         <p className="mt-2 font-body text-ash">
           {profileView === "identity" && "Comece pelos dados que identificam seu atendimento."}
           {profileView === "public" && "Controle o que suas clientes encontram na sua página pública."}
@@ -2092,13 +2094,13 @@ function ProfilePage({
           {profileView === "security" && "Mantenha o acesso à sua conta protegido."}
         </p>
       </header>
-      <nav className="mt-8 flex gap-2 overflow-x-auto border-b border-line" aria-label={settingsMode ? "Seções de configurações" : "Seções do perfil"}>
+      {!fixedView && <nav className="mt-8 flex gap-2 overflow-x-auto border-b border-line" aria-label={settingsMode ? "Seções de configurações" : "Seções do perfil"}>
         {(settingsMode ? ([['availability', 'Disponibilidade'], ['security', 'Segurança']] as const) : ([['identity', 'Perfil'], ['public', 'Página pública']] as const)).map(([value, label]) => (
           <button key={value} type="button" onClick={() => setProfileView(value)} className={`shrink-0 border-b-2 px-3 pb-3 font-body text-sm font-medium transition ${profileView === value ? "border-ink text-ink" : "border-transparent text-ash hover:text-ink"}`}>
             {label}
           </button>
         ))}
-      </nav>
+      </nav>}
       <section className="mt-7 max-w-3xl rounded-[24px] border border-line bg-white p-5 sm:p-7">
         {profileView === "identity" && <>
         <div className="flex items-center gap-4 border-b border-line pb-7">
@@ -2204,7 +2206,9 @@ function ProfilePage({
         {(profileView === "identity" || profileView === "public") && <Button onClick={save} disabled={saving} className="mt-7">
           {saving ? "Salvando..." : "Salvar alterações"}
         </Button>}
+        {fixedView && !settingsMode && profileView === "identity" && <a href={appPath("/dashboard/perfil/pagina")} className="mt-7 flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"><span><b className="block font-body text-sm">Página pública</b><span className="mt-1 block font-body text-xs text-ash">Edite o link, localização, apresentação e o que as clientes veem.</span></span><PencilLine size={18} className="shrink-0 text-ash" /></a>}
         {profileView === "availability" && <section>
+          {settingsMode && <a href={appPath("/dashboard/perfil")} className="mb-7 flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"><span><b className="block font-body text-sm">Perfil da estética</b><span className="mt-1 block font-body text-xs text-ash">Nome, foto, WhatsApp e página pública.</span></span><PencilLine size={18} className="shrink-0 text-ash" /></a>}
           <p className="font-display text-xl font-semibold">Horários de atendimento</p>
           <p className="mt-1 font-body text-sm text-ash">Escolha os dias e intervalos em que clientes podem encontrar horários livres.</p>
           <div className="mt-5 space-y-3">
@@ -2453,7 +2457,9 @@ export function DashboardApp({ user, route }: Props) {
   else if (route === "/dashboard/personalizar")
     page = <CatalogCustomizationPage user={user} profile={profile} properties={properties} toast={say} />;
   else if (route === "/dashboard/perfil")
-    page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} />;
+    page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} fixedView />;
+  else if (route === "/dashboard/perfil/pagina")
+    page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} initialView="public" fixedView />;
   else if (route === "/dashboard/configuracoes")
     page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} initialView="availability" settingsMode />;
   else page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} />;

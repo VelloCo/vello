@@ -16,6 +16,10 @@ Em 2026-09-21, Perfil foi limitado a identidade e página pública; disponibilid
 e segurança foram movidas para `/dashboard/configuracoes`. A barra móvel agora
 tem cinco destinos fixos (Início, Serviços, Agenda, Catálogo e Configurações),
 sem botão central, para comportar a evolução das categorias.
+Em seguida, Perfil foi separado em duas páginas simples: dados da estética em
+`/dashboard/perfil` e conteúdo visível para clientes em
+`/dashboard/perfil/pagina`, sem abas horizontais no celular. Configurações
+mantém um atalho para o Perfil da estética.
 cliente para serviços/agenda, painel principal orientado a estéticas, telas de
 serviços e agenda. Também foram ajustadas a tela de carregamento e a aba de
 perfil: esta agora reúne identidade da estética, contato, endereço e controles
