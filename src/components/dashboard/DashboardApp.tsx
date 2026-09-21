@@ -1503,6 +1503,7 @@ function AgendaPage({
     booking_max_days_ahead: String(profile.booking_max_days_ahead || 60),
   });
   const [saving, setSaving] = useState(false);
+  const [agendaView, setAgendaView] = useState<"appointments" | "settings">("appointments");
   const [appointmentFilter, setAppointmentFilter] = useState<"upcoming" | "today" | "pending" | "history">("upcoming");
   const now = new Date();
   const calendarKey = (date: Date) => `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
@@ -1574,10 +1575,10 @@ function AgendaPage({
             Veja quem vem hoje, confirme pendências e acompanhe cada atendimento.
           </p>
         </div>
-        <Button onClick={save} disabled={saving}>
+        {agendaView === "settings" && <Button onClick={save} disabled={saving}>
           {saving ? <LoaderCircle className="animate-spin" size={16} /> : <Check size={16} />}
           {saving ? "Salvando..." : "Salvar agenda"}
-        </Button>
+        </Button>}
       </header>
       <section className="mt-8 grid gap-3 sm:grid-cols-3">
         {[
@@ -1586,9 +1587,14 @@ function AgendaPage({
           ["Próximo", activeAppointments.find((appointment) => new Date(appointment.starts_at) >= now)?.starts_at ? appointmentTime(activeAppointments.find((appointment) => new Date(appointment.starts_at) >= now)!.starts_at) : "Livre", "seu próximo horário", "bg-ink text-paper"],
         ].map(([label, value, detail, tone]) => <div key={String(label)} className={`rounded-[20px] border border-line p-5 ${tone}`}><p className="font-mono text-[10px] uppercase tracking-[.14em] opacity-60">{label}</p><p className="mt-3 font-display text-3xl font-semibold tracking-[-.04em]">{value}</p><p className="mt-1 font-body text-xs opacity-65">{detail}</p></div>)}
       </section>
-      <div className="mt-7 grid gap-7 xl:grid-cols-[.82fr_1.18fr]">
-        <section className="order-2 rounded-[24px] border border-line bg-white p-5 sm:p-6">
-          <p className="font-display text-xl font-semibold">Horários de atendimento</p>
+      <nav className="mt-8 flex gap-2 border-b border-line" aria-label="Seções da agenda">
+        {([['appointments', 'Atendimentos'], ['settings', 'Disponibilidade']] as const).map(([value, label]) => <button key={value} type="button" onClick={() => setAgendaView(value)} className={`border-b-2 px-4 py-3 font-body text-sm font-semibold transition ${agendaView === value ? 'border-ink text-ink' : 'border-transparent text-ash hover:text-ink'}`}>{label}</button>)}
+      </nav>
+      <div className="mt-7 grid gap-7">
+        {agendaView === "settings" && <section className="rounded-[24px] border border-line bg-white p-5 sm:p-6">
+          <div>
+          <p className="font-display text-lg font-semibold">Horários de atendimento</p>
+          <p className="mt-1 font-body text-sm text-ash">Escolha os dias e intervalos em que clientes podem encontrar horários livres.</p>
           <div className="mt-5 space-y-3">
             {hours.map((hour, index) => (
               <div
@@ -1647,7 +1653,7 @@ function AgendaPage({
           </div>
           <div className="mt-7 grid gap-4 sm:grid-cols-3">
             <Field
-              label="Intervalo dos slots"
+              label="Intervalo (minutos)"
               type="number"
               value={settings.booking_slot_minutes}
               onChange={(value) =>
@@ -1655,7 +1661,7 @@ function AgendaPage({
               }
             />
             <Field
-              label="Antecedência mínima"
+              label="Aviso mínimo (minutos)"
               type="number"
               value={settings.booking_min_notice_minutes}
               onChange={(value) =>
@@ -1663,7 +1669,7 @@ function AgendaPage({
               }
             />
             <Field
-              label="Dias à frente"
+              label="Agenda aberta (dias)"
               type="number"
               value={settings.booking_max_days_ahead}
               onChange={(value) =>
@@ -1672,7 +1678,7 @@ function AgendaPage({
             />
           </div>
           <label className="mt-5 flex items-center justify-between rounded-2xl border border-line bg-cream/45 p-4 font-body text-sm">
-            Agendamento online ativo
+            <span><b className="block">Agendamento online</b><small className="mt-1 block text-xs text-ash">Permite reservas pela sua página pública.</small></span>
             <input
               type="checkbox"
               checked={settings.booking_enabled}
@@ -1686,7 +1692,7 @@ function AgendaPage({
             />
           </label>
           <label className="mt-3 flex items-center justify-between rounded-2xl border border-line bg-cream/45 p-4 font-body text-sm">
-            Confirmar automaticamente
+            <span><b className="block">Confirmar automaticamente</b><small className="mt-1 block text-xs text-ash">Caso desligado, cada reserva fica pendente até sua confirmação.</small></span>
             <input
               type="checkbox"
               checked={settings.booking_auto_confirm}
@@ -1699,9 +1705,10 @@ function AgendaPage({
               className="h-4 w-4 accent-black"
             />
           </label>
-        </section>
+          </div>
+        </section>}
 
-        <section className="order-1 rounded-[24px] border border-line bg-white p-5 shadow-[0_18px_45px_-38px_rgba(18,40,58,.28)] sm:p-6">
+        {agendaView === "appointments" && <section className="rounded-[24px] border border-line bg-white p-5 shadow-[0_18px_45px_-38px_rgba(18,40,58,.28)] sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="font-display text-2xl font-semibold tracking-[-.035em]">Agendamentos</p>
@@ -1769,7 +1776,7 @@ function AgendaPage({
               onAction={() => go("/dashboard/servicos")}
             />
           )}
-        </section>
+        </section>}
       </div>
     </>
   );
@@ -2176,6 +2183,7 @@ function ProfilePage({
   const [saving, setSaving] = useState(false);
   const [passwordSaving, setPasswordSaving] = useState(false);
   const [avatarSaving, setAvatarSaving] = useState(false);
+  const [profileView, setProfileView] = useState<"identity" | "public" | "security">("identity");
   const avatarInput = useRef<HTMLInputElement>(null);
   const save = async () => {
     setSaving(true);
@@ -2227,13 +2235,23 @@ function ProfilePage({
     <>
       <header>
         <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">Sua estética</p>
-        <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">Perfil público</h1>
+        <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">Seu perfil</h1>
         <p className="mt-2 font-body text-ash">
-          Defina como sua marca, contato e localização aparecem para suas clientes.
+          {profileView === "identity" && "Comece pelos dados que identificam seu atendimento."}
+          {profileView === "public" && "Controle o que suas clientes encontram na sua página pública."}
+          {profileView === "security" && "Mantenha o acesso à sua conta protegido."}
         </p>
       </header>
-      <section className="mt-9 max-w-3xl rounded-[24px] border border-line bg-white p-5 sm:p-7">
-        <div className="mb-7 flex items-center gap-4 border-b border-line pb-7">
+      <nav className="mt-8 flex gap-2 overflow-x-auto border-b border-line" aria-label="Seções do perfil">
+        {([['identity', 'Perfil'], ['public', 'Página pública'], ['security', 'Segurança']] as const).map(([value, label]) => (
+          <button key={value} type="button" onClick={() => setProfileView(value)} className={`shrink-0 border-b-2 px-3 pb-3 font-body text-sm font-medium transition ${profileView === value ? "border-ink text-ink" : "border-transparent text-ash hover:text-ink"}`}>
+            {label}
+          </button>
+        ))}
+      </nav>
+      <section className="mt-7 max-w-3xl rounded-[24px] border border-line bg-white p-5 sm:p-7">
+        {profileView === "identity" && <>
+        <div className="flex items-center gap-4 border-b border-line pb-7">
           <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full bg-cream font-display text-xl">
             {form.avatar_url ? <img src={form.avatar_url} alt="Foto do perfil" className="h-full w-full object-cover" /> : <img src={appPath("/vello-logo.png")} alt="Logo Vello" className="h-10 w-10 object-contain" />}
           </span>
@@ -2250,43 +2268,45 @@ function ProfilePage({
             {([['autonoma', 'Profissional autônoma', 'Você atende por conta própria.'], ['clinica', 'Clínica ou espaço', 'Você representa um local de atendimento.']] as const).map(([value, label, detail]) => <button key={value} type="button" onClick={() => setForm((current) => ({ ...current, business_type: value }))} className={`rounded-xl border p-3 text-left transition ${form.business_type === value || (!form.business_type && value === 'autonoma') ? 'border-ink bg-white ring-1 ring-ink' : 'border-transparent bg-white/60 hover:border-[#7EAFD0]'}`}><b className="block font-body text-sm">{label}</b><span className="mt-1 block font-body text-xs text-ash">{detail}</span></button>)}
           </div>
         </div>
+        </>}
         <div className="grid gap-5 sm:grid-cols-2">
-          <Field
+          {profileView === "identity" && <Field
             label="Nome da estética ou profissional"
             value={form.professional_name || ""}
             onChange={(v) => setForm((x) => ({ ...x, professional_name: v }))}
-          />
-          <Field
+          />}
+          {profileView === "identity" && <Field
             label="WhatsApp"
             value={form.whatsapp || ""}
             onChange={(v) => setForm((x) => ({ ...x, whatsapp: v }))}
-          />
-          <Field
+          />}
+          {profileView === "public" && <Field
             label="Cidade"
             value={form.city || ""}
             onChange={(v) => setForm((x) => ({ ...x, city: v }))}
-          />
-          <Field
+          />}
+          {profileView === "public" && <Field
             label="Estado"
             value={form.state || ""}
             onChange={(v) => setForm((x) => ({ ...x, state: v.toUpperCase().slice(0, 2) }))}
-          />
-          <Field
+          />}
+          {profileView === "public" && <Field
             label="Bairro"
             value={form.neighborhood || ""}
             onChange={(v) => setForm((x) => ({ ...x, neighborhood: v }))}
-          />
-          <Field
+          />}
+          {profileView === "identity" && <Field
             label="Instagram"
             value={form.instagram || ""}
             onChange={(v) => setForm((x) => ({ ...x, instagram: v }))}
-          />
-          <Field
+          />}
+          {profileView === "public" && <Field
             label="Link Vello"
             value={form.slug || ""}
             onChange={(v) => setForm((x) => ({ ...x, slug: slugify(v) }))}
-          />
+          />}
         </div>
+        {profileView === "public" && <>
         <label className="mt-5 block">
           <span className="mb-3 block font-body text-[11px] font-medium uppercase tracking-[.08em] text-ash">Endereço do atendimento</span>
           <input value={form.address || ""} onChange={(event) => setForm((current) => ({ ...current, address: event.target.value }))} placeholder="Rua, número, complemento" className="h-11 w-full rounded-xl border border-line px-3 font-body text-sm outline-none transition focus:border-ink" />
@@ -2327,13 +2347,14 @@ function ProfilePage({
               />
             </label>
             <div className="mt-5 rounded-xl bg-cream p-4 font-body text-sm text-ash">
-              Os horários, confirmação e disponibilidade de agendamento ficam na <a href={appPath("/dashboard/agenda")} className="font-semibold text-ink underline underline-offset-4">Agenda</a>.
+              Os horários, confirmação e disponibilidade de agendamento ficam na <a href={appPath("/dashboard/agenda")} className="font-semibold text-ink underline underline-offset-4">Agenda</a>. <a href={publicCatalogUrl(form.slug)} target="_blank" rel="noreferrer" className="ml-1 font-semibold text-ink underline underline-offset-4">Abrir minha página</a>.
             </div>
         </div>
-        <Button onClick={save} disabled={saving} className="mt-7">
+        </>}
+        {profileView !== "security" && <Button onClick={save} disabled={saving} className="mt-7">
           {saving ? "Salvando..." : "Salvar alterações"}
-        </Button>
-        <section className="mt-9 border-t border-line pt-7">
+        </Button>}
+        {profileView === "security" && <section>
           <p className="font-display text-lg font-semibold">Segurança</p>
           <p className="mt-1 font-body text-sm text-ash">Atualize a senha de acesso quando precisar.</p>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -2343,8 +2364,8 @@ function ProfilePage({
           <button type="button" disabled={passwordSaving || !newPassword} onClick={changePassword} className="mt-4 h-10 rounded-full border border-line px-4 font-body text-sm font-medium transition hover:border-ink disabled:cursor-not-allowed disabled:opacity-50">
             {passwordSaving ? "Atualizando..." : "Atualizar senha"}
           </button>
-        </section>
-        <button
+        </section>}
+        {profileView === "security" && <button
           onClick={async () => {
             await signOut();
             go("/login");
@@ -2352,7 +2373,7 @@ function ProfilePage({
           className="mt-8 flex h-11 w-full items-center justify-center gap-2 rounded-full border border-red-200 font-body text-sm font-medium text-red-700 md:hidden"
         >
           <LogOut size={16} /> Sair da conta
-        </button>
+        </button>}
       </section>
     </>
   );
