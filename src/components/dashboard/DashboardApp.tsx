@@ -100,22 +100,28 @@ const cover = (p: Property) =>
 const serviceCover = (service: Service) =>
   service.service_images?.find((image) => image.is_cover)?.image_url ||
   service.service_images?.[0]?.image_url;
-const serviceCoverPosition: Record<Service["category"], string> = {
-  facial: "0% 0%",
-  corporal: "50% 0%",
-  depilacao: "100% 0%",
-  sobrancelhas_cilios: "0% 50%",
-  unhas: "50% 50%",
-  cabelo: "100% 50%",
-  massagem: "0% 100%",
-  harmonizacao: "50% 100%",
-  outros: "100% 100%",
+const serviceCoverAsset: Record<Service["category"], string> = {
+  facial: "/service-covers/facial.jpg",
+  corporal: "/service-covers/corporal.jpg",
+  depilacao: "/service-covers/depilacao.jpg",
+  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios.jpg",
+  unhas: "/service-covers/unhas.jpg",
+  cabelo: "/service-covers/cabelo.jpg",
+  massagem: "/service-covers/massagem.jpg",
+  harmonizacao: "/vello-logo.png",
+  outros: "/vello-logo.png",
 };
-const serviceCoverStyle = (category: Service["category"]) => ({
-  backgroundImage: `url(${appPath("/service-category-covers.webp")})`,
-  backgroundPosition: serviceCoverPosition[category],
-  backgroundSize: "300% 300%",
-});
+const serviceCoverStyle = (category: Service["category"]) => {
+  const isBrandFallback =
+    category === "harmonizacao" || category === "outros";
+  return {
+    backgroundColor: "#E8F1F8",
+    backgroundImage: `url(${appPath(serviceCoverAsset[category])})`,
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: isBrandFallback ? "42%" : "cover",
+  };
+};
 const statusLabel: Record<Property["status"], string> = {
   available: "Disponível",
   reserved: "Reservado",

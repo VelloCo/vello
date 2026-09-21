@@ -49,22 +49,29 @@ const categories: Record<string, string> = {
   harmonizacao: "Harmonização",
   outros: "Outros",
 };
-const coverPositions: Record<string, string> = {
-  facial: "0% 0%",
-  corporal: "50% 0%",
-  depilacao: "100% 0%",
-  sobrancelhas_cilios: "0% 50%",
-  unhas: "50% 50%",
-  cabelo: "100% 50%",
-  massagem: "0% 100%",
-  harmonizacao: "50% 100%",
-  outros: "100% 100%",
+const serviceCoverAsset: Record<string, string> = {
+  facial: "/service-covers/facial.jpg",
+  corporal: "/service-covers/corporal.jpg",
+  depilacao: "/service-covers/depilacao.jpg",
+  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios.jpg",
+  unhas: "/service-covers/unhas.jpg",
+  cabelo: "/service-covers/cabelo.jpg",
+  massagem: "/service-covers/massagem.jpg",
+  harmonizacao: "/vello-logo.png",
+  outros: "/vello-logo.png",
 };
-const categoryCover = (category: string) => ({
-  backgroundImage: "url(" + appPath("/service-category-covers.webp") + ")",
-  backgroundPosition: coverPositions[category] || coverPositions.outros,
-  backgroundSize: "300% 300%",
-});
+const categoryCover = (category: string) => {
+  const isBrandFallback =
+    category === "harmonizacao" || category === "outros";
+  return {
+    backgroundColor: "#E8F1F8",
+    backgroundImage:
+      "url(" + appPath(serviceCoverAsset[category] || serviceCoverAsset.outros) + ")",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: isBrandFallback ? "42%" : "cover",
+  };
+};
 const localDate = (date: Date) =>
   date.getFullYear() +
   "-" +

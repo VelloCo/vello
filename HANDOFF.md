@@ -15,6 +15,11 @@ ela substitui a mascote antiga. Após escolher uma imagem, a profissional també
 pode removê-la e voltar ao estado padrão sem excluir arquivos do storage.
 O placeholder usa fundo azul-claro; fotos reais mantêm fundo neutro para não
 alterar a aparência da imagem enviada.
+Serviços sem foto agora usam capas independentes, em vez de recortes de um
+mosaico: foram geradas ilustrações cartunizadas minimalistas para facial,
+corporal, depilação, sobrancelhas/cílios, unhas, cabelo e massagem, usadas no
+painel e no catálogo público. Harmonização e Outros exibem o símbolo da Vello
+como fallback neutro até que as duas ilustrações específicas sejam geradas.
 O onboarding não apresenta mais a opção de desligar agendamentos online:
 eles são parte fixa da Vello e são salvos sempre ativos. Permanece apenas a
 escolha de confirmação automática ou manual dos pedidos.
