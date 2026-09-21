@@ -367,7 +367,7 @@ function NavItem({
   );
 }
 function MobileNav({ route }: { route: string }) {
-  const items = [nav[0], nav[1], nav[2], nav[6]];
+  const items = [nav[0], nav[1], nav[2], nav[5]];
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 grid h-[72px] grid-cols-5 items-center border-t border-line bg-white/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
       {items.slice(0, 2).map((i) => <MobileItem key={i.href} item={i} active={i.href === "/dashboard" ? route === i.href : route.startsWith(i.href)} />)}
@@ -2207,9 +2207,9 @@ function ProfilePage({
         {(profileView === "identity" || profileView === "public") && <Button onClick={save} disabled={saving} className="mt-7">
           {saving ? "Salvando..." : "Salvar alterações"}
         </Button>}
-        {fixedView && !settingsMode && profileView === "identity" && <a href={appPath("/dashboard/perfil/pagina")} className="mt-7 flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"><span><b className="block font-body text-sm">Página pública</b><span className="mt-1 block font-body text-xs text-ash">Edite o link, localização, apresentação e o que as clientes veem.</span></span><PencilLine size={18} className="shrink-0 text-ash" /></a>}
+        {fixedView && !settingsMode && profileView === "identity" && <div className="mt-7 grid gap-3 sm:grid-cols-2"><a href={appPath("/dashboard/perfil/pagina")} className="flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"><span><b className="block font-body text-sm">Página pública</b><span className="mt-1 block font-body text-xs text-ash">Edite o link, localização e apresentação.</span></span><PencilLine size={18} className="shrink-0 text-ash" /></a><a href={appPath("/dashboard/configuracoes")} className="flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"><span><b className="block font-body text-sm">Configurações</b><span className="mt-1 block font-body text-xs text-ash">Disponibilidade, reservas e segurança.</span></span><Settings2 size={18} className="shrink-0 text-ash" /></a></div>}
         {profileView === "availability" && <section>
-          {settingsMode && <div className="mb-7 grid gap-3 sm:grid-cols-2"><a href={appPath("/dashboard/perfil")} className="flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"><span><b className="block font-body text-sm">Perfil da estética</b><span className="mt-1 block font-body text-xs text-ash">Nome, foto e página pública.</span></span><PencilLine size={18} className="shrink-0 text-ash" /></a><a href={appPath("/dashboard/catalogo")} className="flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"><span><b className="block font-body text-sm">Meu catálogo</b><span className="mt-1 block font-body text-xs text-ash">Abra, copie ou compartilhe seu link.</span></span><ExternalLink size={18} className="shrink-0 text-ash" /></a></div>}
+          {settingsMode && <a href={appPath("/dashboard/catalogo")} className="mb-7 flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"><span><b className="block font-body text-sm">Meu catálogo</b><span className="mt-1 block font-body text-xs text-ash">Abra, copie ou compartilhe seu link.</span></span><ExternalLink size={18} className="shrink-0 text-ash" /></a>}
           <p className="font-display text-xl font-semibold">Horários de atendimento</p>
           <p className="mt-1 font-body text-sm text-ash">Escolha os dias e intervalos em que clientes podem encontrar horários livres.</p>
           <div className="mt-5 space-y-3">

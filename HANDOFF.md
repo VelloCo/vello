@@ -22,8 +22,9 @@ apresentar sobreposição visual. A barra móvel voltou à grade estável de qua
 atalhos alinhados e botão central de novo serviço.
 Em seguida, Perfil foi separado em duas páginas simples: dados da estética em
 `/dashboard/perfil` e conteúdo visível para clientes em
-`/dashboard/perfil/pagina`, sem abas horizontais no celular. Configurações
-mantém um atalho para o Perfil da estética.
+`/dashboard/perfil/pagina`, sem abas horizontais no celular. A distinção foi
+reforçada em 2026-09-21: a barra móvel abre Perfil, que contém somente um
+atalho para Configurações; Configurações não mostra mais conteúdo de perfil.
 cliente para serviços/agenda, painel principal orientado a estéticas, telas de
 serviços e agenda. Também foram ajustadas a tela de carregamento e a aba de
 perfil: esta agora reúne identidade da estética, contato, endereço e controles
