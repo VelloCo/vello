@@ -12,6 +12,10 @@ movidos para Perfil → Disponibilidade. Em seguida, a Vello passou a tratar
 agendamentos como sempre online: o editor de serviços não oferece mais essa
 opção, e o catálogo público abre escolha de data, horário e reserva dentro da
 plataforma, usando as RPCs públicas existentes. Etapa 2 iniciada/concluída parcialmente: tipos e funções
+Em 2026-09-21, Perfil foi limitado a identidade e página pública; disponibilidade
+e segurança foram movidas para `/dashboard/configuracoes`. A barra móvel agora
+tem cinco destinos fixos (Início, Serviços, Agenda, Catálogo e Configurações),
+sem botão central, para comportar a evolução das categorias.
 cliente para serviços/agenda, painel principal orientado a estéticas, telas de
 serviços e agenda. Também foram ajustadas a tela de carregamento e a aba de
 perfil: esta agora reúne identidade da estética, contato, endereço e controles

@@ -23,6 +23,7 @@ import {
   PencilLine,
   Plus,
   Search,
+  Settings2,
   Share2,
   Sparkles,
   Trash2,
@@ -68,6 +69,7 @@ const nav = [
   { href: "/dashboard/catalogo", label: "Meu catálogo", icon: ExternalLink },
   { href: "/dashboard/personalizar", label: "Personalizar catálogo", icon: Palette },
   { href: "/dashboard/perfil", label: "Perfil", icon: UserRound },
+  { href: "/dashboard/configuracoes", label: "Configurações", icon: Settings2 },
 ];
 const go = (href: string) => (window.location.href = appPath(href));
 const publicCatalogUrl = (slug?: string | null) =>
@@ -281,7 +283,7 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
         </span>
       </a>
       <nav className="mt-12 space-y-1">
-        {nav.slice(0, 5).map((item) => (
+        {nav.slice(0, 4).map((item) => (
           <NavItem
             key={item.href}
             item={item}
@@ -295,7 +297,7 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
           />
         ))}
         <div className="h-6" />
-        {nav.slice(5).map((item) => (
+        {nav.slice(4).map((item) => (
           <NavItem key={item.href} item={item} active={route === item.href} />
         ))}
       </nav>
@@ -365,21 +367,11 @@ function NavItem({
   );
 }
 function MobileNav({ route }: { route: string }) {
-  const items = [nav[0], nav[1], nav[2], nav[5]];
+  const items = [nav[0], nav[1], nav[2], nav[3], nav[6]];
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 flex h-[72px] items-center justify-around border-t border-line bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-      {items.slice(0, 2).map((i) => (
-        <MobileItem key={i.href} item={i} active={route.startsWith(i.href)} />
-      ))}
-      <a
-        href={appPath("/dashboard/servicos/novo")}
-        aria-label="Novo serviço"
-        className="-mt-8 grid h-14 w-14 place-items-center rounded-full bg-ink text-paper shadow-lg"
-      >
-        <Plus size={23} />
-      </a>
-      {items.slice(2).map((i) => (
-        <MobileItem key={i.href} item={i} active={route.startsWith(i.href)} />
+    <nav className="fixed inset-x-0 bottom-0 z-40 flex h-[68px] items-center justify-around border-t border-line bg-white/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
+      {items.map((i) => (
+        <MobileItem key={i.href} item={i} active={i.href === "/dashboard" ? route === i.href : route.startsWith(i.href)} />
       ))}
     </nav>
   );
@@ -1985,12 +1977,16 @@ function ProfilePage({
   businessHours,
   refresh,
   toast,
+  initialView = "identity",
+  settingsMode = false,
 }: {
   user: User;
   profile: Profile;
   businessHours: BusinessHour[];
   refresh: () => Promise<void>;
   toast: (s: string) => void;
+  initialView?: "identity" | "public" | "availability" | "security";
+  settingsMode?: boolean;
 }) {
   const [form, setForm] = useState(profile);
   const [newPassword, setNewPassword] = useState("");
@@ -1998,7 +1994,7 @@ function ProfilePage({
   const [saving, setSaving] = useState(false);
   const [passwordSaving, setPasswordSaving] = useState(false);
   const [avatarSaving, setAvatarSaving] = useState(false);
-  const [profileView, setProfileView] = useState<"identity" | "public" | "availability" | "security">("identity");
+  const [profileView, setProfileView] = useState<"identity" | "public" | "availability" | "security">(initialView);
   const [hours, setHours] = useState(() =>
     weekdays.map((_, weekday) => {
       const found = businessHours.find((hour) => hour.weekday === weekday);
@@ -2088,7 +2084,7 @@ function ProfilePage({
     <>
       <header>
         <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">Sua estética</p>
-        <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">Seu perfil</h1>
+        <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">{settingsMode ? "Configurações" : "Seu perfil"}</h1>
         <p className="mt-2 font-body text-ash">
           {profileView === "identity" && "Comece pelos dados que identificam seu atendimento."}
           {profileView === "public" && "Controle o que suas clientes encontram na sua página pública."}
@@ -2096,8 +2092,8 @@ function ProfilePage({
           {profileView === "security" && "Mantenha o acesso à sua conta protegido."}
         </p>
       </header>
-      <nav className="mt-8 flex gap-2 overflow-x-auto border-b border-line" aria-label="Seções do perfil">
-        {([['identity', 'Perfil'], ['public', 'Página pública'], ['availability', 'Disponibilidade'], ['security', 'Segurança']] as const).map(([value, label]) => (
+      <nav className="mt-8 flex gap-2 overflow-x-auto border-b border-line" aria-label={settingsMode ? "Seções de configurações" : "Seções do perfil"}>
+        {(settingsMode ? ([['availability', 'Disponibilidade'], ['security', 'Segurança']] as const) : ([['identity', 'Perfil'], ['public', 'Página pública']] as const)).map(([value, label]) => (
           <button key={value} type="button" onClick={() => setProfileView(value)} className={`shrink-0 border-b-2 px-3 pb-3 font-body text-sm font-medium transition ${profileView === value ? "border-ink text-ink" : "border-transparent text-ash hover:text-ink"}`}>
             {label}
           </button>
@@ -2458,6 +2454,8 @@ export function DashboardApp({ user, route }: Props) {
     page = <CatalogCustomizationPage user={user} profile={profile} properties={properties} toast={say} />;
   else if (route === "/dashboard/perfil")
     page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} />;
+  else if (route === "/dashboard/configuracoes")
+    page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} initialView="availability" settingsMode />;
   else page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} />;
   return (
     <div className="min-h-screen bg-paper">
