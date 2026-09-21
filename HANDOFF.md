@@ -4,7 +4,10 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
-2026-09-21 — Codex. Onboarding agora permite pré-selecionar vários serviços
+2026-09-21 — Codex. A etapa de serviços do onboarding foi refinada com
+revelação progressiva: sugestões são a escolha principal, mostram contagem
+de itens selecionados e o formulário manual só abre por ação explícita.
+Onboarding agora permite pré-selecionar vários serviços
 sugeridos, que são criados publicados (sob consulta) e podem ser completados
 no painel. O catálogo público passou a respeitar os dois estilos existentes:
 Editorial (grade) e Lista (foto lateral e leitura rápida). A Agenda foi simplificada para priorizar decisões:

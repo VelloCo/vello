@@ -146,6 +146,7 @@ export function Onboarding({ user }: { user: User }) {
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
   const [selectedSuggestions, setSelectedSuggestions] = useState<string[]>([]);
+  const [customServiceOpen, setCustomServiceOpen] = useState(false);
   const [avatarCandidate, setAvatarCandidate] = useState<File | null>(null);
   const avatarInput = useRef<HTMLInputElement>(null);
   const update = <K extends keyof Form>(key: K, value: Form[K]) =>
@@ -598,7 +599,7 @@ export function Onboarding({ user }: { user: User }) {
           {step === 3 && (
             <section className="mt-10">
               <p className="font-mono text-[10px] uppercase tracking-[.16em] text-[#3A739C]">
-                Primeiro serviço
+                Seus serviços
               </p>
               <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.055em]">
                 O que suas clientes podem agendar?
@@ -615,8 +616,10 @@ export function Onboarding({ user }: { user: User }) {
                     return <button key={item.title} type="button" onClick={() => setSelectedSuggestions((current) => selected ? current.filter((title) => title !== item.title) : [...current, item.title])} className={"flex items-center justify-between rounded-xl border p-3 text-left font-body text-sm transition " + (selected ? "border-ink bg-[#E8F1F8] ring-1 ring-ink" : "border-line bg-white hover:border-[#7EAFD0]")}><span><b className="block">{item.title}</b><small className="mt-1 block text-xs text-ash">{categories.find(([value]) => value === item.category)?.[1]} · {item.duration} min</small></span>{selected && <Check size={16} />}</button>;
                   })}
                 </div>
+                {selectedSuggestions.length > 0 && <p className="mt-3 font-body text-sm text-[#245D85]">{selectedSuggestions.length} {selectedSuggestions.length === 1 ? "serviço selecionado" : "serviços selecionados"} para publicar.</p>}
               </div>
-              <p className="mt-7 border-t border-line pt-6 font-body text-sm font-semibold">Ou cadastre um serviço personalizado</p>
+              <button type="button" onClick={() => setCustomServiceOpen((current) => !current)} className="mt-7 border-t border-line pt-6 font-body text-sm font-semibold text-ink underline underline-offset-4">{customServiceOpen ? "Fechar serviço personalizado" : "Adicionar um serviço personalizado"}</button>
+              {customServiceOpen && <>
               <div className="mt-8 grid gap-5 sm:grid-cols-2">
                 <label>
                   <span className={label}>Nome do serviço</span>
@@ -704,6 +707,7 @@ export function Onboarding({ user }: { user: User }) {
                   }
                 />
               </label>
+              </>}
               <div className="mt-9 flex items-center justify-between">
                 <button
                   type="button"
