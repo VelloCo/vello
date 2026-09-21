@@ -45,11 +45,11 @@ export default function App() {
   const privateRoute = path === "/onboarding" || path.startsWith("/dashboard") || path === "/admin";
 
   useEffect(() => {
-    const page = path === "/" ? ["Vello — Seu imóvel, do seu jeito", "Organize seus imóveis, crie um catálogo profissional e compartilhe uma experiência melhor com cada cliente."]
-      : path === "/login" ? ["Entrar | Vello", "Entre para gerenciar seus imóveis e seu catálogo Vello."]
-      : path === "/cadastro" ? ["Criar conta | Vello", "Comece a montar seu catálogo profissional na Vello."]
-      : path === "/onboarding" ? ["Configure sua Vello", "Complete seu perfil e publique seu primeiro imóvel."]
-      : path.startsWith("/dashboard") ? ["Painel | Vello", "Gerencie imóveis, catálogo e seleções na Vello."]
+    const page = path === "/" ? ["Vello — Agenda e serviços para estéticas", "Organize sua agenda, apresente seus serviços e facilite novos atendimentos com a Vello."]
+      : path === "/login" ? ["Entrar | Vello", "Entre para gerenciar sua agenda e seus serviços na Vello."]
+      : path === "/cadastro" ? ["Criar conta | Vello", "Crie sua página de serviços e organize seus atendimentos."]
+      : path === "/onboarding" ? ["Configure sua Vello", "Complete o perfil da sua estética e publique seu primeiro serviço."]
+      : path.startsWith("/dashboard") ? ["Painel | Vello", "Gerencie agenda, serviços e a página pública da sua estética."]
       : path === "/admin" ? ["Administração | Vello", "Acompanhe a ativação e o uso da Vello."]
       : path === "/termos" ? ["Termos de Uso | Vello", "Termos de uso da Vello."]
       : path === "/privacidade" ? ["Política de Privacidade | Vello", "Política de privacidade da Vello."]
@@ -63,6 +63,14 @@ export default function App() {
       "href",
       `${window.location.origin}${appPath(path)}`,
     );
+    const socialImage = `${window.location.origin}${appPath("/og-vello-estetica-social.png")}`;
+    document.querySelector('meta[property="og:title"]')?.setAttribute("content", page[0]);
+    document.querySelector('meta[property="og:description"]')?.setAttribute("content", page[1]);
+    document.querySelector('meta[property="og:url"]')?.setAttribute("content", `${window.location.origin}${appPath(path)}`);
+    document.querySelector('meta[property="og:image"]')?.setAttribute("content", socialImage);
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", page[0]);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", page[1]);
+    document.querySelector('meta[name="twitter:image"]')?.setAttribute("content", socialImage);
     initAnalytics();
     trackPage(path);
   }, [authRoute, path, privateRoute]);

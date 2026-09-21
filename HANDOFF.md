@@ -119,7 +119,10 @@ Etapas (trabalho direto na `main` desde 2026-09-18; a branch
    fluxo de agendamento público (a página pública de serviços já foi criada;
    falta a escolha de data/horário e a reserva pelo próprio site).
 4. [ ] Landing, SEO, textos, Termos/Privacidade, imagem de compartilhamento
-   (og) e uso do azul da marca em destaques. (Logo e tokens de cor: feito.)
+   (og) e uso do azul da marca em destaques. Em 2026-09-21 foram atualizados
+   favicon, títulos/descrições, metadados Open Graph/Twitter e a imagem social
+   `public/og-vello-estetica-social.png`; a revisão dos textos da landing e
+   páginas legais ainda falta. (Logo e tokens de cor: feito.)
 5. [ ] Migration de limpeza (remover imóveis/seleções e colunas CRECI),
    ajustar `get_admin_dashboard` e painel `/admin`.
 
