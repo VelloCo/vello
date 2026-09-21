@@ -14,8 +14,9 @@ opção, e o catálogo público abre escolha de data, horário e reserva dentro 
 plataforma, usando as RPCs públicas existentes. Etapa 2 iniciada/concluída parcialmente: tipos e funções
 Em 2026-09-21, Perfil foi limitado a identidade e página pública; disponibilidade
 e segurança foram movidas para `/dashboard/configuracoes`. A barra móvel agora
-tem cinco destinos fixos (Início, Serviços, Agenda, Catálogo e Configurações),
-sem botão central, para comportar a evolução das categorias.
+tem quatro destinos fixos (Início, Serviços, Agenda e Configurações) e o
+botão central de novo serviço; os ícones laterais usam uma grade uniforme.
+Catálogo continua acessível em Configurações, evitando sobrecarregar a barra.
 Em seguida, Perfil foi separado em duas páginas simples: dados da estética em
 `/dashboard/perfil` e conteúdo visível para clientes em
 `/dashboard/perfil/pagina`, sem abas horizontais no celular. Configurações
