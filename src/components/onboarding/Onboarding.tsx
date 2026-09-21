@@ -403,7 +403,11 @@ export function Onboarding({ user }: { user: User }) {
                 clientes a reconhecer seu atendimento.
               </p>
               <div className="mt-8 flex items-center gap-4 rounded-2xl bg-[#E8F1F8] p-4">
-                <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-2xl bg-white">
+                <span
+                  className={`grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-2xl ${
+                    form.avatarUrl ? "bg-white" : "bg-[#B9D8EC]"
+                  }`}
+                >
                   {form.avatarUrl ? (
                     <img
                       src={form.avatarUrl}

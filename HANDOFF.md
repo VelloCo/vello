@@ -13,6 +13,8 @@ Na identidade do onboarding, uma ilustração minimalista e inédita de uma
 profissional de estética virou a imagem-base quando nenhuma foto foi enviada;
 ela substitui a mascote antiga. Após escolher uma imagem, a profissional também
 pode removê-la e voltar ao estado padrão sem excluir arquivos do storage.
+O placeholder usa fundo azul-claro; fotos reais mantêm fundo neutro para não
+alterar a aparência da imagem enviada.
 O onboarding não apresenta mais a opção de desligar agendamentos online:
 eles são parte fixa da Vello e são salvos sempre ativos. Permanece apenas a
 escolha de confirmação automática ou manual dos pedidos.
