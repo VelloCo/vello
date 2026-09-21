@@ -81,10 +81,10 @@ export function Onboarding({ user }: { user: User }) {
     if (hours.some((hour) => hour.enabled && hour.end_time <= hour.start_time)) { setNotice("O horário final precisa ser maior que o inicial."); return; }
     setSaving(true); setNotice("");
     try {
-      const profilePayload = { user_id: user.id, full_name: form.professionalName, professional_name: form.professionalName, avatar_url: form.avatarUrl || null, business_type: form.businessType, whatsapp: cleanPhone(form.whatsapp), instagram: form.instagram || null, city: form.city, state: form.state.toUpperCase(), neighborhood: form.neighborhood || null, address: form.address || null, show_address: form.showAddress, slug: slugify(form.slug), booking_enabled: form.bookingEnabled, booking_auto_confirm: form.autoConfirm, onboarding_completed: true, onboarding_step: 3 };
+      const profilePayload = { user_id: user.id, full_name: form.professionalName, professional_name: form.professionalName, avatar_url: form.avatarUrl || null, business_type: form.businessType, whatsapp: cleanPhone(form.whatsapp), instagram: form.instagram || null, city: form.city, state: form.state.toUpperCase(), neighborhood: form.neighborhood || null, address: form.address || null, show_address: form.showAddress, slug: slugify(form.slug), booking_enabled: true, booking_auto_confirm: form.autoConfirm, onboarding_completed: true, onboarding_step: 3 };
       const { error } = await requireSupabase().from("profiles").upsert(profilePayload, { onConflict: "user_id" });
       if (error) throw error;
-      await saveService(user.id, { title: form.serviceTitle, description: form.serviceDescription, category: form.serviceCategory, duration_minutes: Number(form.serviceDuration), price_type: form.servicePriceType, price: form.servicePriceType === "on_request" ? null : Number(form.servicePrice.replace(",", ".")), publication_status: "published", bookable: form.bookingEnabled, position: 0 }, []);
+      await saveService(user.id, { title: form.serviceTitle, description: form.serviceDescription, category: form.serviceCategory, duration_minutes: Number(form.serviceDuration), price_type: form.servicePriceType, price: form.servicePriceType === "on_request" ? null : Number(form.servicePrice.replace(",", ".")), publication_status: "published", bookable: true, position: 0 }, []);
       await replaceBusinessHours(user.id, hours.filter((hour) => hour.enabled).map(({ weekday, start_time, end_time }) => ({ weekday, start_time, end_time })));
       window.location.href = appPath("/dashboard");
     } catch (error) {

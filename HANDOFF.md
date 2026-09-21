@@ -8,7 +8,10 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 para reduzir densidade: a Agenda agora é exclusivamente operacional
 (atendimentos, filtros e ações); Perfil separa identidade, página pública,
 disponibilidade e segurança. Horários, regras de reserva e confirmação foram
-movidos para Perfil → Disponibilidade. Etapa 2 iniciada/concluída parcialmente: tipos e funções
+movidos para Perfil → Disponibilidade. Em seguida, a Vello passou a tratar
+agendamentos como sempre online: o editor de serviços não oferece mais essa
+opção, e o catálogo público abre escolha de data, horário e reserva dentro da
+plataforma, usando as RPCs públicas existentes. Etapa 2 iniciada/concluída parcialmente: tipos e funções
 cliente para serviços/agenda, painel principal orientado a estéticas, telas de
 serviços e agenda. Também foram ajustadas a tela de carregamento e a aba de
 perfil: esta agora reúne identidade da estética, contato, endereço e controles
@@ -123,8 +126,9 @@ Etapas (trabalho direto na `main` desde 2026-09-18; a branch
    primeiro serviço e horários/confirmacão de agenda. Em 2026-09-21, o fluxo
    antigo de CRECI/imóvel foi substituído e passou a persistir em `profiles`,
    `services` e `business_hours`. Falta o fluxo de agendamento público: a
-   página já exibe serviços, mas ainda não oferece escolha de data/horário e
-   reserva pelo próprio site.
+   página pública agora oferece escolha de serviço, data/horário e reserva
+   pelo próprio site. Falta realizar uma bateria de testes manuais autenticados
+   e públicos antes de convidar clientes reais.
 4. [ ] Landing, SEO, textos, Termos/Privacidade, imagem de compartilhamento
    (og) e uso do azul da marca em destaques. Em 2026-09-21 foram atualizados
    favicon, títulos/descrições, metadados Open Graph/Twitter e a imagem social
@@ -139,8 +143,8 @@ sobe `postgres:17` com stubs de `auth`/`storage`/roles e aplica
 
 ## Próximo passo
 
-1. Etapa 3 da mudança para estéticas: página pública com fluxo de
-   agendamento (escolha de serviço, data, horário e reserva).
+1. Testar ponta a ponta o fluxo de agendamento público: horários, reserva,
+   confirmação automática/manual e atualização na Agenda.
 2. Etapa 4: landing, SEO, textos, Termos/Privacidade, imagem de
    compartilhamento e revisão dos textos antigos de corretores/imóveis.
 3. Etapa 5: migration de limpeza para remover imóveis/seleções/CRECI depois

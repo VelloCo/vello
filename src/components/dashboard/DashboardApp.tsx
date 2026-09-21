@@ -1122,7 +1122,7 @@ function ServiceCard({
           {service.description || "Sem descrição cadastrada."}
         </p>
         <p className="mt-3 font-body text-xs text-ash">
-          {service.bookable ? "Agendamento online ativo" : "Sem agendamento online"}
+          Agendamento pelo catálogo
         </p>
       </div>
     </article>
@@ -1289,7 +1289,7 @@ function ServiceEditor({
     }
     setSaving(true);
     try {
-      const id = await saveService(user.id, form, images);
+      const id = await saveService(user.id, { ...form, bookable: true }, images);
       toast(form.publication_status === "draft" ? "Rascunho salvo" : "Serviço salvo");
       await refresh();
       go(`/dashboard/servicos/${id}`);
@@ -1430,15 +1430,7 @@ function ServiceEditor({
                 className="h-4 w-4 accent-black"
               />
             </label>
-            <label className="mt-5 flex items-center justify-between font-body text-sm">
-              Permitir agendamento online
-              <input
-                type="checkbox"
-                checked={form.bookable ?? true}
-                onChange={(event) => update("bookable", event.target.checked)}
-                className="h-4 w-4 accent-black"
-              />
-            </label>
+            <p className="mt-4 rounded-xl bg-[#E8F1F8] p-3 font-body text-xs leading-relaxed text-ash">Serviços publicados ficam disponíveis para agendamento direto pelo catálogo.</p>
             <Field
               label="Ordem"
               type="number"
@@ -2077,7 +2069,7 @@ function ProfilePage({
     setAvailabilitySaving(true);
     try {
       await saveProfile(user.id, {
-        booking_enabled: bookingSettings.booking_enabled,
+        booking_enabled: true,
         booking_auto_confirm: bookingSettings.booking_auto_confirm,
         booking_slot_minutes: Number(bookingSettings.booking_slot_minutes),
         booking_min_notice_minutes: Number(bookingSettings.booking_min_notice_minutes),
@@ -2237,10 +2229,7 @@ function ProfilePage({
             <Field label="Agenda aberta (dias)" type="number" value={bookingSettings.booking_max_days_ahead} onChange={(value) => setBookingSettings((current) => ({ ...current, booking_max_days_ahead: value }))} />
           </div>
           <div className="mt-6 border-t border-line pt-6">
-            <label className="flex items-center justify-between gap-4 rounded-2xl border border-line bg-cream/45 p-4 font-body text-sm">
-              <span><b className="block">Agendamento online</b><small className="mt-1 block text-xs text-ash">Permite reservas pela sua página pública.</small></span>
-              <input type="checkbox" checked={bookingSettings.booking_enabled} onChange={(event) => setBookingSettings((current) => ({ ...current, booking_enabled: event.target.checked }))} className="h-4 w-4 accent-black" />
-            </label>
+            <p className="rounded-2xl bg-[#E8F1F8] p-4 font-body text-sm text-ash"><b className="block text-ink">Agendamento pelo catálogo</b><span className="mt-1 block text-xs">Clientes escolhem serviço, dia e horário diretamente na sua página Vello.</span></p>
             <label className="mt-3 flex items-center justify-between gap-4 rounded-2xl border border-line bg-cream/45 p-4 font-body text-sm">
               <span><b className="block">Confirmar automaticamente</b><small className="mt-1 block text-xs text-ash">Caso desligado, cada reserva fica pendente até sua confirmação.</small></span>
               <input type="checkbox" checked={bookingSettings.booking_auto_confirm} onChange={(event) => setBookingSettings((current) => ({ ...current, booking_auto_confirm: event.target.checked }))} className="h-4 w-4 accent-black" />
