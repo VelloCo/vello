@@ -4,7 +4,13 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
-2026-09-21 — Codex. A navegação interna da Agenda e do Perfil foi reconstruída
+2026-09-21 — Codex. A navegação de Perfil e Configurações foi simplificada
+em duas telas únicas, sem abas: **Perfil** concentra identidade e todos os
+dados visíveis na página pública; **Configurações** concentra disponibilidade,
+regras de reserva e segurança. A rota antiga `/dashboard/perfil/pagina`
+continua exibindo Perfil para não quebrar links existentes. O conteúdo e os
+recursos foram preservados; foram removidas apenas camadas intermediárias de
+navegação. A navegação interna da Agenda e do Perfil foi reconstruída
 para reduzir densidade: a Agenda agora é exclusivamente operacional
 (atendimentos, filtros e ações); Perfil separa identidade, página pública,
 disponibilidade e segurança. Horários, regras de reserva e confirmação foram

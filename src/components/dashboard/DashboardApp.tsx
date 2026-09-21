@@ -1997,7 +1997,7 @@ function ProfilePage({
   const [saving, setSaving] = useState(false);
   const [passwordSaving, setPasswordSaving] = useState(false);
   const [avatarSaving, setAvatarSaving] = useState(false);
-  const [profileView, setProfileView] = useState<"identity" | "public" | "availability" | "security">(initialView);
+  const profileView = initialView;
   const [hours, setHours] = useState(() =>
     weekdays.map((_, weekday) => {
       const found = businessHours.find((hour) => hour.weekday === weekday);
@@ -2087,21 +2087,11 @@ function ProfilePage({
     <>
       <header>
         <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">Sua estética</p>
-        <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">{settingsMode ? "Configurações" : profileView === "public" ? "Página pública" : "Perfil da estética"}</h1>
+        <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">{settingsMode ? "Configurações" : "Perfil"}</h1>
         <p className="mt-2 font-body text-ash">
-          {profileView === "identity" && "Comece pelos dados que identificam seu atendimento."}
-          {profileView === "public" && "Controle o que suas clientes encontram na sua página pública."}
-          {profileView === "availability" && "Defina quando e como clientes podem reservar um horário."}
-          {profileView === "security" && "Mantenha o acesso à sua conta protegido."}
+          {settingsMode ? "Defina sua disponibilidade, as regras das reservas e a segurança da conta." : "Seus dados e as informações que aparecem para clientes no catálogo."}
         </p>
       </header>
-      {!fixedView && <nav className="mt-8 flex gap-2 overflow-x-auto border-b border-line" aria-label={settingsMode ? "Seções de configurações" : "Seções do perfil"}>
-        {(settingsMode ? ([['availability', 'Disponibilidade'], ['security', 'Segurança']] as const) : ([['identity', 'Perfil'], ['public', 'Página pública']] as const)).map(([value, label]) => (
-          <button key={value} type="button" onClick={() => setProfileView(value)} className={`shrink-0 border-b-2 px-3 pb-3 font-body text-sm font-medium transition ${profileView === value ? "border-ink text-ink" : "border-transparent text-ash hover:text-ink"}`}>
-            {label}
-          </button>
-        ))}
-      </nav>}
       <section className="mt-7 max-w-3xl rounded-[24px] border border-line bg-white p-5 sm:p-7">
         {profileView === "identity" && <>
         <div className="flex items-center gap-4 border-b border-line pb-7">
@@ -2133,17 +2123,18 @@ function ProfilePage({
             value={form.whatsapp || ""}
             onChange={(v) => setForm((x) => ({ ...x, whatsapp: v }))}
           />}
-          {profileView === "public" && <Field
+          {profileView === "identity" && <div className="mt-2 border-t border-line pt-5 sm:col-span-2"><p className="font-display text-lg font-semibold">Página pública</p><p className="mt-1 font-body text-sm text-ash">Esses dados aparecem para clientes no seu catálogo.</p></div>}
+          {profileView === "identity" && <Field
             label="Cidade"
             value={form.city || ""}
             onChange={(v) => setForm((x) => ({ ...x, city: v }))}
           />}
-          {profileView === "public" && <Field
+          {profileView === "identity" && <Field
             label="Estado"
             value={form.state || ""}
             onChange={(v) => setForm((x) => ({ ...x, state: v.toUpperCase().slice(0, 2) }))}
           />}
-          {profileView === "public" && <Field
+          {profileView === "identity" && <Field
             label="Bairro"
             value={form.neighborhood || ""}
             onChange={(v) => setForm((x) => ({ ...x, neighborhood: v }))}
@@ -2153,13 +2144,13 @@ function ProfilePage({
             value={form.instagram || ""}
             onChange={(v) => setForm((x) => ({ ...x, instagram: v }))}
           />}
-          {profileView === "public" && <Field
+          {profileView === "identity" && <Field
             label="Link Vello"
             value={form.slug || ""}
             onChange={(v) => setForm((x) => ({ ...x, slug: slugify(v) }))}
           />}
         </div>
-        {profileView === "public" && <>
+        {profileView === "identity" && <>
         <label className="mt-5 block">
           <span className="mb-3 block font-body text-[11px] font-medium uppercase tracking-[.08em] text-ash">Endereço do atendimento</span>
           <input value={form.address || ""} onChange={(event) => setForm((current) => ({ ...current, address: event.target.value }))} placeholder="Rua, número, complemento" className="h-11 w-full rounded-xl border border-line px-3 font-body text-sm outline-none transition focus:border-ink" />
@@ -2200,18 +2191,18 @@ function ProfilePage({
               />
             </label>
             <div className="mt-5 rounded-xl bg-cream p-4 font-body text-sm text-ash">
-              Os horários, confirmação e disponibilidade de agendamento ficam na <a href={appPath("/dashboard/agenda")} className="font-semibold text-ink underline underline-offset-4">Agenda</a>. <a href={publicCatalogUrl(form.slug)} target="_blank" rel="noreferrer" className="ml-1 font-semibold text-ink underline underline-offset-4">Abrir minha página</a>.
+              Horários e regras de reserva ficam em <a href={appPath("/dashboard/configuracoes")} className="font-semibold text-ink underline underline-offset-4">Configurações</a>. <a href={publicCatalogUrl(form.slug)} target="_blank" rel="noreferrer" className="ml-1 font-semibold text-ink underline underline-offset-4">Abrir minha página</a>.
             </div>
         </div>
         </>}
-        {(profileView === "identity" || profileView === "public") && <Button onClick={save} disabled={saving} className="mt-7">
+        {profileView === "identity" && <Button onClick={save} disabled={saving} className="mt-7">
           {saving ? "Salvando..." : "Salvar alterações"}
         </Button>}
-        {fixedView && !settingsMode && profileView === "identity" && <div className="mt-7 grid gap-3 sm:grid-cols-2"><a href={appPath("/dashboard/perfil/pagina")} className="flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"><span><b className="block font-body text-sm">Página pública</b><span className="mt-1 block font-body text-xs text-ash">Edite o link, localização e apresentação.</span></span><PencilLine size={18} className="shrink-0 text-ash" /></a><a href={appPath("/dashboard/configuracoes")} className="flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"><span><b className="block font-body text-sm">Configurações</b><span className="mt-1 block font-body text-xs text-ash">Disponibilidade, reservas e segurança.</span></span><Settings2 size={18} className="shrink-0 text-ash" /></a></div>}
-        {profileView === "availability" && <section>
+        {fixedView && !settingsMode && profileView === "identity" && <a href={appPath("/dashboard/configuracoes")} className="mt-7 flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"><span><b className="block font-body text-sm">Configurações</b><span className="mt-1 block font-body text-xs text-ash">Disponibilidade, reservas e segurança.</span></span><Settings2 size={18} className="shrink-0 text-ash" /></a>}
+        {(profileView === "availability" || settingsMode) && <section>
           {settingsMode && <a href={appPath("/dashboard/catalogo")} className="mb-7 flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"><span><b className="block font-body text-sm">Meu catálogo</b><span className="mt-1 block font-body text-xs text-ash">Abra, copie ou compartilhe seu link.</span></span><ExternalLink size={18} className="shrink-0 text-ash" /></a>}
-          <p className="font-display text-xl font-semibold">Horários de atendimento</p>
-          <p className="mt-1 font-body text-sm text-ash">Escolha os dias e intervalos em que clientes podem encontrar horários livres.</p>
+          <p className="font-display text-xl font-semibold">Agenda e reservas</p>
+          <p className="mt-1 font-body text-sm text-ash">Escolha quando clientes podem reservar e como cada reserva é confirmada.</p>
           <div className="mt-5 space-y-3">
             {hours.map((hour, index) => (
               <div key={hour.weekday} className="grid gap-3 rounded-2xl border border-line p-3 sm:grid-cols-[1fr_120px_120px]">
@@ -2240,8 +2231,8 @@ function ProfilePage({
             {availabilitySaving ? "Salvando..." : "Salvar disponibilidade"}
           </Button>
         </section>}
-        {profileView === "security" && <section>
-          <p className="font-display text-lg font-semibold">Segurança</p>
+        {(profileView === "security" || settingsMode) && <section className="mt-10 border-t border-line pt-8">
+          <p className="font-display text-xl font-semibold">Segurança</p>
           <p className="mt-1 font-body text-sm text-ash">Atualize a senha de acesso quando precisar.</p>
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <Field label="Nova senha" type="password" value={newPassword} onChange={setNewPassword} />
@@ -2251,7 +2242,7 @@ function ProfilePage({
             {passwordSaving ? "Atualizando..." : "Atualizar senha"}
           </button>
         </section>}
-        {profileView === "security" && <button
+        {(profileView === "security" || settingsMode) && <button
           onClick={async () => {
             await signOut();
             go("/login");
@@ -2460,7 +2451,7 @@ export function DashboardApp({ user, route }: Props) {
   else if (route === "/dashboard/perfil")
     page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} fixedView />;
   else if (route === "/dashboard/perfil/pagina")
-    page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} initialView="public" fixedView />;
+    page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} fixedView />;
   else if (route === "/dashboard/configuracoes")
     page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} initialView="availability" settingsMode />;
   else page = <ProfilePage user={user} profile={profile} businessHours={businessHours} refresh={refresh} toast={say} />;
