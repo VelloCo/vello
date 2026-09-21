@@ -15,6 +15,10 @@ removê-la e voltar ao estado padrão sem excluir arquivos do storage.
 O onboarding não apresenta mais a opção de desligar agendamentos online:
 eles são parte fixa da Vello e são salvos sempre ativos. Permanece apenas a
 escolha de confirmação automática ou manual dos pedidos.
+O cabeçalho do onboarding não tem mais a saída antecipada “Sair e continuar
+depois”. O progresso foi redesenhado como um percurso de quatro etapas com
+nomes, etapa atual destacada e checks nas concluídas, preservando leitura boa
+em celular.
 A etapa de serviços do onboarding foi refinada com
 revelação progressiva: sugestões são a escolha principal, mostram contagem
 de itens selecionados e o formulário manual só abre por ação explícita.

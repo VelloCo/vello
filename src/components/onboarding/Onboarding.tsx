@@ -99,15 +99,49 @@ const cleanPhone = (value: string) => value.replace(/\D/g, "").slice(0, 13);
 const publicLink = (slug: string) => `${PUBLIC_SITE_ORIGIN}/${slug}`;
 
 function Stepper({ step }: { step: Step }) {
+  const steps = ["Perfil", "Local", "Serviços", "Agenda"];
   return (
-    <div className="flex items-center gap-2" aria-label={`Etapa ${step} de 4`}>
-      {[1, 2, 3, 4].map((item) => (
-        <span
-          key={item}
-          className={`h-1.5 flex-1 rounded-full ${item <= step ? "bg-ink" : "bg-line"}`}
-        />
-      ))}
-    </div>
+    <ol className="flex items-start" aria-label={`Etapa ${step} de 4`}>
+      {steps.map((name, index) => {
+        const item = index + 1;
+        const complete = item < step;
+        const current = item === step;
+        return (
+          <li key={name} className="flex min-w-0 flex-1 items-start last:flex-none">
+            <div className="w-12 text-center sm:w-16">
+              <span
+                aria-current={current ? "step" : undefined}
+                className={`mx-auto grid h-8 w-8 place-items-center rounded-full border font-body text-xs font-semibold transition ${
+                  complete
+                    ? "border-ink bg-ink text-paper"
+                    : current
+                      ? "border-ink bg-[#E8F1F8] text-ink shadow-[0_0_0_4px_rgba(58,115,156,.12)]"
+                      : "border-[#C9D8E2] bg-white text-ash"
+                }`}
+              >
+                {complete ? <Check size={14} strokeWidth={2.5} /> : item}
+              </span>
+              <span
+                className={`mt-2 block font-body text-[10px] font-medium leading-tight ${
+                  current ? "text-ink" : "text-ash"
+                }`}
+              >
+                {name}
+              </span>
+            </div>
+            {item < steps.length && (
+              <span className="mt-[15px] h-px flex-1 bg-[#D9E4EB]">
+                <span
+                  className={`block h-full origin-left bg-ink transition-transform duration-300 motion-reduce:transition-none ${
+                    item < step ? "scale-x-100" : "scale-x-0"
+                  }`}
+                />
+              </span>
+            )}
+          </li>
+        );
+      })}
+    </ol>
   );
 }
 function PrimaryButton({
@@ -117,7 +151,7 @@ function PrimaryButton({
   return (
     <button
       {...props}
-      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 font-body text-sm font-semibold text-paper shadow-[0_12px_24px_-14px_rgba(18,40,58,.72)] transition hover:bg-[#245D85] disabled:cursor-not-allowed disabled:opacity-60"
+      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 font-body text-sm font-semibold text-paper shadow-[0_12px_24px_-14px_rgba(18,40,58,.72)] transition duration-150 hover:bg-[#245D85] active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-60"
     >
       {children}
     </button>
@@ -341,25 +375,19 @@ export function Onboarding({ user }: { user: User }) {
   return (
     <main className="min-h-screen bg-[#F7FAFC] px-5 py-6 text-ink sm:px-8 sm:py-10">
       <div className="mx-auto max-w-[760px]">
-        <header className="flex items-center justify-between">
+        <header>
           <a href={appPath("/")}>
             <Logo className="origin-left scale-[.82]" />
-          </a>
-          <a
-            href={appPath("/dashboard")}
-            className="font-body text-sm text-ash underline underline-offset-4"
-          >
-            Sair e continuar depois
           </a>
         </header>
         <section className="vello-material mt-10 rounded-[28px] p-5 shadow-[0_22px_70px_-48px_rgba(18,40,58,.34)] sm:p-9">
           <div className="flex items-center justify-between gap-5">
             <p className="font-mono text-[10px] uppercase tracking-[.15em] text-stone">
-              Etapa {step} de 4
+              Configuração da Vello
             </p>
-            <p className="font-body text-xs text-ash">Configuração inicial</p>
+            <p className="font-body text-xs font-medium text-ash">Etapa {step} de 4</p>
           </div>
-          <div className="mt-4">
+          <div className="mt-5">
             <Stepper step={step} />
           </div>
           {step === 1 && (
