@@ -33,7 +33,6 @@ type Form = {
   servicePrice: string;
   servicePriceType: Service["price_type"];
   serviceDescription: string;
-  bookingEnabled: boolean;
   autoConfirm: boolean;
 };
 const blank: Form = {
@@ -54,7 +53,6 @@ const blank: Form = {
   servicePrice: "",
   servicePriceType: "fixed",
   serviceDescription: "",
-  bookingEnabled: true,
   autoConfirm: true,
 };
 const weekdays = [
@@ -183,7 +181,6 @@ export function Onboarding({ user }: { user: User }) {
           address: data?.address || "",
           showAddress: data?.show_address || false,
           slug: data?.slug || slugify(name),
-          bookingEnabled: data?.booking_enabled ?? true,
           autoConfirm: data?.booking_auto_confirm ?? true,
         });
         setLoading(false);
@@ -796,22 +793,7 @@ export function Onboarding({ user }: { user: User }) {
                   </div>
                 ))}
               </div>
-              <label className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#E8F1F8] p-4 font-body text-sm">
-                <span>
-                  <b className="block">Aceitar agendamentos online</b>
-                  <small className="mt-1 block text-xs text-ash">
-                    Clientes poderão escolher um horário na sua página.
-                  </small>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={form.bookingEnabled}
-                  onChange={(event) =>
-                    update("bookingEnabled", event.target.checked)
-                  }
-                />
-              </label>
-              <label className="mt-3 flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 font-body text-sm">
+              <label className="mt-6 flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 font-body text-sm">
                 <span>
                   <b className="block">Confirmar automaticamente</b>
                   <small className="mt-1 block text-xs text-ash">

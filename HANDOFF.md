@@ -12,6 +12,9 @@ descrição e estado aberto/fechado.
 Na identidade do onboarding, a mascote da Vello virou a imagem-base quando
 nenhuma foto foi enviada; após escolher uma imagem, a profissional também pode
 removê-la e voltar ao estado padrão sem excluir arquivos do storage.
+O onboarding não apresenta mais a opção de desligar agendamentos online:
+eles são parte fixa da Vello e são salvos sempre ativos. Permanece apenas a
+escolha de confirmação automática ou manual dos pedidos.
 A etapa de serviços do onboarding foi refinada com
 revelação progressiva: sugestões são a escolha principal, mostram contagem
 de itens selecionados e o formulário manual só abre por ação explícita.
