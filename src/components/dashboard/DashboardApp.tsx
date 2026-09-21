@@ -84,6 +84,22 @@ const cover = (p: Property) =>
 const serviceCover = (service: Service) =>
   service.service_images?.find((image) => image.is_cover)?.image_url ||
   service.service_images?.[0]?.image_url;
+const serviceCoverPosition: Record<Service["category"], string> = {
+  facial: "0% 0%",
+  corporal: "50% 0%",
+  depilacao: "100% 0%",
+  sobrancelhas_cilios: "0% 50%",
+  unhas: "50% 50%",
+  cabelo: "100% 50%",
+  massagem: "0% 100%",
+  harmonizacao: "50% 100%",
+  outros: "100% 100%",
+};
+const serviceCoverStyle = (category: Service["category"]) => ({
+  backgroundImage: `url(${appPath("/service-category-covers.webp")})`,
+  backgroundPosition: serviceCoverPosition[category],
+  backgroundSize: "300% 300%",
+});
 const statusLabel: Record<Property["status"], string> = {
   available: "Disponível",
   reserved: "Reservado",
@@ -1061,9 +1077,7 @@ function ServiceCard({
             className="vello-card-image h-full w-full object-cover"
           />
         ) : (
-          <div className="grid h-full place-items-center text-stone">
-            <Sparkles size={26} />
-          </div>
+          <div aria-label={`Imagem padrão da categoria ${serviceCategoryLabel[service.category]}`} role="img" className="h-full w-full bg-[#E8F1F8]" style={serviceCoverStyle(service.category)} />
         )}
         <div className="absolute left-3 top-3 flex gap-2">
           <span className="rounded-full bg-white/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide text-ink">
@@ -1336,6 +1350,7 @@ function ServiceEditor({
             >
               <ImagePlus size={23} />
               <span className="mt-2">Adicionar fotos do serviço</span>
+              <span className="mt-1 text-xs">Sem foto, usaremos uma capa da categoria.</span>
             </button>
             {images.length > 0 && (
               <div className="mt-4 grid grid-cols-3 gap-3">
@@ -1463,7 +1478,7 @@ function AgendaPage({
   refresh: () => Promise<void>;
   toast: (s: string) => void;
 }) {
-  const [appointmentFilter, setAppointmentFilter] = useState<"upcoming" | "today" | "pending" | "history">("upcoming");
+  const [appointmentFilter, setAppointmentFilter] = useState<"upcoming" | "today" | "pending" | "history">("pending");
   const now = new Date();
   const calendarKey = (date: Date) => `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
   const todayKey = calendarKey(now);
@@ -1499,33 +1514,26 @@ function AgendaPage({
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">Atendimentos</p>
           <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">Sua agenda</h1>
-          <p className="mt-2 font-body text-ash">
-            Veja quem vem hoje, confirme pendências e acompanhe cada atendimento.
-          </p>
+          <p className="mt-2 font-body text-ash">Comece confirmando pedidos e acompanhe os próximos atendimentos.</p>
         </div>
+        <a href={appPath("/dashboard/configuracoes")} className="inline-flex h-10 items-center gap-2 rounded-full border border-line px-4 font-body text-sm font-medium text-ash transition hover:border-ink hover:text-ink"><Settings2 size={15} /> Configurar agenda</a>
       </header>
-      <section className="mt-8 grid gap-3 sm:grid-cols-3">
+      <section className="mt-8 grid gap-3 sm:grid-cols-2">
         {[
-          ["Hoje", todayAppointments.length, "atendimentos ativos", "bg-[#E8F1F8]"],
-          ["A confirmar", pendingAppointments.length, "aguardando sua resposta", "bg-[#FFF7E8]"],
-          ["Próximo", activeAppointments.find((appointment) => new Date(appointment.starts_at) >= now)?.starts_at ? appointmentTime(activeAppointments.find((appointment) => new Date(appointment.starts_at) >= now)!.starts_at) : "Livre", "seu próximo horário", "bg-ink text-paper"],
+          ["Para confirmar", pendingAppointments.length, pendingAppointments.length === 1 ? "pedido aguardando sua resposta" : "pedidos aguardando sua resposta", "bg-[#FFF7E8]"],
+          ["Hoje", todayAppointments.length, todayAppointments.length === 1 ? "atendimento agendado" : "atendimentos agendados", "bg-[#E8F1F8]"],
         ].map(([label, value, detail, tone]) => <div key={String(label)} className={`rounded-[20px] border border-line p-5 ${tone}`}><p className="font-mono text-[10px] uppercase tracking-[.14em] opacity-60">{label}</p><p className="mt-3 font-display text-3xl font-semibold tracking-[-.04em]">{value}</p><p className="mt-1 font-body text-xs opacity-65">{detail}</p></div>)}
       </section>
       <div className="mt-7">
         <section className="rounded-[24px] border border-line bg-white p-5 shadow-[0_18px_45px_-38px_rgba(18,40,58,.28)] sm:p-6">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="font-display text-2xl font-semibold tracking-[-.035em]">Agendamentos</p>
-              <p className="mt-1 font-body text-sm text-ash">
-                Organize os próximos atendimentos sem perder nenhuma cliente.
-              </p>
+              <p className="font-display text-2xl font-semibold tracking-[-.035em]">Reservas</p>
+              <p className="mt-1 font-body text-sm text-ash">Confira primeiro o que precisa da sua ação.</p>
             </div>
-            <span className="rounded-full bg-cream px-3 py-1 font-mono text-[10px] uppercase tracking-wide text-stone">
-              {activeAppointments.length} ativos
-            </span>
           </div>
           <div className="mt-5 flex gap-2 overflow-x-auto pb-1">
-            {([['upcoming', 'Próximos', activeAppointments.filter((appointment) => new Date(appointment.starts_at) >= now).length], ['today', 'Hoje', todayAppointments.length], ['pending', 'Pendentes', pendingAppointments.length], ['history', 'Histórico', appointments.filter((appointment) => new Date(appointment.starts_at) < now || !['pending', 'confirmed'].includes(appointment.status)).length]] as const).map(([value, label, count]) => <button key={value} type="button" onClick={() => setAppointmentFilter(value)} className={`shrink-0 rounded-full border px-3 py-2 font-body text-xs font-medium transition ${appointmentFilter === value ? 'border-ink bg-ink text-paper' : 'border-line bg-white text-ash hover:border-ink hover:text-ink'}`}>{label} <span className="ml-1 opacity-65">{count}</span></button>)}
+            {([['pending', 'Para confirmar', pendingAppointments.length], ['today', 'Hoje', todayAppointments.length], ['upcoming', 'Próximas', activeAppointments.filter((appointment) => new Date(appointment.starts_at) >= now).length], ['history', 'Histórico', appointments.filter((appointment) => new Date(appointment.starts_at) < now || !['pending', 'confirmed'].includes(appointment.status)).length]] as const).map(([value, label, count]) => <button key={value} type="button" onClick={() => setAppointmentFilter(value)} className={`shrink-0 rounded-full border px-3 py-2 font-body text-xs font-medium transition ${appointmentFilter === value ? 'border-ink bg-ink text-paper' : 'border-line bg-white text-ash hover:border-ink hover:text-ink'}`}>{label} <span className="ml-1 opacity-65">{count}</span></button>)}
           </div>
           {visibleAppointments.length ? (
             <div className="mt-5 divide-y divide-line">
@@ -1547,35 +1555,32 @@ function AgendaPage({
                   {appointment.client_notes && <p className="mt-3 rounded-xl bg-cream px-3 py-2 font-body text-xs leading-relaxed text-ash">{appointment.client_notes}</p>}
                   <div className="mt-4 flex flex-wrap gap-2">
                     <a href={`https://wa.me/${appointment.client_whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noreferrer" className="inline-flex h-9 items-center gap-1 rounded-full border border-line px-3 font-body text-xs text-ash transition hover:border-ink hover:text-ink"><MessageCircle size={14} /> WhatsApp</a>
-                    <button
+                    {appointment.status === "pending" && <button
                       onClick={() => changeStatus(appointment, "confirmed")}
-                      disabled={appointment.status !== "pending"}
-                      className="inline-flex h-9 items-center gap-1 rounded-full border border-line px-3 font-body text-xs disabled:opacity-45"
+                      className="inline-flex h-9 items-center gap-1 rounded-full border border-line px-3 font-body text-xs"
                     >
                       <Check size={14} /> Confirmar
-                    </button>
-                    <button
+                    </button>}
+                    {["pending", "confirmed"].includes(appointment.status) && <button
                       onClick={() => changeStatus(appointment, "completed")}
-                      disabled={!["pending", "confirmed"].includes(appointment.status)}
-                      className="inline-flex h-9 items-center gap-1 rounded-full border border-line px-3 font-body text-xs disabled:opacity-45"
+                      className="inline-flex h-9 items-center gap-1 rounded-full border border-line px-3 font-body text-xs"
                     >
                       <Clock3 size={14} /> Concluir
-                    </button>
-                    <button
+                    </button>}
+                    {["pending", "confirmed"].includes(appointment.status) && <button
                       onClick={() => changeStatus(appointment, "cancelled")}
-                      disabled={!["pending", "confirmed"].includes(appointment.status)}
-                      className="inline-flex h-9 items-center gap-1 rounded-full border border-red-200 px-3 font-body text-xs text-red-700 disabled:opacity-45"
+                      className="inline-flex h-9 items-center gap-1 rounded-full border border-red-200 px-3 font-body text-xs text-red-700"
                     >
                       <Ban size={14} /> Cancelar
-                    </button>
+                    </button>}
                   </div>
                 </article>
               ))}
             </div>
           ) : (
             <Empty
-              title={appointmentFilter === "upcoming" ? "Nenhum atendimento futuro." : "Nenhum agendamento nesta lista."}
-              text={appointmentFilter === "upcoming" ? "Assim que uma cliente reservar pelo catálogo, ela aparecerá aqui." : "Mude o filtro para ver outros agendamentos."}
+              title={appointmentFilter === "pending" ? "Nenhum pedido para confirmar." : appointmentFilter === "upcoming" ? "Nenhum atendimento próximo." : "Nenhuma reserva nesta lista."}
+              text={appointmentFilter === "pending" ? "Novas reservas feitas pelo catálogo aparecerão aqui para você decidir." : appointmentFilter === "upcoming" ? "Assim que uma cliente reservar pelo catálogo, ela aparecerá aqui." : "Use os filtros para consultar outras reservas."}
               action="Ver serviços"
               onAction={() => go("/dashboard/servicos")}
             />
@@ -1924,7 +1929,7 @@ function CatalogPage({
             </p>
           </div>
           <div className="grid grid-cols-2 gap-3 p-4 sm:p-5">
-            {published.slice(0, 4).map((service) => <div key={service.id} className="overflow-hidden rounded-2xl border border-line bg-white"><div className="aspect-[4/3] bg-[#E8F1F8]">{serviceCover(service) && <img src={serviceCover(service)} alt="" className="h-full w-full object-cover" />}</div><div className="p-3"><p className="truncate font-body text-xs font-semibold">{service.title}</p><p className="mt-1 font-body text-[11px] text-ash">{formatServicePrice(service)} · {service.duration_minutes} min</p></div></div>)}
+            {published.slice(0, 4).map((service) => <div key={service.id} className="overflow-hidden rounded-2xl border border-line bg-white"><div className="aspect-[4/3] bg-[#E8F1F8]">{serviceCover(service) ? <img src={serviceCover(service)} alt="" className="h-full w-full object-cover" /> : <div className="h-full w-full" style={serviceCoverStyle(service.category)} />}</div><div className="p-3"><p className="truncate font-body text-xs font-semibold">{service.title}</p><p className="mt-1 font-body text-[11px] text-ash">{formatServicePrice(service)} · {service.duration_minutes} min</p></div></div>)}
             {!published.length && <div className="col-span-2 rounded-2xl border border-dashed border-line bg-[#F7FAFC] p-8 text-center"><p className="font-display text-xl font-semibold">Seus serviços aparecerão aqui.</p><a href={appPath("/dashboard/servicos/novo")} className="mt-3 inline-flex font-body text-sm font-semibold underline underline-offset-4">Cadastrar primeiro serviço</a></div>}
           </div>
         </section>

@@ -4,7 +4,12 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
-2026-09-21 — Codex. A navegação de Perfil e Configurações foi simplificada
+2026-09-21 — Codex. A Agenda foi simplificada para priorizar decisões:
+abre em “Para confirmar”, remove contadores redundantes, ordena os filtros
+por ação e mostra somente ações permitidas para cada reserva. Serviços sem
+foto agora recebem uma capa editorial automática conforme sua categoria,
+no painel, na prévia e no catálogo público; fotos enviadas pela profissional
+continuam tendo prioridade. A navegação de Perfil e Configurações foi simplificada
 em duas telas únicas, sem abas: **Perfil** concentra identidade e todos os
 dados visíveis na página pública; **Configurações** concentra disponibilidade,
 regras de reserva e segurança. A rota antiga `/dashboard/perfil/pagina`
