@@ -9,9 +9,10 @@ material translúcido acessível, tipografia com sizing óptico e resposta táti
 mais clara nas ações; onboarding adotou a nova superfície e CTA com profundidade.
 O atalho de serviço personalizado virou um cartão de expansão com ícone,
 descrição e estado aberto/fechado.
-Na identidade do onboarding, a mascote da Vello virou a imagem-base quando
-nenhuma foto foi enviada; após escolher uma imagem, a profissional também pode
-removê-la e voltar ao estado padrão sem excluir arquivos do storage.
+Na identidade do onboarding, uma ilustração minimalista e inédita de uma
+profissional de estética virou a imagem-base quando nenhuma foto foi enviada;
+ela substitui a mascote antiga. Após escolher uma imagem, a profissional também
+pode removê-la e voltar ao estado padrão sem excluir arquivos do storage.
 O onboarding não apresenta mais a opção de desligar agendamentos online:
 eles são parte fixa da Vello e são salvos sempre ativos. Permanece apenas a
 escolha de confirmação automática ou manual dos pedidos.

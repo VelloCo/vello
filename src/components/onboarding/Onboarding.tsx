@@ -412,7 +412,7 @@ export function Onboarding({ user }: { user: User }) {
                     />
                   ) : (
                     <img
-                      src={appPath("/vello-mascot.png")}
+                      src={appPath("/vello-onboarding-avatar.png")}
                       alt="Imagem padrão da Vello"
                       className="h-full w-full object-cover object-top"
                     />
