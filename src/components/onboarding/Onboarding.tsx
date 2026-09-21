@@ -387,9 +387,9 @@ export function Onboarding({ user }: { user: User }) {
                     />
                   ) : (
                     <img
-                      src={appPath("/vello-logo.png")}
-                      alt="Vello"
-                      className="h-10 w-10 object-contain"
+                      src={appPath("/vello-mascot.png")}
+                      alt="Imagem padrão da Vello"
+                      className="h-full w-full object-cover object-top"
                     />
                   )}
                 </span>
@@ -419,6 +419,15 @@ export function Onboarding({ user }: { user: User }) {
                     <ImagePlus size={13} />
                     {form.avatarUrl ? "Trocar foto" : "Adicionar foto"}
                   </button>
+                  {form.avatarUrl && (
+                    <button
+                      type="button"
+                      onClick={() => update("avatarUrl", "")}
+                      className="ml-4 font-body text-xs font-semibold text-[#A64949] underline decoration-[#D8A5A5] underline-offset-4 transition hover:text-[#7E3232]"
+                    >
+                      Remover foto
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="mt-7 grid gap-5 sm:grid-cols-2">

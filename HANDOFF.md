@@ -9,6 +9,9 @@ material translúcido acessível, tipografia com sizing óptico e resposta táti
 mais clara nas ações; onboarding adotou a nova superfície e CTA com profundidade.
 O atalho de serviço personalizado virou um cartão de expansão com ícone,
 descrição e estado aberto/fechado.
+Na identidade do onboarding, a mascote da Vello virou a imagem-base quando
+nenhuma foto foi enviada; após escolher uma imagem, a profissional também pode
+removê-la e voltar ao estado padrão sem excluir arquivos do storage.
 A etapa de serviços do onboarding foi refinada com
 revelação progressiva: sugestões são a escolha principal, mostram contagem
 de itens selecionados e o formulário manual só abre por ação explícita.
