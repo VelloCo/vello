@@ -17,6 +17,9 @@ e segurança foram movidas para `/dashboard/configuracoes`. A barra móvel agora
 tem quatro destinos fixos (Início, Serviços, Agenda e Configurações) e o
 botão central de novo serviço; os ícones laterais usam uma grade uniforme.
 Catálogo continua acessível em Configurações, evitando sobrecarregar a barra.
+Em seguida, a barra móvel foi convertida em carrossel com scroll-snap: o atalho
+ativo centraliza automaticamente, os demais ficam discretos e as categorias
+extras podem ser reveladas com gesto horizontal; o botão central permanece.
 Em seguida, Perfil foi separado em duas páginas simples: dados da estética em
 `/dashboard/perfil` e conteúdo visível para clientes em
 `/dashboard/perfil/pagina`, sem abas horizontais no celular. Configurações
