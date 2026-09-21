@@ -1,5 +1,5 @@
 import type { User } from "@supabase/supabase-js";
-import { Check, ChevronLeft, ImagePlus } from "lucide-react";
+import { Check, ChevronLeft, ImagePlus, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { appPath, PUBLIC_SITE_ORIGIN } from "../../lib/paths";
 import { requireSupabase } from "../../lib/supabase";
@@ -618,7 +618,7 @@ export function Onboarding({ user }: { user: User }) {
                 </div>
                 {selectedSuggestions.length > 0 && <p className="mt-3 font-body text-sm text-[#245D85]">{selectedSuggestions.length} {selectedSuggestions.length === 1 ? "serviço selecionado" : "serviços selecionados"} para publicar.</p>}
               </div>
-              <button type="button" onClick={() => setCustomServiceOpen((current) => !current)} className="mt-7 border-t border-line pt-6 font-body text-sm font-semibold text-ink underline underline-offset-4">{customServiceOpen ? "Fechar serviço personalizado" : "Adicionar um serviço personalizado"}</button>
+              <button type="button" onClick={() => setCustomServiceOpen((current) => !current)} aria-expanded={customServiceOpen} className={"mt-7 flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition " + (customServiceOpen ? "border-ink bg-[#E8F1F8]" : "border-dashed border-[#9AB7CC] bg-white hover:border-ink hover:bg-[#F7FAFC]")}><span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-ink text-paper"><Plus size={18} /></span><span><b className="block font-body text-sm">{customServiceOpen ? "Fechar serviço personalizado" : "Adicionar serviço personalizado"}</b><small className="mt-1 block font-body text-xs text-ash">{customServiceOpen ? "Volte às sugestões quando quiser." : "Para um cuidado que não aparece nas sugestões."}</small></span></button>
               {customServiceOpen && <>
               <div className="mt-8 grid gap-5 sm:grid-cols-2">
                 <label>
