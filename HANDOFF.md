@@ -115,9 +115,12 @@ Etapas (trabalho direto na `main` desde 2026-09-18; a branch
    criar, editar e excluir serviços, salvar horários de atendimento e atualizar
    status de agendamentos. Ainda não há tela para bloqueios manuais de agenda
    (`schedule_blocks`) nem criação manual de agendamento pelo painel.
-3. [ ] Onboarding (tipo de negócio, endereço, primeiro serviço, horários) e
-   fluxo de agendamento público (a página pública de serviços já foi criada;
-   falta a escolha de data/horário e a reserva pelo próprio site).
+3. [x] Onboarding de estética: identidade, tipo de negócio, localização/link,
+   primeiro serviço e horários/confirmacão de agenda. Em 2026-09-21, o fluxo
+   antigo de CRECI/imóvel foi substituído e passou a persistir em `profiles`,
+   `services` e `business_hours`. Falta o fluxo de agendamento público: a
+   página já exibe serviços, mas ainda não oferece escolha de data/horário e
+   reserva pelo próprio site.
 4. [ ] Landing, SEO, textos, Termos/Privacidade, imagem de compartilhamento
    (og) e uso do azul da marca em destaques. Em 2026-09-21 foram atualizados
    favicon, títulos/descrições, metadados Open Graph/Twitter e a imagem social
@@ -132,8 +135,8 @@ sobe `postgres:17` com stubs de `auth`/`storage`/roles e aplica
 
 ## Próximo passo
 
-1. Etapa 3 da mudança para estéticas: onboarding (tipo de negócio, endereço,
-   primeiro serviço, horários) e página pública com fluxo de agendamento.
+1. Etapa 3 da mudança para estéticas: página pública com fluxo de
+   agendamento (escolha de serviço, data, horário e reserva).
 2. Etapa 4: landing, SEO, textos, Termos/Privacidade, imagem de
    compartilhamento e revisão dos textos antigos de corretores/imóveis.
 3. Etapa 5: migration de limpeza para remover imóveis/seleções/CRECI depois
