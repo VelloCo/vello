@@ -58,15 +58,15 @@ const coverAsset: Record<string, string> = {
 };
 
 const effectsAsset: Record<string, string> = {
-  facial: "/service-covers/facial-effects-v4.png",
-  corporal: "/service-covers/corporal-effects-v4.png",
-  depilacao: "/service-covers/depilacao-effects-v4.png",
-  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios-effects-v4.png",
-  unhas: "/service-covers/unhas-effects-v4.png",
-  cabelo: "/service-covers/cabelo-effects-v4.png",
-  massagem: "/service-covers/massagem-effects-v4.png",
-  harmonizacao: "/service-covers/harmonizacao-effects-v4.png",
-  outros: "/service-covers/outros-effects-v4.png",
+  facial: "/service-covers/facial-effects-v4.webp",
+  corporal: "/service-covers/corporal-effects-v4.webp",
+  depilacao: "/service-covers/depilacao-effects-v4.webp",
+  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios-effects-v4.webp",
+  unhas: "/service-covers/unhas-effects-v4.webp",
+  cabelo: "/service-covers/cabelo-effects-v4.webp",
+  massagem: "/service-covers/massagem-effects-v4.webp",
+  harmonizacao: "/service-covers/harmonizacao-effects-v4.webp",
+  outros: "/service-covers/outros-effects-v4.webp",
 };
 
 export const categoryCoverStyle = (category: string) => ({
