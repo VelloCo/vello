@@ -101,25 +101,23 @@ const serviceCover = (service: Service) =>
   service.service_images?.find((image) => image.is_cover)?.image_url ||
   service.service_images?.[0]?.image_url;
 const serviceCoverAsset: Record<Service["category"], string> = {
-  facial: "/service-covers/facial.jpg",
-  corporal: "/service-covers/corporal.jpg",
-  depilacao: "/service-covers/depilacao.jpg",
-  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios.jpg",
-  unhas: "/service-covers/unhas.jpg",
-  cabelo: "/service-covers/cabelo.jpg",
-  massagem: "/service-covers/massagem.jpg",
-  harmonizacao: "/vello-logo.png",
-  outros: "/vello-logo.png",
+  facial: "/service-covers/facial-v2.jpg",
+  corporal: "/service-covers/corporal-v2.jpg",
+  depilacao: "/service-covers/depilacao-v2.jpg",
+  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios-v2.jpg",
+  unhas: "/service-covers/unhas-v2.jpg",
+  cabelo: "/service-covers/cabelo-v2.jpg",
+  massagem: "/service-covers/massagem-v2.jpg",
+  harmonizacao: "/service-covers/harmonizacao-v2.jpg",
+  outros: "/service-covers/outros-v2.jpg",
 };
 const serviceCoverStyle = (category: Service["category"]) => {
-  const isBrandFallback =
-    category === "harmonizacao" || category === "outros";
   return {
     backgroundColor: "#E8F1F8",
     backgroundImage: `url(${appPath(serviceCoverAsset[category])})`,
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
-    backgroundSize: isBrandFallback ? "42%" : "cover",
+    backgroundSize: "cover",
   };
 };
 const statusLabel: Record<Property["status"], string> = {
@@ -1144,7 +1142,7 @@ function ServiceCard({
   const [open, setOpen] = useState(false);
   return (
     <article className="vello-surface group relative overflow-hidden rounded-[22px] border border-line bg-white">
-      <div className="relative aspect-[16/10] overflow-hidden bg-cream">
+      <div className="relative aspect-square overflow-hidden bg-cream">
         {serviceCover(service) ? (
           <img
             src={serviceCover(service)}
@@ -2296,7 +2294,7 @@ function CatalogPage({
                 key={service.id}
                 className="overflow-hidden rounded-2xl border border-line bg-white"
               >
-                <div className="aspect-[4/3] bg-[#E8F1F8]">
+                <div className="aspect-square bg-[#E8F1F8]">
                   {serviceCover(service) ? (
                     <img
                       src={serviceCover(service)}

@@ -22,17 +22,18 @@ material translúcido acessível, tipografia com sizing óptico e resposta táti
 mais clara nas ações; onboarding adotou a nova superfície e CTA com profundidade.
 O atalho de serviço personalizado virou um cartão de expansão com ícone,
 descrição e estado aberto/fechado.
-Na identidade do onboarding, uma ilustração minimalista e inédita de uma
+Na identidade do onboarding, uma ilustração editorial simples de uma
 profissional de estética virou a imagem-base quando nenhuma foto foi enviada;
-ela substitui a mascote antiga. Após escolher uma imagem, a profissional também
-pode removê-la e voltar ao estado padrão sem excluir arquivos do storage.
-O placeholder usa fundo azul-claro; fotos reais mantêm fundo neutro para não
-alterar a aparência da imagem enviada.
-Serviços sem foto agora usam capas independentes, em vez de recortes de um
-mosaico: foram geradas ilustrações cartunizadas minimalistas para facial,
-corporal, depilação, sobrancelhas/cílios, unhas, cabelo e massagem, usadas no
-painel e no catálogo público. Harmonização e Outros exibem o símbolo da Vello
-como fallback neutro até que as duas ilustrações específicas sejam geradas.
+ela substitui a mascote antiga e agora aparece em recorte circular. Após
+escolher uma imagem, a profissional também pode removê-la e voltar ao estado
+padrão sem excluir arquivos do storage. O placeholder usa fundo azul-claro;
+fotos reais mantêm fundo neutro para não alterar a aparência da imagem enviada.
+Serviços sem foto agora usam nove capas quadradas independentes, em vez de
+recortes de um mosaico. Todas foram refeitas como cenas humanas cartunizadas e
+minimalistas, seguindo a referência editorial azul da Vello, para facial,
+corporal, depilação, sobrancelhas/cílios, unhas, cabelo, massagem,
+harmonização e outros. Painel e catálogo público também passaram a reservar
+área 1:1 para as imagens, evitando deformação visual.
 O onboarding não apresenta mais a opção de desligar agendamentos online:
 eles são parte fixa da Vello e são salvos sempre ativos. Permanece apenas a
 escolha de confirmação automática ou manual dos pedidos.

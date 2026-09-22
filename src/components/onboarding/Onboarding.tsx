@@ -404,7 +404,7 @@ export function Onboarding({ user }: { user: User }) {
               </p>
               <div className="mt-8 flex items-center gap-4 rounded-2xl bg-[#E8F1F8] p-4">
                 <span
-                  className={`grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-2xl ${
+                  className={`grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full ${
                     form.avatarUrl ? "bg-white" : "bg-[#B9D8EC]"
                   }`}
                 >
@@ -416,7 +416,7 @@ export function Onboarding({ user }: { user: User }) {
                     />
                   ) : (
                     <img
-                      src={appPath("/vello-onboarding-avatar.png")}
+                      src={appPath("/vello-onboarding-avatar-v2.jpg")}
                       alt="Imagem padrão da Vello"
                       className="h-full w-full object-cover object-top"
                     />

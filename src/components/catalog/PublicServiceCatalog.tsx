@@ -50,26 +50,24 @@ const categories: Record<string, string> = {
   outros: "Outros",
 };
 const serviceCoverAsset: Record<string, string> = {
-  facial: "/service-covers/facial.jpg",
-  corporal: "/service-covers/corporal.jpg",
-  depilacao: "/service-covers/depilacao.jpg",
-  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios.jpg",
-  unhas: "/service-covers/unhas.jpg",
-  cabelo: "/service-covers/cabelo.jpg",
-  massagem: "/service-covers/massagem.jpg",
-  harmonizacao: "/vello-logo.png",
-  outros: "/vello-logo.png",
+  facial: "/service-covers/facial-v2.jpg",
+  corporal: "/service-covers/corporal-v2.jpg",
+  depilacao: "/service-covers/depilacao-v2.jpg",
+  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios-v2.jpg",
+  unhas: "/service-covers/unhas-v2.jpg",
+  cabelo: "/service-covers/cabelo-v2.jpg",
+  massagem: "/service-covers/massagem-v2.jpg",
+  harmonizacao: "/service-covers/harmonizacao-v2.jpg",
+  outros: "/service-covers/outros-v2.jpg",
 };
 const categoryCover = (category: string) => {
-  const isBrandFallback =
-    category === "harmonizacao" || category === "outros";
   return {
     backgroundColor: "#E8F1F8",
     backgroundImage:
       "url(" + appPath(serviceCoverAsset[category] || serviceCoverAsset.outros) + ")",
     backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
-    backgroundSize: isBrandFallback ? "42%" : "cover",
+    backgroundSize: "cover",
   };
 };
 const localDate = (date: Date) =>
@@ -490,7 +488,7 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
                   <img
                     src={service.images[0].image_url}
                     alt={service.title}
-                    className={"aspect-[4/3] w-full object-cover " + (catalogStyle === "classic" ? "sm:w-56 sm:shrink-0" : "")}
+                    className={"aspect-square w-full object-cover " + (catalogStyle === "classic" ? "sm:w-56 sm:shrink-0" : "")}
                   />
                 ) : (
                   <div
@@ -499,7 +497,7 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
                       "Imagem de " +
                       (categories[service.category] || "estética")
                     }
-                    className={"aspect-[4/3] w-full bg-[#E8F1F8] " + (catalogStyle === "classic" ? "sm:w-56 sm:shrink-0" : "")}
+                    className={"aspect-square w-full bg-[#E8F1F8] " + (catalogStyle === "classic" ? "sm:w-56 sm:shrink-0" : "")}
                     style={categoryCover(service.category)}
                   />
                 )}
