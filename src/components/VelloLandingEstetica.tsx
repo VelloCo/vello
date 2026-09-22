@@ -186,16 +186,22 @@ function Header() {
             </a>
           ))}
         </nav>
-        <div className="flex items-center gap-4">
-          <a href={login} className="hidden font-body text-[15px] font-medium text-ash hover:text-ink sm:inline">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <a
+            href={login}
+            className="inline-flex h-10 items-center whitespace-nowrap rounded-full border border-line bg-white px-4 max-[359px]:px-3 transition active:scale-[.97] font-body text-[14px] font-semibold text-ink sm:h-auto sm:border-0 sm:bg-transparent sm:px-0 sm:text-[15px] sm:font-medium sm:text-ash sm:hover:text-ink"
+          >
             Entrar
           </a>
           <span aria-hidden="true" className="hidden h-8 w-px bg-line sm:block" />
           <a
             href={signup}
-            className="vello-action inline-flex h-10 items-center gap-2 rounded-full bg-sky px-4 font-body text-[14px] font-semibold text-ink md:h-11 md:px-5 md:text-[15px]"
+            className="vello-action inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-full bg-sky px-4 max-[359px]:px-3 font-body text-[14px] font-semibold text-ink md:h-11 md:px-5 md:text-[15px]"
           >
-            Começar grátis <ArrowRight className="vello-action-arrow" size={16} />
+            <span>
+              Começar<span className="max-[359px]:hidden"> grátis</span>
+            </span>
+            <ArrowRight className="vello-action-arrow max-[379px]:hidden" size={16} />
           </a>
         </div>
         <Diamond className="-bottom-1 -left-1" />
