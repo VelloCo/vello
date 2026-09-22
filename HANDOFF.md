@@ -4,6 +4,11 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Codex. Corrigida a opção “Lista” do catálogo público: o tema já
+era salvo e retornado corretamente pelo Supabase, mas o layout horizontal só
+era aplicado acima de 640 px. Agora a diferença entre Editorial e Lista também
+aparece no celular, preservando as capas quadradas e compactando a tipografia.
+
 2026-09-21 — Claude Code. Configurações reorganizada em cartões (Horários de
 atendimento com interruptor por dia, Regras de reserva com unidades e dicas,
 Segurança) e coluna lateral com atalhos (Perfil, Meu catálogo, Personalizar) e

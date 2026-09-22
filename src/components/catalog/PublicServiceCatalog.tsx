@@ -482,13 +482,13 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
             {page.services.map((service) => (
               <article
                 key={service.id}
-                className={"overflow-hidden rounded-[24px] border border-line bg-white shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)] " + (catalogStyle === "classic" ? "sm:flex" : "")}
+                className={"overflow-hidden rounded-[24px] border border-line bg-white shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)] " + (catalogStyle === "classic" ? "flex items-start" : "")}
               >
                 {service.images[0] ? (
                   <img
                     src={service.images[0].image_url}
                     alt={service.title}
-                    className={"aspect-square w-full object-cover " + (catalogStyle === "classic" ? "sm:w-56 sm:shrink-0" : "")}
+                    className={"aspect-square object-cover " + (catalogStyle === "classic" ? "h-28 w-28 shrink-0 sm:h-56 sm:w-56" : "w-full")}
                   />
                 ) : (
                   <div
@@ -497,12 +497,12 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
                       "Imagem de " +
                       (categories[service.category] || "estética")
                     }
-                    className={"aspect-square w-full bg-[#E8F1F8] " + (catalogStyle === "classic" ? "sm:w-56 sm:shrink-0" : "")}
+                    className={"aspect-square bg-[#E8F1F8] " + (catalogStyle === "classic" ? "h-28 w-28 shrink-0 sm:h-56 sm:w-56" : "w-full")}
                     style={categoryCover(service.category)}
                   />
                 )}
-                <div className={"flex min-h-64 flex-1 flex-col p-5 " + (catalogStyle === "classic" ? "sm:min-h-0" : "")}>
-                  <div className="flex items-start justify-between gap-3">
+                <div className={"flex flex-1 flex-col " + (catalogStyle === "classic" ? "min-h-0 min-w-0 p-4 sm:p-5" : "min-h-64 p-5")}>
+                  <div className={"flex items-start justify-between " + (catalogStyle === "classic" ? "flex-col gap-1 sm:flex-row sm:gap-3" : "gap-3")}>
                     <p className="font-mono text-[10px] uppercase tracking-[.12em] text-stone">
                       {categories[service.category] || "Estética"}
                     </p>
@@ -511,11 +511,11 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
                       {service.duration_minutes} min
                     </span>
                   </div>
-                  <h3 className="mt-3 font-display text-2xl font-semibold">
+                  <h3 className={"font-display font-semibold " + (catalogStyle === "classic" ? "mt-2 text-xl sm:mt-3 sm:text-2xl" : "mt-3 text-2xl")}>
                     {service.title}
                   </h3>
                   {service.description && (
-                    <p className="mt-3 line-clamp-3 font-body text-sm leading-relaxed text-ash">
+                    <p className={"mt-3 font-body text-sm leading-relaxed text-ash " + (catalogStyle === "classic" ? "line-clamp-2 sm:line-clamp-3" : "line-clamp-3")}>
                       {service.description}
                     </p>
                   )}
