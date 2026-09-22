@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { VelloLandingMinimal } from "./components/VelloLandingMinimal";
+import { VelloLandingEstetica } from "./components/VelloLandingEstetica";
 import { AdminApp } from "./components/AdminApp";
 import { LegalPage, NotFoundPage, SupportPage } from "./components/LaunchPages";
 import { AuthPage } from "./components/auth/AuthPage";
@@ -23,7 +23,7 @@ const getLocation = () => ({
 });
 
 function Landing() {
-  return <VelloLandingMinimal />;
+  return <VelloLandingEstetica />;
 }
 
 export default function App() {

@@ -4,6 +4,16 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-21 — Claude Code. Landing refeita para estéticas em
+`src/components/VelloLandingEstetica.tsx` (rota `/`), inspirada na estrutura e no
+visual do abacatepay.com a pedido do usuário: moldura com linhas finas e faixas
+hachuradas, hero com degradê azul e mockups (painel + celular), recursos,
+“Quanto custa?”, divulgação, suíte, seção escura com calculadora de custo por
+atendimento (R$ 65,90/mês), letreiro de categorias com as capas de
+`public/service-covers`, suporte, dúvidas e CTA final. Sem depoimentos (não há
+clientes reais ainda). `VelloLandingMinimal.tsx` e `VelloLanding.tsx` (corretores)
+ficaram sem uso. Novo token `sky-strong` (#4A86B3) para títulos grandes.
+
 2026-09-21 — Codex. Início da aplicação dos princípios Apple na Vello:
 material translúcido acessível, tipografia com sizing óptico e resposta tátil
 mais clara nas ações; onboarding adotou a nova superfície e CTA com profundidade.
