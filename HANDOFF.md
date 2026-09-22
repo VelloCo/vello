@@ -4,6 +4,19 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Codex. Auditoria de código, fluxo e segurança:
+- Domínio canônico corrigido para `https://velloesteticas.vercel.app` em links
+  públicos, SEO, sitemap, testes e exemplos; login/cadastro revisados para o
+  produto atual; erros internos do Supabase deixaram de aparecer no cadastro;
+  e a CSP passou a permitir o Plausible já suportado pelo código.
+- A migration `20260922161549_booking_and_hours_atomicity.sql` serializa
+  reservas concorrentes por agenda e cria a troca transacional dos horários de
+  atendimento. Aplicada e verificada em produção: trava presente, RPC de
+  horários inacessível para `anon` e agendamento público preservado.
+- Testes Playwright atualizados para o fluxo atual e configuráveis com
+  `VELLO_BASE_URL`. Build, lint, audit de dependências e testes foram repetidos
+  após integrar as alterações mais recentes da `main`.
+
 2026-09-22 — Claude Code. Lançamento: LGPD, legal, SEO e GEO.
 - LGPD: `ConsentBanner` + `getConsent/setConsent` em `analytics.ts` (GA só
   carrega após "Aceitar"); Configurações ganhou "Seus dados" (baixar JSON e
@@ -43,7 +56,6 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
   convertidos (capas 3,2 MB → 380 KB). Rotas carregadas sob demanda
   (`React.lazy`) e Supabase só carrega em telas com login: JS inicial
   735 KB → 202 KB. Fontes via `<link>` com preconnect.
-
 2026-09-22 — Codex. As capas automáticas voltaram a ter os efeitos editoriais
 ao redor das personagens. O modelo gerou nove camadas individuais
 `*-effects-v4.png`, com fitas, folhas, brilhos e pontilhado transparentes para
@@ -224,7 +236,8 @@ iniciou a mudança da Vello de corretores para estéticas em 2026-09-18.
 
 ## Estado atual
 
-- Produção no ar em https://vellocorretores.vercel.app. Último commit: `6c76738`
+- Produção no ar em https://velloesteticas.vercel.app (o endereço antigo
+  redireciona). Último commit: `6c76738`
   (verificação de produção documentada). Detalhes em `docs/GUIA-CONTINUIDADE.md`.
 - Pronto: landing, cadastro, onboarding, imóveis, catálogo público, seleções,
   painel admin, Termos/Privacidade/Suporte/404, SEO, Google Analytics.

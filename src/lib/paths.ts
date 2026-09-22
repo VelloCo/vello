@@ -1,5 +1,5 @@
-export const PUBLIC_SITE_ORIGIN = 'https://vellocorretores.vercel.app'
-export const PUBLIC_CATALOG_DOMAIN = 'vellocorretores.vercel.app'
+export const PUBLIC_SITE_ORIGIN = 'https://velloesteticas.vercel.app'
+export const PUBLIC_CATALOG_DOMAIN = 'velloesteticas.vercel.app'
 
 export function publicCatalogLabel(slug?: string | null) {
   return `${PUBLIC_CATALOG_DOMAIN}/${slug || ''}`.replace(/\/$/, '')

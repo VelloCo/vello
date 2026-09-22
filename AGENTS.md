@@ -22,7 +22,7 @@ tomadas e o próximo passo concreto. Datas absolutas (ex.: 2026-09-18), não
 - SaaS de catálogo digital para corretores de imóveis.
 - React 19 + TypeScript + Vite + Tailwind v4, Supabase (auth, banco, storage),
   hospedado na Vercel. Repositório: VelloCo/vello (branch `main`).
-- Produção: https://vellocorretores.vercel.app — merge em `main` publica.
+- Produção: https://velloesteticas.vercel.app — merge em `main` publica.
 
 ## Regras
 

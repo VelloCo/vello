@@ -13,8 +13,8 @@ Atualização de 4 de setembro de 2026: consulte [GUIA-CONTINUIDADE.md](GUIA-CON
 ## Configuração de produção
 
 1. No Supabase Auth, adicione as URLs de redirecionamento:
-   - `https://vellocorretores.vercel.app/onboarding`
-   - `https://vellocorretores.vercel.app/redefinir-senha`
+   - `https://velloesteticas.vercel.app/onboarding`
+   - `https://velloesteticas.vercel.app/redefinir-senha`
 2. Configure e teste confirmação de e-mail, recuperação de senha e Google OAuth.
 3. Dê acesso ao administrador pelo Supabase Dashboard, em Authentication > Users > App metadata:
    ```json

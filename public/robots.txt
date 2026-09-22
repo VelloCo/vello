@@ -30,4 +30,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://vellocorretores.vercel.app/sitemap.xml
+Sitemap: https://velloesteticas.vercel.app/sitemap.xml

@@ -237,6 +237,18 @@ export async function replaceBusinessHours(
   hours: Array<Pick<BusinessHour, "weekday" | "start_time" | "end_time">>,
 ) {
   const client = requireSupabase();
+  const { error: rpcError } = await client.rpc("replace_business_hours", {
+    p_hours: hours,
+  });
+  if (!rpcError) return;
+
+  // Compatibilidade durante o intervalo entre o deploy do frontend e a
+  // aplicação da migration. Depois da RPC existir, a troca é transacional.
+  if (rpcError.code !== "PGRST202" && rpcError.code !== "42883") {
+    throw rpcError;
+  }
+
+  const previous = await getBusinessHours(userId);
   const { error: deleteError } = await client
     .from("business_hours")
     .delete()
@@ -249,7 +261,19 @@ export async function replaceBusinessHours(
       user_id: userId,
     })),
   );
-  if (error) throw error;
+  if (error) {
+    if (previous.length) {
+      await client.from("business_hours").insert(
+        previous.map(({ weekday, start_time, end_time }) => ({
+          weekday,
+          start_time,
+          end_time,
+          user_id: userId,
+        })),
+      );
+    }
+    throw error;
+  }
 }
 export async function getAppointments(userId: string) {
   const from = new Date();

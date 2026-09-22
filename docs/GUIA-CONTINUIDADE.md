@@ -6,11 +6,11 @@ A Vello continua na Vercel com dados e contas no Supabase. Sua assinatura do ass
 
 ## Links para guardar
 
-- Site: https://vellocorretores.vercel.app/
-- Cadastro: https://vellocorretores.vercel.app/cadastro
-- Painel: https://vellocorretores.vercel.app/dashboard
-- Suporte: https://vellocorretores.vercel.app/suporte
-- Administração: https://vellocorretores.vercel.app/admin (exige papel administrativo)
+- Site: https://velloesteticas.vercel.app/
+- Cadastro: https://velloesteticas.vercel.app/cadastro
+- Painel: https://velloesteticas.vercel.app/dashboard
+- Suporte: https://velloesteticas.vercel.app/suporte
+- Administração: https://velloesteticas.vercel.app/admin (exige papel administrativo)
 - Código: https://github.com/VelloCo/vello
 - Hospedagem: https://vercel.com/dashboard
 - Contas, banco e imagens: https://supabase.com/dashboard
@@ -45,10 +45,10 @@ Use uma planilha privada com: nome, contato, início e fim do teste, primeiro im
 
 ## Configurações a preservar
 
-- Supabase Site URL: https://vellocorretores.vercel.app
-- Redirect URLs: https://vellocorretores.vercel.app/onboarding e https://vellocorretores.vercel.app/redefinir-senha
+- Supabase Site URL: https://velloesteticas.vercel.app
+- Redirect URLs: https://velloesteticas.vercel.app/onboarding e https://velloesteticas.vercel.app/redefinir-senha
 - Google OAuth: conservar o callback copiado do provedor Google no Supabase.
-- Search Console: manter public/googleab7018c5a6040950.html. Sitemap: https://vellocorretores.vercel.app/sitemap.xml
+- Search Console: manter public/googleab7018c5a6040950.html. Sitemap: https://velloesteticas.vercel.app/sitemap.xml
 - Google Analytics: G-X51JZE369J. Conferir recebimento em Tempo real.
 - Suporte: VITE_SUPPORT_EMAIL na Vercel; o fallback do código é vellocorretores@gmail.com. Confirme que você controla essa caixa.
 

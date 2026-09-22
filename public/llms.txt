@@ -7,7 +7,7 @@
 - Categorias: facial, corporal, depilação, sobrancelhas e cílios, unhas, cabelo, massagem e harmonização.
 
 ## O que a Vello faz
-- Página pública de serviços com link próprio (ex.: vellocorretores.vercel.app/nome-da-estetica), com categoria, duração, preço fixo, "a partir de" ou "sob consulta" e fotos.
+- Página pública de serviços com link próprio (ex.: velloesteticas.vercel.app/nome-da-estetica), com categoria, duração, preço fixo, "a partir de" ou "sob consulta" e fotos.
 - Agendamento online: a cliente informa nome e WhatsApp e escolhe um horário livre; horários ocupados somem na hora e não há reserva duplicada.
 - Confirmação automática ou manual dos pedidos.
 - Agenda no painel: pedidos para confirmar, atendimentos do dia, histórico e contato pelo WhatsApp.
@@ -21,9 +21,9 @@
 - Segue a LGPD: exportação e exclusão da conta pelo próprio painel; Google Analytics só com consentimento.
 
 ## Links
-- Site: https://vellocorretores.vercel.app/
-- Criar conta: https://vellocorretores.vercel.app/cadastro
-- Termos de Uso: https://vellocorretores.vercel.app/termos
-- Política de Privacidade: https://vellocorretores.vercel.app/privacidade
-- Suporte: https://vellocorretores.vercel.app/suporte
+- Site: https://velloesteticas.vercel.app/
+- Criar conta: https://velloesteticas.vercel.app/cadastro
+- Termos de Uso: https://velloesteticas.vercel.app/termos
+- Política de Privacidade: https://velloesteticas.vercel.app/privacidade
+- Suporte: https://velloesteticas.vercel.app/suporte
 - Instagram: https://instagram.com/velloestetica

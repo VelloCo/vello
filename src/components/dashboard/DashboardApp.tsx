@@ -24,7 +24,7 @@ import {
   UserRound,
   X,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   appPath,
   publicCatalogLabel,
@@ -1416,6 +1416,7 @@ function CatalogPage({
             <a
               href={link}
               target="_blank"
+              rel="noreferrer"
               className="flex h-11 items-center justify-center gap-2 rounded-full border border-line font-body text-sm font-medium transition hover:border-ink"
             >
               <ExternalLink size={15} /> Abrir catálogo
@@ -1432,6 +1433,7 @@ function CatalogPage({
             <a
               href={`https://wa.me/?text=${encodeURIComponent(`Confira meu catálogo Vello: ${link}`)}`}
               target="_blank"
+              rel="noreferrer"
               className="flex h-11 items-center justify-center gap-2 rounded-full border border-line font-body text-sm"
             >
               <Share2 size={15} /> Compartilhar no WhatsApp
@@ -2586,7 +2588,7 @@ export function DashboardApp({ user, route }: Props) {
     setToast(s);
     window.setTimeout(() => setToast(null), 2500);
   };
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     try {
       const [p, sv, ap, bh] = await Promise.all([
         getProfile(user.id),
@@ -2601,10 +2603,10 @@ export function DashboardApp({ user, route }: Props) {
     } finally {
       setLoading(false);
     }
-  };
-  useEffect(() => {
-    refresh();
   }, [user.id]);
+  useEffect(() => {
+    void refresh();
+  }, [refresh]);
   useEffect(() => {
     const close = (e: KeyboardEvent) => e.key === "Escape" && setToast(null);
     window.addEventListener("keydown", close);
