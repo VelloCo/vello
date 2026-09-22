@@ -479,62 +479,97 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
         </div>
         {page.services.length ? (
           <div className={catalogStyle === "classic" ? "mt-10 grid max-w-3xl gap-4" : "mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"}>
-            {page.services.map((service) => (
-              <article
-                key={service.id}
-                className={"overflow-hidden rounded-[24px] border border-line bg-white shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)] " + (catalogStyle === "classic" ? "flex items-start" : "")}
-              >
-                {service.images[0] ? (
-                  <img
-                    src={service.images[0].image_url}
-                    alt={service.title}
-                    className={"aspect-square object-cover " + (catalogStyle === "classic" ? "h-28 w-28 shrink-0 sm:h-56 sm:w-56" : "w-full")}
-                  />
-                ) : (
-                  <div
-                    role="img"
-                    aria-label={
-                      "Imagem de " +
-                      (categories[service.category] || "estética")
-                    }
-                    className={"aspect-square bg-[#E8F1F8] " + (catalogStyle === "classic" ? "h-28 w-28 shrink-0 sm:h-56 sm:w-56" : "w-full")}
-                    style={categoryCover(service.category)}
-                  />
-                )}
-                <div className={"flex flex-1 flex-col " + (catalogStyle === "classic" ? "min-h-0 min-w-0 p-4 sm:p-5" : "min-h-64 p-5")}>
-                  <div className={"flex items-start justify-between " + (catalogStyle === "classic" ? "flex-col gap-1 sm:flex-row sm:gap-3" : "gap-3")}>
-                    <p className="font-mono text-[10px] uppercase tracking-[.12em] text-stone">
-                      {categories[service.category] || "Estética"}
-                    </p>
-                    <span className="inline-flex shrink-0 items-center gap-1 font-body text-xs text-ash">
-                      <Clock3 size={13} />
-                      {service.duration_minutes} min
-                    </span>
-                  </div>
-                  <h3 className={"font-display font-semibold " + (catalogStyle === "classic" ? "mt-2 text-xl sm:mt-3 sm:text-2xl" : "mt-3 text-2xl")}>
-                    {service.title}
-                  </h3>
-                  {service.description && (
-                    <p className={"mt-3 font-body text-sm leading-relaxed text-ash " + (catalogStyle === "classic" ? "line-clamp-2 sm:line-clamp-3" : "line-clamp-3")}>
-                      {service.description}
-                    </p>
-                  )}
-                  <div className="mt-auto pt-6">
-                    <p className="font-body text-base font-semibold">
-                      {price(service)}
-                    </p>
-                    <button
-                      type="button"
-                      onClick={() => setBooking(service)}
-                      className="vello-primary bg-sky text-ink mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-4 font-body text-sm font-semibold"
-                    >
-                      <CalendarDays size={16} />
-                      Agendar horário
-                    </button>
-                  </div>
+            {page.services.map((service) => {
+              const classic = catalogStyle === "classic";
+              const cover = service.images[0] ? (
+                <img
+                  src={service.images[0].image_url}
+                  alt={service.title}
+                  className={classic ? "h-full min-h-[104px] w-full object-cover sm:row-span-2 sm:min-h-[224px]" : "aspect-square w-full object-cover"}
+                />
+              ) : (
+                <div
+                  role="img"
+                  aria-label={
+                    "Imagem de " + (categories[service.category] || "estética")
+                  }
+                  className={"bg-[#E8F1F8] " + (classic ? "h-full min-h-[104px] w-full sm:row-span-2 sm:min-h-[224px]" : "aspect-square w-full")}
+                  style={categoryCover(service.category)}
+                />
+              );
+              const bookButton = (
+                <button
+                  type="button"
+                  onClick={() => setBooking(service)}
+                  className="vello-primary bg-sky text-ink inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-4 font-body text-sm font-semibold"
+                >
+                  <CalendarDays size={16} />
+                  Agendar horário
+                </button>
+              );
+              const meta = (
+                <div className={"flex items-center justify-between gap-3 " + (classic ? "flex-wrap gap-y-1" : "")}>
+                  <p className="font-mono text-[10px] uppercase tracking-[.12em] text-stone">
+                    {categories[service.category] || "Estética"}
+                  </p>
+                  <span className="inline-flex shrink-0 items-center gap-1 font-body text-xs text-ash">
+                    <Clock3 size={13} />
+                    {service.duration_minutes} min
+                  </span>
                 </div>
-              </article>
-            ))}
+              );
+              if (classic)
+                return (
+                  <article
+                    key={service.id}
+                    className="grid grid-cols-[104px_minmax(0,1fr)] overflow-hidden rounded-[24px] border border-line bg-white shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)] sm:grid-cols-[224px_minmax(0,1fr)]"
+                  >
+                    {cover}
+                    <div className="min-w-0 p-4 sm:p-5 sm:pb-0">
+                      {meta}
+                      <h3 className="mt-2 font-display text-lg font-semibold leading-tight sm:mt-3 sm:text-2xl">
+                        {service.title}
+                      </h3>
+                      {service.description && (
+                        <p className="mt-2 line-clamp-2 font-body text-sm leading-relaxed text-ash sm:mt-3">
+                          {service.description}
+                        </p>
+                      )}
+                      <p className="mt-3 font-body text-base font-semibold">
+                        {price(service)}
+                      </p>
+                    </div>
+                    <div className="col-span-2 px-4 pb-4 sm:col-span-1 sm:col-start-2 sm:self-end sm:px-5 sm:pb-5 sm:pt-5">
+                      {bookButton}
+                    </div>
+                  </article>
+                );
+              return (
+                <article
+                  key={service.id}
+                  className="overflow-hidden rounded-[24px] border border-line bg-white shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)]"
+                >
+                  {cover}
+                  <div className="flex min-h-64 flex-1 flex-col p-5">
+                    {meta}
+                    <h3 className="mt-3 font-display text-2xl font-semibold">
+                      {service.title}
+                    </h3>
+                    {service.description && (
+                      <p className="mt-3 line-clamp-3 font-body text-sm leading-relaxed text-ash">
+                        {service.description}
+                      </p>
+                    )}
+                    <div className="mt-auto pt-6">
+                      <p className="font-body text-base font-semibold">
+                        {price(service)}
+                      </p>
+                      <div className="mt-4">{bookButton}</div>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         ) : (
           <div className="mt-10 rounded-[24px] border border-dashed border-line bg-white p-8 text-center sm:p-12">

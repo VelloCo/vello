@@ -4,6 +4,12 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Claude Code. Estilo Lista (`classic`) da página pública corrigido:
+o cartão virou grade (`104px`/`224px` + conteúdo), a capa preenche a altura
+toda (antes era quadrado fixo com espaço branco embaixo) e, no celular, o botão
+"Agendar horário" ocupa a largura inteira abaixo da linha capa + texto.
+Editorial não mudou (só foi reescrito junto no mesmo map).
+
 2026-09-22 — Codex. Corrigida a opção “Lista” do catálogo público: o tema já
 era salvo e retornado corretamente pelo Supabase, mas o layout horizontal só
 era aplicado acima de 640 px. Agora a diferença entre Editorial e Lista também
