@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Inter:wght@400;450;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -233,23 +232,6 @@ textarea:focus-visible {
     transform-origin: left;
   }
 
-  .vello-hero-visual img {
-    transition: transform 700ms cubic-bezier(0.23, 1, 0.32, 1);
-  }
-
-  .vello-hero-visual:hover img {
-    transform: scale(1.025);
-  }
-
-  .vello-property-card {
-    transition: transform 220ms cubic-bezier(0.23, 1, 0.32, 1), box-shadow 220ms ease;
-  }
-
-  .vello-property-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 14px 24px -18px rgba(18,40,58, 0.45);
-  }
-
   .vello-surface:hover {
     border-color: color-mix(in srgb, var(--color-ink) 18%, var(--color-line));
     box-shadow: 0 18px 40px -30px rgba(18,40,58, 0.42);
@@ -354,3 +336,13 @@ h1.font-display,
 h2.font-display {
   font-weight: 500;
 }
+
+/* Tela de carregamento */
+@keyframes vello-loading-in { from { opacity: 0; transform: translateY(10px); } }
+@keyframes vello-loading-ring { 0%, 100% { transform: scale(.92); opacity: .45; } 50% { transform: scale(1.08); opacity: 1; } }
+@keyframes vello-loading-ring-reverse { 0%, 100% { transform: scale(1.04); opacity: .8; } 50% { transform: scale(.94); opacity: .38; } }
+@keyframes vello-loading-dot { 0%, 100% { opacity: .25; } 50% { opacity: 1; } }
+.vello-loading-in { animation: vello-loading-in 320ms cubic-bezier(.22, 1, .36, 1) both; }
+.vello-loading-ring { animation: vello-loading-ring 1.9s ease-in-out infinite; }
+.vello-loading-ring-reverse { animation-name: vello-loading-ring-reverse; }
+.vello-loading-dot { animation: vello-loading-dot 1s ease-in-out infinite; }

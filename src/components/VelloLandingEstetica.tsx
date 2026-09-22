@@ -26,7 +26,7 @@ import {
   Syringe,
   Zap,
 } from "lucide-react";
-import { appPath } from "../lib/paths";
+import { appPath, PUBLIC_CATALOG_DOMAIN } from "../lib/paths";
 import { Logo } from "./Logo";
 import { Reveal } from "./Primitives";
 import {
@@ -381,7 +381,7 @@ function Share() {
             <div className="mt-9 flex justify-center">
               <PrimaryButton href={signup}>Criar minha página</PrimaryButton>
             </div>
-            <p className="mt-4 font-mono text-[12px] text-stone">vellocorretores.vercel.app/seu-nome</p>
+            <p className="mt-4 font-mono text-[12px] text-stone">{PUBLIC_CATALOG_DOMAIN}/seu-nome</p>
           </Reveal>
         </div>
         <div className="grid border-t border-mist md:grid-cols-2">

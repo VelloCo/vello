@@ -10,7 +10,7 @@ export function Logo({ variant = 'dark', className = '' }: LogoProps) {
   return (
     <span className={`inline-flex items-center gap-2.5 ${className}`}>
       <img
-        src={`${appPath('/vello-logo.png')}?v=4`}
+        src={appPath('/vello-logo.webp')}
         alt=""
         aria-hidden="true"
         className="h-10 w-10 object-contain"

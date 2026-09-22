@@ -4,6 +4,26 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Claude Code. Segurança, limpeza de corretores e otimização:
+- Migrations aplicadas em produção: `20260922120000_security_hardening`
+  (limites no `book_appointment`: 20 reservas online/hora por página e 5
+  pedidos/dia por WhatsApp; `get_selection`, `get_catalog` e `set_updated_at`
+  sem EXECUTE para anon/authenticated) e `20260922130000_admin_dashboard_estetica`
+  (admin com métricas de profissionais, serviços e agendamentos, sem dados de
+  clientes).
+- Código de corretores removido: 22 componentes da landing antiga, páginas
+  públicas de imóveis/seleções, telas de Imóveis/Seleções do painel, tipos e
+  funções de imóveis/seleções em `vello.ts`, tour antigo, CSS e ~30 imagens.
+  Rotas `/catalogo/*`, `/selecao/*` e `/:slug/imovel/*` agora dão 404.
+  As TABELAS antigas (properties, property_images, selections,
+  selection_properties), colunas CRECI e o bucket `property-images` ainda
+  existem no banco: remoção depende de confirmação do usuário.
+- Fotos: `src/lib/image.ts` reduz e converte para WebP no navegador antes do
+  upload (serviços 1600px, avatar 512px). Capas padrão, logo, mascote e OG
+  convertidos (capas 3,2 MB → 380 KB). Rotas carregadas sob demanda
+  (`React.lazy`) e Supabase só carrega em telas com login: JS inicial
+  735 KB → 202 KB. Fontes via `<link>` com preconnect.
+
 2026-09-22 — Codex. As capas automáticas voltaram a ter os efeitos editoriais
 ao redor das personagens. O modelo gerou nove camadas individuais
 `*-effects-v4.png`, com fitas, folhas, brilhos e pontilhado transparentes para

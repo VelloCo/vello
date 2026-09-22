@@ -24,7 +24,7 @@ import {
 import { appPath } from "../../lib/paths";
 import { Logo } from "../Logo";
 
-const logo = `${appPath("/vello-logo.png")}?v=4`;
+const logo = appPath("/vello-logo.webp");
 
 /* Renderiza a tela no tamanho real e reduz com zoom, mantendo o texto nítido. */
 export function Scaled({ scale, children, className = "", style }: { scale: number; children: ReactNode; className?: string; style?: CSSProperties }) {

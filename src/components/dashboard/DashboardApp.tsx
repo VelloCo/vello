@@ -1,9 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  ArrowDown,
-  ArrowUp,
-  Archive,
   Ban,
   Building2,
   CalendarDays,
@@ -12,7 +9,6 @@ import {
   Clock3,
   Copy,
   ExternalLink,
-  FolderHeart,
   Home,
   ImagePlus,
   LoaderCircle,
@@ -20,13 +16,11 @@ import {
   MessageCircle,
   MoreHorizontal,
   Palette,
-  PencilLine,
   Plus,
   Search,
   Settings2,
   Share2,
   Sparkles,
-  Trash2,
   UserRound,
   X,
 } from "lucide-react";
@@ -47,28 +41,18 @@ import {
 } from "../catalog/PublicPageParts";
 import { signOut, updatePassword } from "../../lib/auth";
 import {
-  brl,
   brlCents,
-  dateBR,
-  deleteProperty,
   deleteService,
-  deleteSelection,
   getAppointments,
   getBusinessHours,
   getProfile,
-  getProperties,
-  getSelections,
   getServices,
   replaceBusinessHours,
   saveService,
   saveProfile,
-  saveProperty,
-  saveSelection,
   setAppointmentStatus,
-  setSelectionStatus,
   slugify,
   uploadAvatar,
-  uploadPropertyImages,
   uploadServiceImages,
 } from "../../lib/vello";
 import type {
@@ -76,8 +60,6 @@ import type {
   BusinessHour,
   CatalogTheme,
   Profile,
-  Property,
-  Selection,
   Service,
 } from "../../lib/vello";
 
@@ -98,24 +80,19 @@ const nav = [
 const go = (href: string) => (window.location.href = appPath(href));
 const publicCatalogUrl = (slug?: string | null) =>
   `${PUBLIC_SITE_ORIGIN}/${(slug || "").replace(/^\/+|\/+$/g, "")}`;
-const publicPropertyPath = (catalogSlug: string, property: Property) =>
-  appPath(`/${catalogSlug}/imovel/${property.slug || property.id}`);
-const cover = (p: Property) =>
-  p.property_images?.find((i) => i.is_cover)?.image_url ||
-  p.property_images?.[0]?.image_url;
 const serviceCover = (service: Service) =>
   service.service_images?.find((image) => image.is_cover)?.image_url ||
   service.service_images?.[0]?.image_url;
 const serviceCoverAsset: Record<Service["category"], string> = {
-  facial: "/service-covers/facial-v2.jpg",
-  corporal: "/service-covers/corporal-v2.jpg",
-  depilacao: "/service-covers/depilacao-v2.jpg",
-  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios-v2.jpg",
-  unhas: "/service-covers/unhas-v2.jpg",
-  cabelo: "/service-covers/cabelo-v2.jpg",
-  massagem: "/service-covers/massagem-v2.jpg",
-  harmonizacao: "/service-covers/harmonizacao-v2.jpg",
-  outros: "/service-covers/outros-v2.jpg",
+  facial: "/service-covers/facial-v2.webp",
+  corporal: "/service-covers/corporal-v2.webp",
+  depilacao: "/service-covers/depilacao-v2.webp",
+  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios-v2.webp",
+  unhas: "/service-covers/unhas-v2.webp",
+  cabelo: "/service-covers/cabelo-v2.webp",
+  massagem: "/service-covers/massagem-v2.webp",
+  harmonizacao: "/service-covers/harmonizacao-v2.webp",
+  outros: "/service-covers/outros-v2.webp",
 };
 const serviceCoverStyle = (category: Service["category"]) => {
   return {
@@ -125,12 +102,6 @@ const serviceCoverStyle = (category: Service["category"]) => {
     backgroundRepeat: "no-repeat",
     backgroundSize: "cover",
   };
-};
-const statusLabel: Record<Property["status"], string> = {
-  available: "Disponível",
-  reserved: "Reservado",
-  sold: "Vendido",
-  rented: "Alugado",
 };
 const serviceCategoryLabel: Record<Service["category"], string> = {
   facial: "Facial",
@@ -194,125 +165,6 @@ function Button({
     </button>
   );
 }
-function Badge({ status }: { status: Property["status"] }) {
-  const tone =
-    status === "available"
-      ? "bg-stone-100 text-stone-700"
-      : status === "reserved"
-        ? "bg-amber-50 text-amber-800"
-        : "bg-zinc-200 text-zinc-700";
-  return (
-    <span
-      className={`rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide ${tone}`}
-    >
-      {statusLabel[status]}
-    </span>
-  );
-}
-
-function PropertyCard({
-  property,
-  onEdit,
-  onDelete,
-  catalogSlug,
-  compact = false,
-}: {
-  property: Property;
-  onEdit: () => void;
-  onDelete?: () => void;
-  catalogSlug?: string | null;
-  compact?: boolean;
-}) {
-  const [open, setOpen] = useState(false);
-  return (
-    <article className="vello-surface group relative overflow-hidden rounded-[22px] border border-line bg-white">
-      <div
-        className={`relative overflow-hidden bg-cream ${compact ? "aspect-[4/3]" : "aspect-[16/10]"}`}
-      >
-        {cover(property) ? (
-          <img
-            src={cover(property)}
-            alt={property.title}
-            loading="lazy"
-            referrerPolicy="no-referrer"
-            onError={(event) => {
-              event.currentTarget.onerror = null;
-              event.currentTarget.src = appPath("/hero-vello-house.png");
-            }}
-            className="vello-card-image h-full w-full object-cover"
-          />
-        ) : (
-          <div className="grid h-full place-items-center text-stone">
-            <Building2 size={26} />
-          </div>
-        )}
-        <div className="absolute left-3 top-3">
-          <Badge status={property.status} />
-        </div>
-        <button
-          aria-label={`Ações para ${property.title}`}
-          onClick={() => setOpen(!open)}
-          className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-white/90 text-ink shadow-sm"
-        >
-          <MoreHorizontal size={17} />
-        </button>
-        {open && (
-          <div className="vello-popover absolute right-3 top-12 z-20 w-40 rounded-xl border border-line bg-white p-1.5 text-left shadow-[0_18px_48px_-18px_rgba(18,40,58,.28)]">
-            <button
-              onClick={onEdit}
-              className="w-full rounded-lg px-3 py-2 text-left font-body text-sm hover:bg-cream"
-            >
-              Editar
-            </button>
-            {catalogSlug && (
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${window.location.origin}${publicPropertyPath(catalogSlug, property)}`,
-                  );
-                  setOpen(false);
-                }}
-                className="w-full rounded-lg px-3 py-2 text-left font-body text-sm hover:bg-cream"
-              >
-                Copiar link
-              </button>
-            )}
-            {onDelete && (
-              <button
-                onClick={onDelete}
-                className="w-full rounded-lg px-3 py-2 text-left font-body text-sm text-red-700 hover:bg-red-50"
-              >
-                Excluir
-              </button>
-            )}
-          </div>
-        )}
-      </div>
-      <div className="p-4">
-        <div className="flex items-start justify-between gap-3">
-          <h3 className="line-clamp-1 font-display text-lg font-semibold text-ink">
-            {property.title}
-          </h3>
-          {property.publication_status === "draft" && (
-            <span className="rounded-full border border-line px-2 py-1 font-mono text-[9px] text-stone">
-              Rascunho
-            </span>
-          )}
-        </div>
-        <p className="mt-1 font-mono text-sm text-ink">
-          {brl(property.price, property.transaction_type === "rent")}
-        </p>
-        <p className="mt-2 line-clamp-1 font-body text-sm text-ash">
-          {property.neighborhood} · {property.city}
-        </p>
-        <p className="mt-3 font-body text-xs text-ash">
-          {property.bedrooms} quartos · {property.area} m²
-        </p>
-      </div>
-    </article>
-  );
-}
-
 function Sidebar({ profile, route }: { profile: Profile; route: string }) {
   const [account, setAccount] = useState(false);
   return (
@@ -320,7 +172,7 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
       <a href={appPath("/dashboard")}>
         <span className="inline-flex items-center gap-2">
           <img
-            src={`${appPath("/vello-logo.png")}?v=4`}
+            src={appPath("/vello-logo.webp")}
             alt=""
             className="h-7 w-7 object-contain"
           />
@@ -367,7 +219,7 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
               />
             ) : (
               <img
-                src={appPath("/vello-mascot.png")}
+                src={appPath("/vello-mascot.webp")}
                 alt="Mascote da Vello"
                 className="h-full w-full object-cover object-top"
               />
@@ -430,7 +282,7 @@ function MobileTopBar({ route }: { route: string }) {
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-white/90 px-5 backdrop-blur lg:hidden">
       <a href={appPath("/dashboard")} className="inline-flex items-center gap-2">
-        <img src={`${appPath("/vello-logo.png")}?v=4`} alt="" className="h-6 w-6 object-contain" />
+        <img src={appPath("/vello-logo.webp")} alt="" className="h-6 w-6 object-contain" />
         <b className="font-display text-lg text-ink">Vello</b>
       </a>
       <a
@@ -517,410 +369,6 @@ function Empty({
   );
 }
 
-function PropertiesPage({
-  profile,
-  properties,
-  refresh,
-  toast,
-}: {
-  profile: Profile;
-  properties: Property[];
-  refresh: () => void;
-  toast: (s: string) => void;
-}) {
-  const [query, setQuery] = useState("");
-  const [status, setStatus] = useState("all");
-  const [remove, setRemove] = useState<Property | null>(null);
-  const filtered = properties.filter(
-    (p) =>
-      (status === "all" || p.status === status) &&
-      `${p.title} ${p.neighborhood} ${p.city}`
-        .toLowerCase()
-        .includes(query.toLowerCase()),
-  );
-  return (
-    <>
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="font-display text-4xl font-semibold tracking-tight">
-            Imóveis
-          </h1>
-          <p className="mt-2 font-body text-ash">
-            Gerencie tudo o que está no seu catálogo.
-          </p>
-        </div>
-        <Button onClick={() => go("/dashboard/imoveis/novo")}>
-          <Plus size={17} /> Novo imóvel
-        </Button>
-      </header>
-      <div className="mt-8">
-        <label className="flex h-14 w-full items-center gap-3 rounded-2xl border border-line bg-white p-1.5 pr-3 shadow-[0_8px_22px_rgba(18,40,58,.035)] transition focus-within:border-ink focus-within:shadow-[0_10px_26px_rgba(18,40,58,.07)]">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-cream text-ash">
-            <Search size={18} strokeWidth={1.8} />
-          </span>
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Busque por imóvel, bairro ou cidade"
-            className="min-w-0 flex-1 bg-transparent font-body text-sm text-ink outline-none placeholder:text-stone"
-          />
-          {query && (
-            <button
-              type="button"
-              onClick={() => setQuery("")}
-              aria-label="Limpar busca"
-              className="grid h-8 w-8 place-items-center rounded-full text-stone transition hover:bg-cream hover:text-ink"
-            >
-              <X size={16} />
-            </button>
-          )}
-        </label>
-        <div className="vello-scrollbar-hidden mt-3 flex gap-2 overflow-x-auto pb-1">
-          {[
-            ["all", "Todos"],
-            ["available", "Disponíveis"],
-            ["reserved", "Reservados"],
-            ["sold", "Vendidos"],
-            ["rented", "Alugados"],
-          ].map(([v, l]) => (
-            <button
-              key={v}
-              onClick={() => setStatus(v)}
-              className={`h-11 whitespace-nowrap rounded-full border px-4 font-body text-sm ${status === v ? "border-ink bg-ink text-paper" : "border-line bg-white text-ash"}`}
-            >
-              {l}
-            </button>
-          ))}
-        </div>
-      </div>
-      <p className="mt-6 font-mono text-xs text-stone">
-        {filtered.length} imóveis
-      </p>
-      {filtered.length ? (
-        <div className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((p) => (
-            <PropertyCard
-              key={p.id}
-              property={p}
-              catalogSlug={profile.slug}
-              onEdit={() => go(`/dashboard/imoveis/${p.id}`)}
-              onDelete={() => setRemove(p)}
-            />
-          ))}
-        </div>
-      ) : (
-        <Empty
-          title="Nenhum imóvel encontrado."
-          text="Tente outro filtro ou adicione um novo imóvel."
-          action="Adicionar imóvel"
-          onAction={() => go("/dashboard/imoveis/novo")}
-        />
-      )}
-      {remove && (
-        <Dialog
-          title="Excluir este imóvel?"
-          text="Essa ação não poderá ser desfeita."
-          confirm="Excluir imóvel"
-          danger
-          onClose={() => setRemove(null)}
-          onConfirm={async () => {
-            await deleteProperty(remove.id);
-            toast("Imóvel excluído");
-            setRemove(null);
-            refresh();
-          }}
-        />
-      )}
-    </>
-  );
-}
-
-function PropertyEditor({
-  user,
-  property,
-  toast,
-  refresh,
-}: {
-  user: User;
-  property?: Property;
-  toast: (s: string) => void;
-  refresh: () => Promise<void>;
-}) {
-  const [form, setForm] = useState<Partial<Property>>(
-    property || {
-      title: "",
-      description: "",
-      transaction_type: "sale",
-      property_type: "Apartamento",
-      price: 0,
-      city: "",
-      neighborhood: "",
-      bedrooms: 0,
-      suites: 0,
-      bathrooms: 0,
-      parking_spaces: 0,
-      area: 0,
-      features: [],
-      status: "available",
-      publication_status: "published",
-      show_full_address: false,
-    },
-  );
-  const [images, setImages] = useState<Array<{ url: string; id?: string }>>(
-    (property?.property_images || []).map((i) => ({
-      url: i.image_url,
-      id: i.id,
-    })),
-  );
-  const [saving, setSaving] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const update = (key: keyof Property, value: unknown) =>
-    setForm((f) => ({ ...f, [key]: value }));
-  const upload = async (files: FileList | null) => {
-    if (!files) return;
-    try {
-      const urls = await uploadPropertyImages(
-        user.id,
-        files,
-        12 - images.length,
-      );
-      setImages((old) => [...old, ...urls.map((url) => ({ url }))]);
-    } catch (error) {
-      toast(
-        error instanceof Error
-          ? error.message
-          : "Não foi possível enviar as fotos.",
-      );
-    }
-  };
-  const moveImage = (from: number, to: number) => {
-    if (to < 0 || to >= images.length) return;
-    setImages((current) => {
-      const next = [...current];
-      [next[from], next[to]] = [next[to], next[from]];
-      return next;
-    });
-  };
-  const save = async () => {
-    if (!form.title || !form.city || !form.neighborhood) {
-      toast("Preencha título, cidade e bairro");
-      return;
-    }
-    setSaving(true);
-    try {
-      const id = await saveProperty(user.id, form, images);
-      toast(
-        form.publication_status === "draft" ? "Rascunho salvo" : "Imóvel salvo",
-      );
-      await refresh();
-      go(`/dashboard/imoveis/${id}`);
-    } catch {
-      toast("Não foi possível salvar. Tente novamente.");
-    } finally {
-      setSaving(false);
-    }
-  };
-  return (
-    <>
-      <button
-        onClick={() => go("/dashboard/imoveis")}
-        className="mb-7 inline-flex items-center gap-1 font-body text-sm text-ash"
-      >
-        <ChevronLeft size={16} /> Imóveis
-      </button>
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="font-display text-4xl font-semibold tracking-tight">
-            {property ? "Editar imóvel" : "Novo imóvel"}
-          </h1>
-          <p className="mt-2 font-body text-ash">
-            {property
-              ? "Atualize as informações que aparecem no catálogo."
-              : "Cadastre tudo em poucos minutos."}
-          </p>
-        </div>
-        <Button onClick={save} disabled={saving}>
-          {saving ? (
-            <LoaderCircle className="animate-spin" size={16} />
-          ) : (
-            <Check size={16} />
-          )}{" "}
-          {saving ? "Salvando..." : "Salvar alterações"}
-        </Button>
-      </header>
-      <div className="mt-9 grid gap-7 xl:grid-cols-[1fr_340px]">
-        <div className="space-y-6">
-          <section className="rounded-[24px] border border-line bg-white p-5 sm:p-6">
-            <p className="font-display text-xl font-semibold">Fotos</p>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              multiple
-              className="hidden"
-              onChange={(e) => upload(e.target.files)}
-            />
-            <button
-              onClick={() => fileRef.current?.click()}
-              className="mt-4 flex min-h-36 w-full flex-col items-center justify-center rounded-2xl border border-dashed border-line bg-cream/40 font-body text-sm text-ash hover:border-ink"
-            >
-              <ImagePlus size={23} />
-              <span className="mt-2">Adicionar fotos</span>
-            </button>
-            {images.length > 0 && (
-              <div className="mt-4 grid grid-cols-3 gap-3">
-                {images.map((image, i) => (
-                  <div
-                    key={image.url}
-                    className="relative aspect-square overflow-hidden rounded-xl"
-                  >
-                    <img
-                      src={image.url}
-                      className="h-full w-full object-cover"
-                    />
-                    <button
-                      onClick={() =>
-                        setImages((xs) => xs.filter((_, n) => n !== i))
-                      }
-                      className="absolute right-1 top-1 rounded-full bg-white p-1.5"
-                    >
-                      <X size={13} />
-                    </button>
-                    <div className="absolute bottom-1 right-1 flex gap-1">
-                      <button
-                        type="button"
-                        aria-label="Mover foto para trás"
-                        disabled={i === 0}
-                        onClick={() => moveImage(i, i - 1)}
-                        className="rounded-full bg-white p-1.5 text-ink shadow disabled:opacity-40"
-                      >
-                        <ArrowUp size={12} />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Mover foto para frente"
-                        disabled={i === images.length - 1}
-                        onClick={() => moveImage(i, i + 1)}
-                        className="rounded-full bg-white p-1.5 text-ink shadow disabled:opacity-40"
-                      >
-                        <ArrowDown size={12} />
-                      </button>
-                    </div>
-                    {i === 0 && (
-                      <span className="absolute bottom-1 left-1 rounded bg-ink px-1.5 py-1 font-mono text-[9px] text-paper">
-                        CAPA
-                      </span>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-          <section className="rounded-[24px] border border-line bg-white p-5 sm:p-6">
-            <p className="font-display text-xl font-semibold">Informações</p>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
-              <Field
-                label="Título"
-                value={form.title || ""}
-                onChange={(v) => update("title", v)}
-                className="sm:col-span-2"
-              />
-              <SelectField
-                label="Finalidade"
-                value={form.transaction_type || "sale"}
-                onChange={(v) => update("transaction_type", v)}
-                options={[
-                  ["sale", "Venda"],
-                  ["rent", "Aluguel"],
-                ]}
-              />
-              <Field
-                label="Tipo"
-                value={form.property_type || ""}
-                onChange={(v) => update("property_type", v)}
-              />
-              <Field
-                label="Preço"
-                type="number"
-                value={String(form.price || "")}
-                onChange={(v) => update("price", Number(v))}
-              />
-              <SelectField
-                label="Status comercial"
-                value={form.status || "available"}
-                onChange={(v) => update("status", v)}
-                options={Object.entries(statusLabel)}
-              />
-              <Field
-                label="Cidade"
-                value={form.city || ""}
-                onChange={(v) => update("city", v)}
-              />
-              <Field
-                label="Bairro"
-                value={form.neighborhood || ""}
-                onChange={(v) => update("neighborhood", v)}
-              />
-              <Field
-                label="Endereço"
-                value={form.address || ""}
-                onChange={(v) => update("address", v)}
-                className="sm:col-span-2"
-              />
-            </div>
-          </section>
-        </div>
-        <aside className="space-y-6">
-          <section className="rounded-[24px] border border-line bg-white p-5">
-            <p className="font-display text-xl font-semibold">
-              Características
-            </p>
-            <div className="mt-5 grid grid-cols-2 gap-3">
-              {[
-                ["bedrooms", "Quartos"],
-                ["suites", "Suítes"],
-                ["bathrooms", "Banheiros"],
-                ["parking_spaces", "Vagas"],
-                ["area", "Área m²"],
-              ].map(([key, label]) => (
-                <Field
-                  key={key}
-                  label={label}
-                  type="number"
-                  value={String(form[key as keyof Property] || "")}
-                  onChange={(v) => update(key as keyof Property, Number(v))}
-                />
-              ))}
-            </div>
-          </section>
-          <section className="rounded-[24px] border border-line bg-white p-5">
-            <label className="font-body text-sm font-semibold">Descrição</label>
-            <textarea
-              value={form.description || ""}
-              onChange={(e) => update("description", e.target.value)}
-              className="mt-3 min-h-40 w-full rounded-xl border border-line p-3 font-body text-sm outline-none focus:border-ink"
-              placeholder="Conte os principais diferenciais deste imóvel..."
-            />
-            <label className="mt-4 flex items-center justify-between font-body text-sm">
-              Publicar no catálogo
-              <input
-                type="checkbox"
-                checked={form.publication_status === "published"}
-                onChange={(e) =>
-                  update(
-                    "publication_status",
-                    e.target.checked ? "published" : "draft",
-                  )
-                }
-                className="h-4 w-4 accent-black"
-              />
-            </label>
-          </section>
-        </aside>
-      </div>
-    </>
-  );
-}
 function Field({
   label,
   value,
@@ -1861,416 +1309,6 @@ function AgendaPage({
   );
 }
 
-function SelectionsPage({
-  selections,
-  refresh,
-  toast,
-}: {
-  selections: Selection[];
-  refresh: () => Promise<void>;
-  toast: (value: string) => void;
-}) {
-  const [remove, setRemove] = useState<Selection | null>(null);
-  const [copiedSelection, setCopiedSelection] = useState<string | null>(null);
-  const setStatus = async (
-    selection: Selection,
-    status: Selection["status"],
-  ) => {
-    try {
-      await setSelectionStatus(selection.id, status);
-      toast(status === "archived" ? "Seleção arquivada" : "Seleção reativada");
-      await refresh();
-    } catch {
-      toast("Não foi possível atualizar a seleção.");
-    }
-  };
-  return (
-    <>
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <h1 className="font-display text-4xl font-semibold tracking-tight">
-            Seleções
-          </h1>
-          <p className="mt-2 font-body text-ash">
-            Separe os imóveis certos para cada cliente e envie tudo em um único
-            link.
-          </p>
-        </div>
-        <Button onClick={() => go("/dashboard/selecoes/nova")}>
-          <Plus size={17} /> Nova seleção
-        </Button>
-      </header>
-      {selections.length ? (
-        <div className="mt-9 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {selections.map((s) => (
-            <article
-              key={s.id}
-              className="flex min-h-[250px] flex-col rounded-[20px] border border-line bg-white p-5 shadow-[0_18px_45px_-38px_rgba(18,40,58,.28)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_55px_-38px_rgba(18,40,58,.34)]"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="min-w-0">
-                  <p className="truncate font-display text-xl font-medium">
-                    {s.client_name}
-                  </p>
-                  <p className="mt-2 font-body text-sm text-ash">
-                    {s.selection_properties?.length || 0} imóveis ·{" "}
-                    {dateBR(s.created_at)}
-                  </p>
-                </div>
-                <span
-                  className={`shrink-0 rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-wide ${s.status === "active" ? "bg-cream text-stone" : "bg-stone/10 text-stone"}`}
-                >
-                  {s.status === "active" ? "Ativa" : "Arquivada"}
-                </span>
-              </div>
-              <div className="mt-5 rounded-[14px] border border-line bg-cream/55 px-3 py-2">
-                <p className="truncate font-mono text-[11px] text-stone">
-                  /selecao/{s.slug}
-                </p>
-              </div>
-              <div className="mt-auto pt-6">
-                <button
-                  onClick={() => go(`/dashboard/selecoes/${s.id}`)}
-                  className="vello-primary bg-sky text-ink flex h-11 w-full items-center justify-center gap-2 rounded-full px-4 font-body text-sm font-semibold transition"
-                >
-                  <PencilLine size={15} /> Editar seleção
-                </button>
-                <div className="mt-3 grid grid-cols-2 gap-2">
-                  <button
-                    onClick={async () => {
-                      await navigator.clipboard.writeText(
-                        `${window.location.origin}${appPath(`/selecao/${s.slug}`)}`,
-                      );
-                      setCopiedSelection(s.id);
-                      toast("Link copiado");
-                      window.setTimeout(
-                        () =>
-                          setCopiedSelection((current) =>
-                            current === s.id ? null : current,
-                          ),
-                        1800,
-                      );
-                    }}
-                    className="flex h-10 items-center justify-center gap-2 rounded-full border border-line px-3 font-body text-xs font-medium transition hover:border-ink"
-                  >
-                    {copiedSelection === s.id ? (
-                      <>
-                        <Check size={14} /> Copiado
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={14} /> Copiar
-                      </>
-                    )}
-                  </button>
-                  {s.client_whatsapp ? (
-                    <a
-                      href={`https://wa.me/${s.client_whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(`Oi ${s.client_name}! Separei alguns imóveis para você: ${window.location.origin}${appPath(`/selecao/${s.slug}`)}`)}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex h-10 items-center justify-center gap-2 rounded-full border border-line px-3 font-body text-xs font-medium transition hover:border-ink"
-                    >
-                      <MessageCircle size={14} /> Enviar
-                    </a>
-                  ) : (
-                    <button
-                      onClick={() => go(`/dashboard/selecoes/${s.id}`)}
-                      className="flex h-10 items-center justify-center gap-2 rounded-full border border-line px-3 font-body text-xs font-medium text-ash transition hover:border-ink hover:text-ink"
-                    >
-                      <Plus size={14} /> WhatsApp
-                    </button>
-                  )}
-                </div>
-                <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
-                  <button
-                    onClick={() =>
-                      setStatus(
-                        s,
-                        s.status === "active" ? "archived" : "active",
-                      )
-                    }
-                    className="inline-flex items-center gap-1.5 font-body text-xs text-ash hover:text-ink"
-                  >
-                    <Archive size={14} />{" "}
-                    {s.status === "active" ? "Arquivar" : "Reativar"}
-                  </button>
-                  <button
-                    onClick={() => setRemove(s)}
-                    className="inline-flex items-center gap-1.5 font-body text-xs text-red-700"
-                  >
-                    <Trash2 size={14} /> Excluir
-                  </button>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      ) : (
-        <Empty
-          title="Nenhuma seleção por aqui ainda."
-          text="Quando um cliente disser o que procura, monte uma seleção só para ele."
-          action="Criar seleção"
-          onAction={() => go("/dashboard/selecoes/nova")}
-        />
-      )}
-      {remove && (
-        <Dialog
-          title="Excluir esta seleção?"
-          text="O link deixará de funcionar e essa ação não poderá ser desfeita."
-          confirm="Excluir seleção"
-          danger
-          onClose={() => setRemove(null)}
-          onConfirm={async () => {
-            try {
-              await deleteSelection(remove.id);
-              toast("Seleção excluída");
-              setRemove(null);
-              await refresh();
-            } catch {
-              toast("Não foi possível excluir a seleção.");
-            }
-          }}
-        />
-      )}
-    </>
-  );
-}
-function SelectionEditor({
-  user,
-  properties,
-  selection,
-  toast,
-  refresh,
-}: {
-  user: User;
-  properties: Property[];
-  selection?: Selection;
-  toast: (s: string) => void;
-  refresh: () => Promise<void>;
-}) {
-  const initial =
-    selection?.selection_properties
-      ?.sort((a, b) => a.position - b.position)
-      .map((x) => x.property_id) || [];
-  const [name, setName] = useState(selection?.client_name || "");
-  const [whats, setWhats] = useState(selection?.client_whatsapp || "");
-  const [msg, setMsg] = useState(
-    selection?.intro_message ||
-      "Separei algumas opções que combinam com o que você procura.",
-  );
-  const [selected, setSelected] = useState(initial);
-  const [saving, setSaving] = useState(false);
-  const toggle = (id: string) =>
-    setSelected((x) =>
-      x.includes(id) ? x.filter((y) => y !== id) : [...x, id],
-    );
-  const moveSelected = (from: number, to: number) => {
-    if (to < 0 || to >= selected.length) return;
-    setSelected((current) => {
-      const next = [...current];
-      [next[from], next[to]] = [next[to], next[from]];
-      return next;
-    });
-  };
-  const save = async () => {
-    if (!name || !selected.length) {
-      toast("Informe o cliente e selecione ao menos um imóvel");
-      return;
-    }
-    setSaving(true);
-    try {
-      const id = await saveSelection(
-        user.id,
-        {
-          ...selection,
-          client_name: name,
-          client_whatsapp: whats,
-          intro_message: msg,
-          status: "active",
-          slug: selection?.slug || "",
-        },
-        selected,
-      );
-      await refresh();
-      toast(selection ? "Seleção atualizada" : "Seleção criada");
-      go(selection ? `/dashboard/selecoes/${id}` : "/dashboard/selecoes");
-    } catch {
-      toast("Não foi possível salvar. Tente novamente.");
-    } finally {
-      setSaving(false);
-    }
-  };
-  return (
-    <>
-      <button
-        onClick={() => go("/dashboard/selecoes")}
-        className="mb-7 inline-flex items-center gap-1 font-body text-sm text-ash"
-      >
-        <ChevronLeft size={16} /> Seleções
-      </button>
-      <header className="flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <span className="mb-3 inline-flex rounded-full border border-line bg-white px-3 py-1 font-mono text-[10px] uppercase tracking-[.12em] text-stone">
-            {selection ? "Modo edição" : "Nova conversa"}
-          </span>
-          <h1 className="font-display text-4xl font-medium tracking-[-.04em]">
-            {selection ? "Editar seleção" : "Nova seleção"}
-          </h1>
-          <p className="mt-2 font-body text-ash">
-            Escolha os imóveis que mais combinam com o seu cliente.
-          </p>
-        </div>
-        <Button onClick={save} disabled={saving}>
-          {saving
-            ? "Salvando..."
-            : selection
-              ? "Salvar seleção"
-              : "Criar seleção"}
-        </Button>
-      </header>
-      <div className="mt-9 grid gap-7 xl:grid-cols-[340px_1fr]">
-        <aside className="rounded-[20px] border border-line bg-white p-5 shadow-[0_18px_45px_-40px_rgba(18,40,58,.35)] sm:p-6">
-          <div className="mb-6 flex items-start justify-between gap-4">
-            <div>
-              <p className="font-display text-xl font-medium">
-                Dados da seleção
-              </p>
-              <p className="mt-1 font-body text-xs leading-relaxed text-ash">
-                Essas informações aparecem no link enviado ao cliente.
-              </p>
-            </div>
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-cream">
-              <FolderHeart size={16} />
-            </span>
-          </div>
-          <div className="space-y-5">
-            <Field label="Nome do cliente" value={name} onChange={setName} />
-            <Field
-              label="WhatsApp · opcional"
-              value={whats}
-              onChange={setWhats}
-            />
-            <label>
-              <span className="mb-3 block font-body text-[11px] font-medium uppercase tracking-[0.08em] text-ash">
-                Mensagem
-              </span>
-              <textarea
-                value={msg}
-                onChange={(e) => setMsg(e.target.value)}
-                className="min-h-32 w-full rounded-xl border border-line p-3 font-body text-sm outline-none focus:border-ink"
-              />
-            </label>
-          </div>
-          <div className="mt-8 flex items-center justify-between rounded-[14px] bg-cream px-4 py-3">
-            <span className="font-body text-sm text-ash">
-              Imóveis na seleção
-            </span>
-            <span className="font-mono text-xs text-ink">
-              {selected.length}
-            </span>
-          </div>
-          {selected.length > 0 && (
-            <div className="mt-4 border-t border-line pt-4">
-              <p className="font-body text-[11px] font-medium uppercase tracking-[0.08em] text-ash">
-                Ordem da seleção
-              </p>
-              <div className="mt-3 space-y-2">
-                {selected.map((id, index) => {
-                  const item = properties.find(
-                    (property) => property.id === id,
-                  );
-                  if (!item) return null;
-                  return (
-                    <div
-                      key={id}
-                      className="flex items-center gap-2 rounded-xl border border-line bg-white px-3 py-2"
-                    >
-                      <span className="grid h-6 w-6 place-items-center rounded-full bg-cream font-mono text-[10px]">
-                        {index + 1}
-                      </span>
-                      <span className="min-w-0 flex-1 truncate font-body text-xs font-medium">
-                        {item.title}
-                      </span>
-                      <button
-                        type="button"
-                        aria-label="Subir imóvel"
-                        disabled={index === 0}
-                        onClick={() => moveSelected(index, index - 1)}
-                        className="grid h-7 w-7 place-items-center rounded-full hover:bg-cream disabled:opacity-30"
-                      >
-                        <ArrowUp size={14} />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Descer imóvel"
-                        disabled={index === selected.length - 1}
-                        onClick={() => moveSelected(index, index + 1)}
-                        className="grid h-7 w-7 place-items-center rounded-full hover:bg-cream disabled:opacity-30"
-                      >
-                        <ArrowDown size={14} />
-                      </button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </aside>
-        <section>
-          <div className="flex items-end justify-between gap-4 border-b border-line pb-4">
-            <div>
-              <p className="font-display text-2xl font-medium tracking-[-.03em]">
-                Escolher imóveis
-              </p>
-              <p className="mt-1 font-body text-sm text-ash">
-                Toque nos imóveis para montar o link do cliente.
-              </p>
-            </div>
-            <span className="shrink-0 font-mono text-[10px] uppercase tracking-[.12em] text-stone">
-              {
-                properties.filter((p) => p.publication_status === "published")
-                  .length
-              }{" "}
-              publicados
-            </span>
-          </div>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {properties
-              .filter((p) => p.publication_status === "published")
-              .map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => toggle(p.id)}
-                  className={`relative overflow-hidden rounded-[20px] border text-left transition ${selected.includes(p.id) ? "border-ink ring-2 ring-ink" : "border-line bg-white"}`}
-                >
-                  <div className="aspect-[16/9] bg-cream">
-                    {cover(p) && (
-                      <img
-                        src={cover(p)}
-                        className="h-full w-full object-cover"
-                      />
-                    )}
-                  </div>
-                  <div className="p-4">
-                    <p className="font-display font-semibold">{p.title}</p>
-                    <p className="mt-1 font-mono text-sm">{brl(p.price)}</p>
-                    <p className="mt-2 font-body text-xs text-ash">
-                      {p.neighborhood} · {p.bedrooms} quartos
-                    </p>
-                  </div>
-                  {selected.includes(p.id) && (
-                    <span className="absolute right-3 top-3 grid h-8 w-8 place-items-center rounded-full bg-ink text-paper">
-                      <Check size={16} />
-                    </span>
-                  )}
-                </button>
-              ))}
-          </div>
-        </section>
-      </div>
-    </>
-  );
-}
 function CatalogPage({
   profile,
   services,
@@ -2703,7 +1741,7 @@ function ProfilePage({
                 <div className="min-w-0 flex-1 basis-[180px]">
                   <b className="block font-body text-sm">Foto de perfil</b>
                   <span className="mt-1 block font-body text-xs text-ash">
-                    Sua foto, da equipe ou da fachada. JPG, PNG ou WebP, até 5 MB.
+                    Sua foto, da equipe ou da fachada. A Vello otimiza a imagem automaticamente.
                   </span>
                   <input
                     ref={avatarInput}
@@ -3438,8 +2476,6 @@ function Dialog({
 
 export function DashboardApp({ user, route }: Props) {
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [properties, setProperties] = useState<Property[]>([]);
-  const [selections, setSelections] = useState<Selection[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [businessHours, setBusinessHours] = useState<BusinessHour[]>([]);
@@ -3451,17 +2487,13 @@ export function DashboardApp({ user, route }: Props) {
   };
   const refresh = async () => {
     try {
-      const [p, pr, s, sv, ap, bh] = await Promise.all([
+      const [p, sv, ap, bh] = await Promise.all([
         getProfile(user.id),
-        getProperties(user.id),
-        getSelections(user.id),
         getServices(user.id),
         getAppointments(user.id),
         getBusinessHours(user.id),
       ]);
       setProfile(p);
-      setProperties(pr);
-      setSelections(s);
       setServices(sv);
       setAppointments(ap);
       setBusinessHours(bh);
@@ -3513,61 +2545,7 @@ export function DashboardApp({ user, route }: Props) {
     page = (
       <AgendaPage appointments={appointments} refresh={refresh} toast={say} />
     );
-  else if (route === "/dashboard/imoveis")
-    page = (
-      <PropertiesPage
-        profile={profile}
-        properties={properties}
-        refresh={refresh}
-        toast={say}
-      />
-    );
-  else if (route === "/dashboard/imoveis/novo")
-    page = <PropertyEditor user={user} toast={say} refresh={refresh} />;
-  else if (route.startsWith("/dashboard/imoveis/")) {
-    const p = properties.find((x) => x.id === route.split("/").pop());
-    page = p ? (
-      <PropertyEditor user={user} property={p} toast={say} refresh={refresh} />
-    ) : (
-      <Empty
-        title="Imóvel não encontrado."
-        text="Ele pode ter sido removido."
-        action="Voltar aos imóveis"
-        onAction={() => go("/dashboard/imoveis")}
-      />
-    );
-  } else if (route === "/dashboard/selecoes")
-    page = (
-      <SelectionsPage selections={selections} refresh={refresh} toast={say} />
-    );
-  else if (route === "/dashboard/selecoes/nova")
-    page = (
-      <SelectionEditor
-        user={user}
-        properties={properties}
-        toast={say}
-        refresh={refresh}
-      />
-    );
-  else if (route.startsWith("/dashboard/selecoes/")) {
-    const s = selections.find((x) => x.id === route.split("/").pop());
-    page = s ? (
-      <SelectionEditor
-        user={user}
-        properties={properties}
-        selection={s}
-        toast={say}
-        refresh={refresh}
-      />
-    ) : (
-      <Empty
-        title="Seleção não encontrada."
-        text="Ela pode ter sido removida."
-        action="Voltar às seleções"
-        onAction={() => go("/dashboard/selecoes")}
-      />
-    );
-  } else if (route === "/dashboard/catalogo")
+  else if (route === "/dashboard/catalogo")
     page = <CatalogPage profile={profile} services={services} toast={say} />;
   else if (route === "/dashboard/personalizar")
     page = (

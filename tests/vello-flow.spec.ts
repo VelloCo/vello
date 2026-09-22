@@ -22,7 +22,7 @@ test.describe('Vello – fluxo público e proteção de rotas', () => {
   });
 
   test('rotas privadas não ficam expostas sem sessão', async ({ page }) => {
-    for (const path of ['/dashboard', '/dashboard/imoveis/novo', '/onboarding']) {
+    for (const path of ['/dashboard', '/dashboard/servicos/novo', '/onboarding']) {
       await page.goto(`${baseUrl}${path}`, { waitUntil: 'domcontentloaded' });
       await expect(page).toHaveURL(/\/login(?:\?.*)?$/);
     }

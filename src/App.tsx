@@ -1,16 +1,6 @@
-import { useEffect, useState } from "react";
-import { VelloLandingEstetica } from "./components/VelloLandingEstetica";
-import { AdminApp } from "./components/AdminApp";
-import { LegalPage, NotFoundPage, SupportPage } from "./components/LaunchPages";
-import { AuthPage } from "./components/auth/AuthPage";
-import { Onboarding } from "./components/onboarding/Onboarding";
-import { PublicCatalog } from "./components/catalog/PublicCatalog";
-import { PublicServiceCatalog } from "./components/catalog/PublicServiceCatalog";
-import { PublicSelection } from "./components/catalog/PublicSelection";
-import { DashboardApp } from "./components/dashboard/DashboardApp";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { LoadingScreen } from "./components/LoadingScreen";
 import { appPath } from "./lib/paths";
-import { supabase } from "./lib/supabase";
 import { initAnalytics, trackPage } from "./lib/analytics";
 
 const getLocation = () => ({
@@ -22,11 +12,27 @@ const getLocation = () => ({
   search: window.location.search,
 });
 
-function Landing() {
-  return <VelloLandingEstetica />;
-}
+// Cada área carrega só quando é aberta: quem vê a landing ou a página de uma
+// estética não baixa o painel, e vice-versa.
+const Landing = lazy(() => import("./components/VelloLandingEstetica").then((m) => ({ default: m.VelloLandingEstetica })));
+const AdminApp = lazy(() => import("./components/AdminApp").then((m) => ({ default: m.AdminApp })));
+const AuthPage = lazy(() => import("./components/auth/AuthPage").then((m) => ({ default: m.AuthPage })));
+const Onboarding = lazy(() => import("./components/onboarding/Onboarding").then((m) => ({ default: m.Onboarding })));
+const PublicServiceCatalog = lazy(() => import("./components/catalog/PublicServiceCatalog").then((m) => ({ default: m.PublicServiceCatalog })));
+const DashboardApp = lazy(() => import("./components/dashboard/DashboardApp").then((m) => ({ default: m.DashboardApp })));
+const LegalPage = lazy(() => import("./components/LaunchPages").then((m) => ({ default: m.LegalPage })));
+const SupportPage = lazy(() => import("./components/LaunchPages").then((m) => ({ default: m.SupportPage })));
+const NotFoundPage = lazy(() => import("./components/LaunchPages").then((m) => ({ default: m.NotFoundPage })));
 
 export default function App() {
+  return (
+    <Suspense fallback={<LoadingScreen />}>
+      <Routes />
+    </Suspense>
+  );
+}
+
+function Routes() {
   const [location, setLocation] = useState(getLocation);
   const [user, setUser] = useState<
     import("@supabase/supabase-js").User | null | undefined
@@ -63,7 +69,7 @@ export default function App() {
       "href",
       `${window.location.origin}${appPath(path)}`,
     );
-    const socialImage = `${window.location.origin}${appPath("/og-vello-estetica-social.png")}`;
+    const socialImage = `${window.location.origin}${appPath("/og-vello-estetica-social.jpg")}`;
     document.querySelector('meta[property="og:title"]')?.setAttribute("content", page[0]);
     document.querySelector('meta[property="og:description"]')?.setAttribute("content", page[1]);
     document.querySelector('meta[property="og:url"]')?.setAttribute("content", `${window.location.origin}${appPath(path)}`);
@@ -75,17 +81,30 @@ export default function App() {
     trackPage(path);
   }, [authRoute, path, privateRoute]);
 
+  // O cliente do Supabase só é baixado nas telas que precisam de login;
+  // landing e página pública não pagam esse peso.
+  const needsAuth = authRoute || privateRoute;
   useEffect(() => {
-    if (!supabase) {
-      setUser(null);
-      return;
-    }
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => setUser(session?.user ?? null),
-    );
-    return () => listener.subscription.unsubscribe();
-  }, []);
+    if (!needsAuth) return;
+    let unsubscribe = () => {};
+    let active = true;
+    void import("./lib/supabase").then(({ supabase }) => {
+      if (!active) return;
+      if (!supabase) {
+        setUser(null);
+        return;
+      }
+      supabase.auth.getUser().then(({ data }) => active && setUser(data.user));
+      const { data: listener } = supabase.auth.onAuthStateChange(
+        (_event, session) => setUser(session?.user ?? null),
+      );
+      unsubscribe = () => listener.subscription.unsubscribe();
+    });
+    return () => {
+      active = false;
+      unsubscribe();
+    };
+  }, [needsAuth]);
 
   useEffect(() => {
     const syncLocation = () => setLocation(getLocation());
@@ -94,18 +113,20 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!user || !supabase) {
+    if (!user) {
       setOnboardingDone(undefined);
       return;
     }
-    supabase
-      .from("profiles")
-      .select("onboarding_completed")
-      .eq("user_id", user.id)
-      .maybeSingle()
-      .then(({ data }) =>
-        setOnboardingDone(Boolean(data?.onboarding_completed)),
-      );
+    void import("./lib/supabase").then(({ supabase }) =>
+      supabase
+        ?.from("profiles")
+        .select("onboarding_completed")
+        .eq("user_id", user.id)
+        .maybeSingle()
+        .then(({ data }) =>
+          setOnboardingDone(Boolean(data?.onboarding_completed)),
+        ),
+    );
   }, [user]);
 
   if (
@@ -134,15 +155,7 @@ export default function App() {
   if (path === "/privacidade") return <LegalPage kind="privacy" />;
   if (path === "/suporte") return <SupportPage />;
   if (path === "/404") return <NotFoundPage />;
-  const catalogRoute = path.match(/^\/catalogo\/([^/]+)(?:\/imovel\/([^/]+))?$/);
-  if (catalogRoute)
-    return <PublicCatalog slug={catalogRoute[1]} propertySlug={catalogRoute[2]} />;
-  if (path.startsWith("/selecao/"))
-    return <PublicSelection slug={path.replace("/selecao/", "")} />;
-  const publicRoute = path.match(/^\/([^/]+)(?:\/imovel\/([^/]+))?$/);
-  if (publicRoute)
-    return publicRoute[2]
-      ? <PublicCatalog slug={publicRoute[1]} propertySlug={publicRoute[2]} />
-      : <PublicServiceCatalog slug={publicRoute[1]} />;
+  const publicRoute = path.match(/^\/([A-Za-z0-9-]+)\/?$/);
+  if (publicRoute) return <PublicServiceCatalog slug={publicRoute[1].toLowerCase()} />;
   return path === "/" ? <Landing /> : <NotFoundPage />;
 }

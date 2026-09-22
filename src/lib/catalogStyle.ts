@@ -46,15 +46,15 @@ export const serviceCategoryNames: Record<string, string> = {
 };
 
 const coverAsset: Record<string, string> = {
-  facial: "/service-covers/facial-cutout-v3.png",
-  corporal: "/service-covers/corporal-cutout-v3.png",
-  depilacao: "/service-covers/depilacao-cutout-v3.png",
-  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios-cutout-v3.png",
-  unhas: "/service-covers/unhas-cutout-v3.png",
-  cabelo: "/service-covers/cabelo-cutout-v3.png",
-  massagem: "/service-covers/massagem-cutout-v3.png",
-  harmonizacao: "/service-covers/harmonizacao-cutout-v3.png",
-  outros: "/service-covers/outros-cutout-v3.png",
+  facial: "/service-covers/facial-cutout-v3.webp",
+  corporal: "/service-covers/corporal-cutout-v3.webp",
+  depilacao: "/service-covers/depilacao-cutout-v3.webp",
+  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios-cutout-v3.webp",
+  unhas: "/service-covers/unhas-cutout-v3.webp",
+  cabelo: "/service-covers/cabelo-cutout-v3.webp",
+  massagem: "/service-covers/massagem-cutout-v3.webp",
+  harmonizacao: "/service-covers/harmonizacao-cutout-v3.webp",
+  outros: "/service-covers/outros-cutout-v3.webp",
 };
 
 const effectsAsset: Record<string, string> = {
