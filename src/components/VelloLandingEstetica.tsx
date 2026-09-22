@@ -277,7 +277,7 @@ function DashboardMock() {
 function PhoneMock() {
   return (
     <div className="absolute left-1/2 top-2 w-[270px] -translate-x-1/2 rounded-[40px] border-[7px] border-white bg-white shadow-[0_40px_80px_-40px_rgba(18,40,58,.7)] ring-1 ring-line lg:left-0 lg:top-24 lg:translate-x-0">
-      <div className="relative h-[520px] overflow-hidden rounded-[33px] bg-white">
+      <div className="relative h-[520px] overflow-hidden rounded-[33px] bg-[#F7FAFC]">
         <div aria-hidden="true" className="flex h-8 items-center justify-between px-6 font-body text-[11px] font-semibold">
           <span>9:41</span>
           <span className="h-5 w-20 rounded-full bg-ink" />

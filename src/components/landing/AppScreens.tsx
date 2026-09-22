@@ -276,10 +276,10 @@ function ServiceArticle({ service }: { service: (typeof demoServices)[number] })
 
 function PublicHeader({ mobile = false }: { mobile?: boolean }) {
   return (
-    <header className="border-b border-line bg-white">
-      <div className={`flex h-[72px] items-center justify-between ${mobile ? "px-5" : "px-8"}`}>
+    <header className="bg-[#F7FAFC]">
+      <div className={`flex items-center justify-between ${mobile ? "h-16 px-5" : "h-[72px] px-8"}`}>
         <Logo className="origin-left scale-[.78]" />
-        <span className="inline-flex h-10 items-center gap-2 rounded-full border border-line px-4 font-body text-sm font-medium">
+        <span className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-white px-4 font-body text-sm font-medium shadow-[0_8px_24px_-20px_rgba(18,40,58,.55)]">
           <Share2 size={16} />
           {!mobile && "Compartilhar"}
         </span>
@@ -290,20 +290,30 @@ function PublicHeader({ mobile = false }: { mobile?: boolean }) {
 
 function PublicIntro({ mobile = false }: { mobile?: boolean }) {
   return (
-    <section className={`border-b border-line bg-white ${mobile ? "px-5 py-10" : "px-8 py-14"}`}>
-      <div className={`flex gap-6 ${mobile ? "flex-col" : "items-center"}`}>
-        <span className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-[26px] bg-[#E8F1F8]">
-          <img src={logo} alt="" className="h-12 w-12 object-contain" />
-        </span>
-        <div>
-          <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">Clínica de estética</p>
-          <h1 className={`mt-3 font-display font-semibold leading-none ${mobile ? "text-[40px]" : "text-[56px]"}`}>Studio Aurora</h1>
-          <p className="mt-4 max-w-2xl font-body text-[16px] leading-relaxed text-ash">Cuidados faciais e corporais com atendimento personalizado.</p>
-          <p className="mt-4 flex items-center gap-2 font-body text-sm text-ash">
-            <MapPin size={15} />
-            Moinhos de Vento · Porto Alegre · RS
-          </p>
+    <section className={mobile ? "px-5 pb-6 pt-2" : "px-8 pb-8 pt-4"}>
+      <div className={`relative overflow-hidden border border-[#CFE0EB] bg-[#E8F1F8] shadow-[0_24px_60px_-48px_rgba(18,40,58,.42)] ${mobile ? "rounded-[28px] p-5" : "rounded-[34px] p-8"}`}>
+        <div className="absolute -right-12 -top-20 h-52 w-52 rounded-full bg-white/45 blur-2xl" />
+        <div className="absolute -bottom-24 right-1/4 h-44 w-44 rounded-full bg-[#BFD9EB]/45 blur-3xl" />
+        <div className={`relative flex items-center ${mobile ? "gap-4" : "gap-6"}`}>
+          <span
+            className={`grid shrink-0 place-items-center rounded-full bg-white font-display font-semibold text-ink ring-4 ring-white/80 shadow-[0_14px_30px_-20px_rgba(18,40,58,.55)] ${mobile ? "h-[76px] w-[76px] text-xl" : "h-24 w-24 text-2xl"}`}
+          >
+            SA
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="inline-flex rounded-full border border-white/80 bg-white/70 px-3 py-1 font-mono text-[9px] uppercase tracking-[.14em] text-[#356D95]">
+              Clínica de estética
+            </p>
+            <h1 className={`mt-2 truncate font-display font-semibold leading-[1.02] tracking-[-.04em] ${mobile ? "text-[30px]" : "text-[48px]"}`}>Studio Aurora</h1>
+            <p className="mt-2 flex items-center gap-1.5 font-body text-sm font-medium text-[#46677E]">
+              <MapPin size={14} />
+              Moinhos de Vento · Porto Alegre · RS
+            </p>
+          </div>
         </div>
+        <p className={`relative mt-5 border-t border-white/70 pt-4 font-body text-[15px] leading-relaxed text-[#46677E] ${mobile ? "" : "ml-[120px] mt-4"}`}>
+          Cuidados faciais e corporais com atendimento personalizado.
+        </p>
       </div>
     </section>
   );
