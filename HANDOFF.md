@@ -4,6 +4,11 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-21 — Codex. O catálogo público não exibe mais a contagem de serviços
+disponíveis junto ao título. Os favicons do catálogo, painel e instalação PWA
+foram regenerados a partir da marca Vello com transparência real, sem o antigo
+quadrado branco; as referências no HTML receberam a versão de cache `v=8`.
+
 2026-09-21 — Claude Code. Landing refeita para estéticas em
 `src/components/VelloLandingEstetica.tsx` (rota `/`), inspirada na estrutura e no
 visual do abacatepay.com a pedido do usuário: moldura com linhas finas e faixas

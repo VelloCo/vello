@@ -469,21 +469,13 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
         </motion.div>
       </section>
       <section className="mx-auto max-w-[1180px] px-5 py-12 sm:px-8 sm:py-16">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">
-              Serviços
-            </p>
-            <h2 className="mt-3 font-display text-4xl font-semibold">
-              Escolha seu cuidado.
-            </h2>
-          </div>
-          <p className="font-body text-sm text-ash">
-            {page.services.length}{" "}
-            {page.services.length === 1
-              ? "serviço disponível"
-              : "serviços disponíveis"}
+        <div>
+          <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">
+            Serviços
           </p>
+          <h2 className="mt-3 font-display text-4xl font-semibold">
+            Escolha seu cuidado.
+          </h2>
         </div>
         {page.services.length ? (
           <div className={catalogStyle === "classic" ? "mt-10 grid max-w-3xl gap-4" : "mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"}>
