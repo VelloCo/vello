@@ -6,6 +6,8 @@ export type CatalogTheme = {
   profile_band: "light" | "contrast" | "dark";
   background_color?: string;
   profile_color?: string;
+  /** Cor de destaque da página pública (ver `src/lib/catalogStyle.ts`). */
+  accent?: "sky" | "rose" | "sage" | "lilac" | "sand" | "graphite";
 };
 
 export type Profile = {

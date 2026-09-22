@@ -335,7 +335,7 @@ textarea:focus-visible {
 /* Sistema da landing aplicado ao app: ação principal em pílula azul com texto escuro. */
 .vello-primary {
   box-shadow: 0 10px 24px -14px rgba(58, 115, 156, .8);
-  transition: transform 160ms var(--ease-vello-out), background-color 180ms ease, box-shadow 180ms ease;
+  transition: transform 160ms var(--ease-vello-out), background-color 180ms ease, box-shadow 180ms ease, filter 180ms ease;
 }
 
 .vello-primary:not(:disabled):active {
@@ -344,7 +344,7 @@ textarea:focus-visible {
 
 @media (hover: hover) and (pointer: fine) {
   .vello-primary:not(:disabled):hover {
-    background-color: #6FA3C7;
+    filter: brightness(.94) saturate(1.05);
     box-shadow: 0 14px 28px -16px rgba(58, 115, 156, .9);
   }
 }

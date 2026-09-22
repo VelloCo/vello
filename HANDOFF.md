@@ -4,6 +4,19 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Claude Code. Personalizar catálogo refeito. Antes a prévia era da
+versão de corretores (imóvel, CRECI) e as cores escolhidas não chegavam à página
+pública. Agora: `src/lib/catalogStyle.ts` define 6 cores de destaque prontas
+(`catalog_theme.accent`: sky, rose, sage, lilac, sand, graphite; sem migration,
+o jsonb aceita a chave), aplicadas no cabeçalho e nos botões de agendar da
+página pública e do BookingDialog. Cabeçalho e cartões da página pública foram
+extraídos para `src/components/catalog/PublicPageParts.tsx` (container queries
+`@2xl`/`@5xl`, pai com `@container`) e são usados pela página e pela prévia, que
+mostra os serviços publicados reais (ou exemplos). `palette`, `profile_band`,
+`background_color` e `profile_color` continuam no tipo por compatibilidade, mas
+não são mais usados. `.vello-primary:hover` agora escurece com `filter`, para
+funcionar com qualquer cor.
+
 2026-09-22 — Claude Code. Cartão Lista refeito (mais tarde no mesmo dia): capa
 quadrada arredondada dentro do cartão (96px celular / 160px computador), texto ao
 lado e linha final com preço à esquerda e botão "Agendar" compacto à direita; a

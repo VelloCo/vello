@@ -1,15 +1,15 @@
 import {
   CalendarDays,
   Check,
-  Clock3,
   LoaderCircle,
-  MapPin,
   Share2,
   X,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { appPath } from "../../lib/paths";
+import { accentFor, priceLabel, type Accent } from "../../lib/catalogStyle";
+import { ProfileHeaderCard, ServiceList } from "./PublicPageParts";
 import { requireSupabase } from "../../lib/supabase";
 import { LoadingScreen } from "../LoadingScreen";
 import { Logo } from "../Logo";
@@ -34,43 +34,11 @@ type Page = {
     neighborhood: string | null;
     address: string | null;
     bio: string;
-    catalog_theme?: { property_style?: "editorial" | "classic" };
+    catalog_theme?: { property_style?: "editorial" | "classic"; accent?: string };
   };
   services: Service[];
 };
 
-const categories: Record<string, string> = {
-  facial: "Facial",
-  corporal: "Corporal",
-  depilacao: "Depilação",
-  sobrancelhas_cilios: "Sobrancelhas e cílios",
-  unhas: "Unhas",
-  cabelo: "Cabelo",
-  massagem: "Massagem",
-  harmonizacao: "Harmonização",
-  outros: "Outros",
-};
-const serviceCoverAsset: Record<string, string> = {
-  facial: "/service-covers/facial-v2.jpg",
-  corporal: "/service-covers/corporal-v2.jpg",
-  depilacao: "/service-covers/depilacao-v2.jpg",
-  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios-v2.jpg",
-  unhas: "/service-covers/unhas-v2.jpg",
-  cabelo: "/service-covers/cabelo-v2.jpg",
-  massagem: "/service-covers/massagem-v2.jpg",
-  harmonizacao: "/service-covers/harmonizacao-v2.jpg",
-  outros: "/service-covers/outros-v2.jpg",
-};
-const categoryCover = (category: string) => {
-  return {
-    backgroundColor: "#E8F1F8",
-    backgroundImage:
-      "url(" + appPath(serviceCoverAsset[category] || serviceCoverAsset.outros) + ")",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "cover",
-  };
-};
 const localDate = (date: Date) =>
   date.getFullYear() +
   "-" +
@@ -88,15 +56,6 @@ const timeLabel = (slot: string) =>
     hour: "2-digit",
     minute: "2-digit",
   }).format(new Date(slot));
-const price = (service: Service) => {
-  if (service.price_type === "on_request") return "Sob consulta";
-  const value = new Intl.NumberFormat("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  }).format(Number(service.price || 0));
-  return service.price_type === "from" ? "A partir de " + value : value;
-};
-
 function NotFound() {
   return (
     <main className="grid min-h-screen place-items-center bg-paper px-5 text-center">
@@ -122,10 +81,12 @@ function NotFound() {
 function BookingDialog({
   slug,
   service,
+  accent,
   onClose,
 }: {
   slug: string;
   service: Service;
+  accent: Accent;
   onClose: () => void;
 }) {
   const [day, setDay] = useState(localDate(new Date()));
@@ -211,7 +172,7 @@ function BookingDialog({
               {service.title}
             </h2>
             <p className="mt-2 font-body text-sm text-ash">
-              {service.duration_minutes} min · {price(service)}
+              {service.duration_minutes} min · {priceLabel(service)}
             </p>
           </div>
           <button
@@ -337,7 +298,8 @@ function BookingDialog({
               type="button"
               disabled={saving || loading || !slot}
               onClick={book}
-              className="vello-primary bg-sky text-ink mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full px-5 font-body text-sm font-semibold disabled:opacity-45"
+              className="vello-primary mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full px-5 font-body text-sm font-semibold disabled:opacity-45"
+              style={{ backgroundColor: accent.button, color: accent.buttonText }}
             >
               {saving ? (
                 <LoaderCircle size={17} className="animate-spin" />
@@ -401,8 +363,9 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
     page.profile.catalog_theme?.property_style === "classic"
       ? "classic"
       : "editorial";
+  const accent = accentFor(page.profile.catalog_theme);
   return (
-    <main className="min-h-screen bg-[#F7FAFC] text-ink">
+    <main className="@container min-h-screen bg-[#F7FAFC] text-ink">
       <header className="bg-[#F7FAFC]">
         <div className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-5 sm:h-[72px] sm:px-8">
           <a href={appPath("/")}>
@@ -424,48 +387,18 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
           initial={{ opacity: 0, transform: "translateY(10px)" }}
           animate={{ opacity: 1, transform: "translateY(0)" }}
           transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
-          className="relative mx-auto max-w-[1180px] overflow-hidden rounded-[28px] border border-[#CFE0EB] bg-[#E8F1F8] p-5 shadow-[0_24px_60px_-48px_rgba(18,40,58,.42)] sm:rounded-[34px] sm:p-8"
+          className="mx-auto max-w-[1180px]"
         >
-          <div aria-hidden="true" className="absolute -right-12 -top-20 h-52 w-52 rounded-full bg-white/45 blur-2xl" />
-          <div aria-hidden="true" className="absolute -bottom-24 right-1/4 h-44 w-44 rounded-full bg-[#BFD9EB]/45 blur-3xl" />
-          <div className="relative flex max-w-3xl items-center gap-4 sm:gap-6">
-            <span className="grid h-[76px] w-[76px] shrink-0 place-items-center overflow-hidden rounded-full bg-white ring-4 ring-white/80 shadow-[0_14px_30px_-20px_rgba(18,40,58,.55)] sm:h-24 sm:w-24">
-              {page.profile.avatar_url ? (
-                <img
-                  src={page.profile.avatar_url}
-                  alt={"Foto de " + page.profile.professional_name}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <img
-                  src={appPath("/vello-onboarding-avatar-v2.jpg")}
-                  alt="Imagem padrão da Vello"
-                  className="h-full w-full object-cover"
-                />
-              )}
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="inline-flex rounded-full border border-white/80 bg-white/70 px-3 py-1 font-mono text-[9px] uppercase tracking-[.14em] text-[#356D95] shadow-[0_6px_20px_-18px_rgba(18,40,58,.5)]">
-                {page.profile.business_type === "clinica"
-                  ? "Clínica de estética"
-                  : "Estética e bem-estar"}
-              </p>
-              <h1 className="mt-2 truncate font-display text-[clamp(30px,5vw,48px)] font-semibold leading-[1.02] tracking-[-.04em]">
-                {page.profile.professional_name}
-              </h1>
-              {location && (
-                <p className="mt-2 flex items-center gap-1.5 font-body text-sm font-medium text-[#46677E]">
-                  <MapPin size={14} aria-hidden="true" />
-                  {location}
-                </p>
-              )}
-            </div>
-          </div>
-          {page.profile.bio && (
-            <p className="relative mt-5 max-w-2xl border-t border-white/70 pt-4 font-body text-[15px] leading-relaxed text-[#46677E] sm:ml-[120px] sm:mt-4">
-              {page.profile.bio}
-            </p>
-          )}
+          <ProfileHeaderCard
+            accent={accent}
+            profile={{
+              name: page.profile.professional_name,
+              businessType: page.profile.business_type,
+              location,
+              bio: page.profile.bio,
+              avatarUrl: page.profile.avatar_url,
+            }}
+          />
         </motion.div>
       </section>
       <section className="mx-auto max-w-[1180px] px-5 py-12 sm:px-8 sm:py-16">
@@ -478,107 +411,23 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
           </h2>
         </div>
         {page.services.length ? (
-          <div className={catalogStyle === "classic" ? "mt-10 grid max-w-3xl gap-4" : "mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"}>
-            {page.services.map((service) => {
-              const classic = catalogStyle === "classic";
-              const cover = service.images[0] ? (
-                <img
-                  src={service.images[0].image_url}
-                  alt={service.title}
-                  className={classic ? "aspect-square h-24 w-24 shrink-0 self-start rounded-[18px] object-cover sm:h-40 sm:w-40" : "aspect-square w-full object-cover"}
-                />
-              ) : (
-                <div
-                  role="img"
-                  aria-label={
-                    "Imagem de " + (categories[service.category] || "estética")
-                  }
-                  className={"bg-[#E8F1F8] " + (classic ? "aspect-square h-24 w-24 shrink-0 self-start rounded-[18px] sm:h-40 sm:w-40" : "aspect-square w-full")}
-                  style={categoryCover(service.category)}
-                />
-              );
-              const bookButton = (
-                <button
-                  type="button"
-                  onClick={() => setBooking(service)}
-                  className="vello-primary bg-sky text-ink inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-4 font-body text-sm font-semibold"
-                >
-                  <CalendarDays size={16} />
-                  Agendar horário
-                </button>
-              );
-              const meta = (
-                <div className={"flex items-center justify-between gap-3 " + (classic ? "flex-wrap gap-y-1" : "")}>
-                  <p className="font-mono text-[10px] uppercase tracking-[.12em] text-stone">
-                    {categories[service.category] || "Estética"}
-                  </p>
-                  <span className="inline-flex shrink-0 items-center gap-1 font-body text-xs text-ash">
-                    <Clock3 size={13} />
-                    {service.duration_minutes} min
-                  </span>
-                </div>
-              );
-              if (classic)
-                return (
-                  <article
-                    key={service.id}
-                    className="flex gap-3 rounded-[24px] border border-line bg-white p-3 shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)] sm:gap-5 sm:p-4"
-                  >
-                    {cover}
-                    <div className="flex min-w-0 flex-1 flex-col py-0.5 sm:py-1">
-                      {meta}
-                      <h3 className="mt-1.5 font-display text-lg font-semibold leading-tight sm:mt-2 sm:text-2xl">
-                        {service.title}
-                      </h3>
-                      {service.description && (
-                        <p className="mt-1.5 line-clamp-2 font-body text-[13px] leading-relaxed text-ash sm:mt-2 sm:text-sm">
-                          {service.description}
-                        </p>
-                      )}
-                      <div className="mt-auto flex items-end justify-between gap-3 pt-3">
-                        <p className="min-w-0 font-body text-[15px] font-semibold leading-tight sm:text-base">
-                          {price(service)}
-                        </p>
-                        <button
-                          type="button"
-                          onClick={() => setBooking(service)}
-                          className="vello-primary bg-sky text-ink inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full px-4 font-body text-sm font-semibold sm:h-11 sm:px-5"
-                        >
-                          <CalendarDays size={16} />
-                          <span>
-                            Agendar<span className="hidden sm:inline"> horário</span>
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  </article>
-                );
-              return (
-                <article
-                  key={service.id}
-                  className="overflow-hidden rounded-[24px] border border-line bg-white shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)]"
-                >
-                  {cover}
-                  <div className="flex min-h-64 flex-1 flex-col p-5">
-                    {meta}
-                    <h3 className="mt-3 font-display text-2xl font-semibold">
-                      {service.title}
-                    </h3>
-                    {service.description && (
-                      <p className="mt-3 line-clamp-3 font-body text-sm leading-relaxed text-ash">
-                        {service.description}
-                      </p>
-                    )}
-                    <div className="mt-auto pt-6">
-                      <p className="font-body text-base font-semibold">
-                        {price(service)}
-                      </p>
-                      <div className="mt-4">{bookButton}</div>
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
+          <div className="mt-10">
+            <ServiceList
+              style={catalogStyle}
+              accent={accent}
+              services={page.services.map((service) => ({
+                id: service.id,
+                title: service.title,
+                description: service.description,
+                category: service.category,
+                price: priceLabel(service),
+                minutes: service.duration_minutes,
+                imageUrl: service.images[0]?.image_url,
+              }))}
+              onBook={(card) =>
+                setBooking(page.services.find((service) => service.id === card.id) || null)
+              }
+            />
           </div>
         ) : (
           <div className="mt-10 rounded-[24px] border border-dashed border-line bg-white p-8 text-center sm:p-12">
@@ -596,6 +445,7 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
         <BookingDialog
           slug={slug}
           service={booking}
+          accent={accent}
           onClose={() => setBooking(null)}
         />
       )}

@@ -38,6 +38,13 @@ import {
   PUBLIC_SITE_ORIGIN,
 } from "../../lib/paths";
 import { LoadingScreen } from "../LoadingScreen";
+import { Logo } from "../Logo";
+import { accentFor, accentKeys, accents } from "../../lib/catalogStyle";
+import {
+  ProfileHeaderCard,
+  ServiceList,
+  type CardService,
+} from "../catalog/PublicPageParts";
 import { signOut, updatePassword } from "../../lib/auth";
 import {
   brl,
@@ -93,8 +100,6 @@ const publicCatalogUrl = (slug?: string | null) =>
   `${PUBLIC_SITE_ORIGIN}/${(slug || "").replace(/^\/+|\/+$/g, "")}`;
 const publicPropertyPath = (catalogSlug: string, property: Property) =>
   appPath(`/${catalogSlug}/imovel/${property.slug || property.id}`);
-const displayCreci = (creci?: string | null) =>
-  (creci || "").replace(/^CRECI\s*/i, "");
 const cover = (p: Property) =>
   p.property_images?.find((i) => i.is_cover)?.image_url ||
   p.property_images?.[0]?.image_url;
@@ -3115,34 +3120,38 @@ function ProfilePage({
     </>
   );
 }
+const demoPreviewServices: CardService[] = [
+  { id: "demo-1", title: "Limpeza de pele profunda", description: "Extração, esfoliação e hidratação.", category: "facial", price: "R$ 150,00", minutes: 60 },
+  { id: "demo-2", title: "Drenagem linfática", description: "Massagem suave que reduz o inchaço.", category: "corporal", price: "A partir de R$ 120,00", minutes: 50 },
+  { id: "demo-3", title: "Design de sobrancelhas", description: "", category: "sobrancelhas_cilios", price: "R$ 60,00", minutes: 40 },
+];
 function CatalogCustomizationPage({
   user,
   profile,
-  properties,
+  services,
   toast,
 }: {
   user: User;
   profile: Profile;
-  properties: Property[];
+  services: Service[];
   toast: (value: string) => void;
 }) {
-  const defaultTheme: CatalogTheme = {
-    palette: "warm",
-    property_style: "editorial",
-    profile_band: "light",
+  const initialTheme: CatalogTheme = {
+    ...profile.catalog_theme,
+    palette: profile.catalog_theme?.palette || "warm",
+    profile_band: profile.catalog_theme?.profile_band || "light",
+    property_style:
+      profile.catalog_theme?.property_style === "classic" ? "classic" : "editorial",
+    accent: profile.catalog_theme?.accent || "sky",
   };
-  const [savedTheme, setSavedTheme] = useState<CatalogTheme>(
-    profile.catalog_theme || defaultTheme,
-  );
-  const [theme, setTheme] = useState<CatalogTheme>(
-    profile.catalog_theme || defaultTheme,
-  );
+  const [savedTheme, setSavedTheme] = useState<CatalogTheme>(initialTheme);
+  const [theme, setTheme] = useState<CatalogTheme>(initialTheme);
   const [saving, setSaving] = useState(false);
-  const hasChanges = JSON.stringify(theme) !== JSON.stringify(savedTheme);
-  const update = <K extends keyof CatalogTheme>(
-    key: K,
-    value: CatalogTheme[K],
-  ) => setTheme((current) => ({ ...current, [key]: value }));
+  const hasChanges =
+    theme.property_style !== savedTheme.property_style ||
+    theme.accent !== savedTheme.accent;
+  const style = theme.property_style === "classic" ? "classic" : "editorial";
+  const accent = accentFor(theme);
   const save = async () => {
     setSaving(true);
     try {
@@ -3155,361 +3164,217 @@ function CatalogCustomizationPage({
       setSaving(false);
     }
   };
-  const property = properties[0];
-  const pageColor =
-    theme.background_color ||
-    { warm: "#EFF5FA", paper: "#ffffff", charcoal: "#191918" }[theme.palette];
-  const bandColor =
-    theme.profile_color ||
-    { light: "#ffffff", contrast: "#E3EDF5", dark: "#12283A" }[
-      theme.profile_band
-    ];
-  const surface =
-    theme.palette === "charcoal"
-      ? "bg-[#191918] text-paper"
-      : theme.palette === "paper"
-        ? "bg-white text-ink"
-        : "bg-[#EFF5FA] text-ink";
-  const band =
-    theme.profile_band === "dark"
-      ? "bg-ink text-paper border-white/10"
-      : theme.profile_band === "contrast"
-        ? "bg-[#E3EDF5] text-ink border-[#d7d0c4]"
-        : "bg-white text-ink border-black/10";
-  const cardMode = theme.property_style;
+  const published = services.filter(
+    (service) => service.publication_status === "published",
+  );
+  const previewServices: CardService[] = published.length
+    ? published.slice(0, 3).map((service) => ({
+        id: service.id,
+        title: service.title,
+        description: service.description,
+        category: service.category,
+        price: formatServicePrice(service),
+        minutes: service.duration_minutes,
+        imageUrl: serviceCover(service),
+      }))
+    : demoPreviewServices;
+  const location = [
+    profile.show_address ? profile.address : null,
+    profile.neighborhood,
+    profile.city,
+    profile.state,
+  ]
+    .filter(Boolean)
+    .join(" · ");
   return (
     <>
-      <header className="flex flex-wrap items-end justify-between gap-5">
+      <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">
             Seu catálogo
           </p>
           <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">
-            Personalizar aparência
+            Personalizar catálogo
           </h1>
           <p className="mt-2 max-w-xl font-body text-ash">
-            Escolha o estilo dos imóveis e depois a cor. Uma decisão não altera
-            a outra.
+            Escolha como seus serviços aparecem e a cor da sua página. A prévia
+            mostra exatamente o que as clientes veem.
           </p>
         </div>
         <a
           href={publicCatalogUrl(profile.slug)}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-white px-5 font-body text-sm font-medium hover:border-ink"
+          className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-white px-4 font-body text-sm font-medium text-ink transition hover:border-ink"
         >
-          <ExternalLink size={16} />
-          Abrir catálogo
+          <ExternalLink size={15} /> Ver minha página
         </a>
       </header>
-      <div className="mt-6 rounded-2xl border border-line bg-[#EFF5FA] px-5 py-4 font-body text-sm text-ash">
-        <span className="font-semibold text-ink">Como funciona:</span> estilo
-        define o formato dos cards; cor define o fundo e a identidade visual.
-      </div>
-      <div className="mt-9 grid items-start gap-8 xl:grid-cols-[minmax(0,.9fr)_minmax(430px,1.1fr)]">
+
+      <div className="mt-8 grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
         <div className="space-y-5">
-          <section className="rounded-[24px] border border-line bg-white p-5 sm:p-7">
-            <p className="font-display text-xl font-semibold">
-              1. Estilo do catálogo
-            </p>
-            <p className="mt-1 font-body text-sm text-ash">
-              Escolha entre cards em grade ou uma lista de serviços mais direta.
-            </p>
-            <div className="mt-5 space-y-2">
+          <ProfileCard
+            title="Estilo dos serviços"
+            text="Como cada serviço aparece na sua página."
+          >
+            <div className="grid gap-3 sm:grid-cols-2">
               {(
                 [
-                  [
-                    "editorial",
-                    "Editorial",
-                    "Card claro: informações organizadas abaixo da foto.",
-                  ],
-                  [
-                    "classic",
-                    "Lista",
-                    "Uma lista clara, com foto à esquerda e decisão rápida.",
-                  ],
+                  ["editorial", "Editorial", "Cartões com foto grande, em grade."],
+                  ["classic", "Lista", "Foto pequena ao lado, leitura rápida."],
                 ] as const
-              ).map(([value, label, description], optionIndex) => (
-                <button
-                  key={value}
-                  type="button"
-                  aria-pressed={theme.property_style === value}
-                  onClick={() => update("property_style", value)}
-                  className={`flex w-full items-center gap-4 rounded-2xl border p-3 text-left transition duration-200 active:scale-[.99] ${theme.property_style === value ? "border-ink bg-cream ring-1 ring-ink" : "border-line hover:border-stone"}`}
-                >
-                  <span
-                    className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl font-mono text-xs ${theme.property_style === value ? "bg-ink text-paper" : "bg-cream text-stone"}`}
+              ).map(([value, label, detail]) => {
+                const active = style === value;
+                return (
+                  <button
+                    key={value}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() =>
+                      setTheme((current) => ({ ...current, property_style: value }))
+                    }
+                    className={`rounded-2xl border p-4 text-left transition ${active ? "border-ink bg-[#F7FAFC] ring-1 ring-ink" : "border-line hover:border-sky"}`}
                   >
-                    0{optionIndex + 1}
-                  </span>
-                  <span className="min-w-0">
-                    <b className="block font-body text-sm">{label}</b>
-                    <span className="mt-1 block font-body text-xs text-ash">
-                      {description}
+                    <span aria-hidden="true" className="grid h-24 place-items-center rounded-xl bg-[#EEF4F9] p-3">
+                      {value === "editorial" ? (
+                        <span className="grid w-full max-w-[150px] grid-cols-2 gap-2">
+                          {[0, 1].map((item) => (
+                            <span key={item} className="overflow-hidden rounded-lg bg-white">
+                              <span className="block h-9 bg-sky/45" />
+                              <span className="m-1.5 block h-1.5 w-3/4 rounded-full bg-line" />
+                              <span className="m-1.5 mt-0 block h-3 rounded-full" style={{ backgroundColor: accent.button }} />
+                            </span>
+                          ))}
+                        </span>
+                      ) : (
+                        <span className="grid w-full max-w-[170px] gap-1.5">
+                          {[0, 1].map((item) => (
+                            <span key={item} className="flex items-center gap-2 rounded-lg bg-white p-1.5">
+                              <span className="h-7 w-7 shrink-0 rounded-md bg-sky/45" />
+                              <span className="h-1.5 flex-1 rounded-full bg-line" />
+                              <span className="h-3 w-8 rounded-full" style={{ backgroundColor: accent.button }} />
+                            </span>
+                          ))}
+                        </span>
+                      )}
                     </span>
-                  </span>
-                  <Check
-                    size={16}
-                    className={`ml-auto shrink-0 ${theme.property_style === value ? "text-ink" : "text-transparent"}`}
-                  />
-                </button>
-              ))}
+                    <span className="mt-3 flex items-start justify-between gap-3">
+                      <span>
+                        <b className="block font-body text-sm">{label}</b>
+                        <span className="mt-1 block font-body text-xs text-ash">{detail}</span>
+                      </span>
+                      <span
+                        className={`grid h-5 w-5 shrink-0 place-items-center rounded-full border ${active ? "border-ink bg-ink text-paper" : "border-line"}`}
+                      >
+                        {active && <Check size={12} strokeWidth={3} />}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
-          </section>
-          <section className="rounded-[24px] border border-line bg-white p-5 sm:p-7">
-            <p className="font-display text-xl font-semibold">
-              2. Cor do catálogo
-            </p>
-            <p className="mt-1 font-body text-sm text-ash">
-              Agora escolha o fundo. A cor é independente do estilo dos imóveis.
-            </p>
-            <label className="mt-5 flex items-center justify-between rounded-2xl border border-line bg-cream p-4 transition hover:border-ink">
-              <span>
-                <b className="block font-display text-lg">Cor personalizada</b>
-                <span className="mt-1 block font-body text-xs text-ash">
-                  Escolha livremente o fundo do catálogo.
-                </span>
-                <small className="mt-2 block font-mono text-[11px] uppercase tracking-[.1em] text-stone">
-                  {pageColor}
-                </small>
-              </span>
-              <input
-                aria-label="Escolher cor de fundo"
-                type="color"
-                value={pageColor}
-                onChange={(event) =>
-                  update("background_color", event.target.value)
-                }
-                className="h-14 w-14 cursor-pointer rounded-xl border border-black/15 bg-transparent p-1"
-              />
-            </label>
-            <p className="mt-6 font-mono text-[10px] uppercase tracking-[.14em] text-stone">
-              Paletas prontas
-            </p>
-            <div className="mt-3 grid grid-cols-3 gap-3">
-              {(
-                [
-                  ["warm", "Areia", "Equilíbrio quente.", "bg-[#EFF5FA]"],
-                  ["paper", "Claro", "Minimalista e luminoso.", "bg-white"],
-                  ["charcoal", "Noite", "Sofisticado e marcante.", "bg-ink"],
-                ] as const
-              ).map(([value, label, description, swatch]) => (
-                <button
-                  key={value}
-                  type="button"
-                  aria-pressed={
-                    theme.palette === value && !theme.background_color
-                  }
-                  onClick={() =>
-                    setTheme((current) => ({
-                      ...current,
-                      palette: value,
-                      background_color: undefined,
-                    }))
-                  }
-                  className={`rounded-2xl border p-3 text-left transition duration-200 active:scale-[.99] ${theme.palette === value && !theme.background_color ? "border-ink ring-1 ring-ink" : "border-line hover:border-stone"}`}
-                >
-                  <span
-                    className={`block h-14 rounded-xl border border-black/10 ${swatch}`}
-                  />
-                  <b className="mt-3 block font-body text-sm">{label}</b>
-                  <span className="mt-1 block font-body text-[11px] leading-relaxed text-ash">
-                    {description}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </section>
-          <section className="rounded-[24px] border border-line bg-white p-5 sm:p-7">
-            <p className="font-display text-xl font-semibold">
-              3. Cabeçalho do perfil
-            </p>
-            <p className="mt-1 font-body text-sm text-ash">
-              Personalize apenas a faixa com seu nome e CRECI.
-            </p>
-            <label className="mt-5 flex items-center justify-between rounded-2xl border border-line bg-cream p-4 transition hover:border-ink">
-              <span>
-                <b className="block font-display text-lg">Cor personalizada</b>
-                <span className="mt-1 block font-body text-xs text-ash">
-                  Escolha a cor da sua apresentação.
-                </span>
-                <small className="mt-2 block font-mono text-[11px] uppercase tracking-[.1em] text-stone">
-                  {bandColor}
-                </small>
-              </span>
-              <input
-                aria-label="Escolher cor do cabeçalho do perfil"
-                type="color"
-                value={bandColor}
-                onChange={(event) =>
-                  update("profile_color", event.target.value)
-                }
-                className="h-14 w-14 cursor-pointer rounded-xl border border-black/15 bg-transparent p-1"
-              />
-            </label>
-            <p className="mt-6 font-mono text-[10px] uppercase tracking-[.14em] text-stone">
-              Cores prontas
-            </p>
-            <div className="mt-3 grid grid-cols-3 gap-3">
-              {(
-                [
-                  ["light", "Leve", "bg-white text-ink"],
-                  ["contrast", "Areia", "bg-[#E3EDF5] text-ink"],
-                  ["dark", "Escuro", "bg-ink text-paper"],
-                ] as const
-              ).map(([value, label, appearance]) => (
-                <button
-                  key={value}
-                  type="button"
-                  aria-pressed={
-                    theme.profile_band === value && !theme.profile_color
-                  }
-                  onClick={() =>
-                    setTheme((current) => ({
-                      ...current,
-                      profile_band: value,
-                      profile_color: undefined,
-                    }))
-                  }
-                  className={`rounded-2xl border p-3 text-left transition duration-200 active:scale-[.99] ${theme.profile_band === value && !theme.profile_color ? "border-ink ring-1 ring-ink" : "border-line hover:border-stone"}`}
-                >
-                  <span
-                    className={`flex h-12 items-center rounded-xl px-3 font-body text-[10px] font-semibold ${appearance}`}
+          </ProfileCard>
+
+          <ProfileCard
+            title="Cor de destaque"
+            text="Usada no topo da sua página e nos botões de agendar. Todas as opções foram testadas para ficar legíveis."
+          >
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {accentKeys.map((key) => {
+                const option = accents[key];
+                const active = theme.accent === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => setTheme((current) => ({ ...current, accent: key }))}
+                    className={`flex items-center gap-3 rounded-2xl border p-3 text-left transition ${active ? "border-ink ring-1 ring-ink" : "border-line hover:border-sky"}`}
                   >
-                    {profile.professional_name || "Seu perfil"}
-                  </span>
-                  <b className="mt-3 block font-body text-sm">{label}</b>
-                </button>
-              ))}
+                    <span
+                      aria-hidden="true"
+                      className="relative grid h-11 w-11 shrink-0 place-items-center rounded-full border"
+                      style={{ backgroundColor: option.header, borderColor: option.border }}
+                    >
+                      <span className="h-5 w-5 rounded-full" style={{ backgroundColor: option.button }} />
+                    </span>
+                    <b className="min-w-0 flex-1 font-body text-sm">{option.label}</b>
+                    {active && <Check size={16} className="shrink-0 text-ink" />}
+                  </button>
+                );
+              })}
             </div>
-          </section>
-          {hasChanges && (
-            <div className="sticky bottom-20 z-40 flex items-center gap-3 rounded-2xl border border-line bg-white/95 p-3 shadow-[0_12px_35px_rgba(18,40,58,.12)] backdrop-blur sm:bottom-5">
-              <Button onClick={save} disabled={saving}>
-                {saving ? "Salvando..." : "Salvar alterações"}
-              </Button>
+          </ProfileCard>
+
+          <div className={`${hasChanges ? "sticky bottom-20 z-30 shadow-[0_12px_35px_rgba(18,40,58,.12)] lg:bottom-5" : ""} flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-white/95 p-3 backdrop-blur`}>
+            <Button onClick={save} disabled={saving || !hasChanges}>
+              {saving ? "Salvando..." : hasChanges ? "Salvar alterações" : "Tudo salvo"}
+            </Button>
+            {hasChanges && (
               <button
                 type="button"
                 onClick={() => setTheme(savedTheme)}
-                className="h-11 rounded-full px-4 font-body text-sm font-medium text-ash transition-colors hover:bg-cream hover:text-ink active:scale-[.98]"
+                className="h-11 rounded-full px-4 font-body text-sm font-medium text-ash transition-colors hover:bg-cream hover:text-ink"
               >
                 Descartar
               </button>
-              <span className="ml-auto hidden font-body text-xs text-stone sm:block">
-                As mudanças só aparecem no catálogo após salvar.
-              </span>
-            </div>
-          )}
+            )}
+            <span className="font-body text-xs text-stone sm:ml-auto">
+              {hasChanges
+                ? "As clientes só veem a mudança depois de salvar."
+                : "Sua página está com esta aparência."}
+            </span>
+          </div>
         </div>
-        <aside className="xl:sticky xl:top-10">
-          <div className="rounded-[28px] border border-line bg-white p-4 shadow-[0_18px_50px_rgba(18,40,58,.06)] sm:p-5">
-            <div className="flex items-center justify-between">
-              <p className="font-display text-lg font-semibold">
-                Pré-visualização
-              </p>
-              <span className="rounded-full bg-cream px-3 py-1 font-mono text-[9px] uppercase tracking-[.12em] text-stone">
+
+        <aside className="order-first xl:sticky xl:top-10 xl:order-none">
+          <div className="rounded-[28px] border border-line bg-white p-4 sm:p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="font-display text-lg font-semibold">Pré-visualização</p>
+                <p className="mt-0.5 font-body text-xs text-ash">
+                  {published.length
+                    ? "Como suas clientes veem no celular."
+                    : "Exemplo: publique serviços para ver os seus aqui."}
+                </p>
+              </div>
+              <span className="shrink-0 whitespace-nowrap rounded-full bg-cream px-3 py-1 font-mono text-[9px] uppercase tracking-[.12em] text-stone">
                 Ao vivo
               </span>
             </div>
-            <div
-              style={{ backgroundColor: pageColor }}
-              className={`mt-4 min-h-[540px] overflow-hidden rounded-[22px] p-3 transition-colors duration-300 sm:p-5 ${surface}`}
-            >
-              <div
-                style={{ backgroundColor: bandColor }}
-                className={`flex items-center gap-3 rounded-full border p-3 transition-colors duration-300 ${band}`}
-              >
-                <span
-                  className={`grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full font-display text-sm ${theme.profile_band === "dark" ? "bg-paper/15" : "bg-cream"}`}
-                >
-                  {profile.avatar_url ? (
-                    <img
-                      src={profile.avatar_url}
-                      alt=""
-                      referrerPolicy="no-referrer"
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <img
-                      src={appPath("/vello-mascot.png")}
-                      alt="Mascote da Vello"
-                      className="h-full w-full object-cover object-top"
-                    />
-                  )}
-                </span>
-                <span className="min-w-0">
-                  <b className="block truncate font-body text-sm">
-                    {profile.professional_name || "Seu nome profissional"}
-                  </b>
-                  <small className="block truncate font-body text-[10px] opacity-60">
-                    CRECI {displayCreci(profile.creci) || "000000"}
-                  </small>
-                </span>
-              </div>
-              <div
-                className={`mt-8 grid gap-4 ${cardMode === "compact" ? "grid-cols-2" : ""}`}
-              >
-                <div
-                  className={
-                    cardMode === "classic"
-                      ? "overflow-hidden rounded-[15px] bg-white text-ink"
-                      : ""
-                  }
-                >
-                  <div
-                    className={`overflow-hidden bg-cream ${cardMode === "classic" ? "aspect-[4/3]" : cardMode === "compact" ? "aspect-[4/3] rounded-[14px]" : "aspect-[5/4] rounded-[18px]"}`}
-                  >
-                    {property && cover(property) ? (
-                      <img
-                        src={cover(property)}
-                        alt=""
-                        referrerPolicy="no-referrer"
-                        onError={(event) => {
-                          event.currentTarget.onerror = null;
-                          event.currentTarget.src = appPath(
-                            "/hero-vello-house.png",
-                          );
-                        }}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="h-full w-full bg-[linear-gradient(135deg,#8f887e,#dbd2c5_45%,#6f6961)]" />
-                    )}
+            <div className="mx-auto mt-4 w-full max-w-[330px] overflow-hidden rounded-[34px] border-[6px] border-ink/90 bg-[#F7FAFC] shadow-[0_24px_50px_-30px_rgba(18,40,58,.6)]">
+              <div className="vello-scrollbar-hidden h-[400px] overflow-y-auto xl:h-[560px]">
+                <div aria-hidden="true" className="@container pointer-events-none select-none" style={{ zoom: 0.8 }}>
+                  <div className="flex h-16 items-center justify-between px-5">
+                    <Logo className="origin-left scale-[.78]" />
+                    <span className="grid h-10 w-10 place-items-center rounded-full border border-line bg-white">
+                      <Share2 size={16} />
+                    </span>
                   </div>
-                  <div
-                    className={`${cardMode === "editorial" ? "-mt-5 ml-4 rounded-[17px] bg-white p-4 text-ink shadow-lg" : cardMode === "classic" ? "p-4" : "pt-2 text-paper"}`}
-                  >
-                    <p className="font-display text-xl font-semibold leading-none">
-                      {property?.title || "Seu próximo imóvel"}
-                    </p>
-                    <p className="mt-2 font-body text-xs opacity-65">
-                      {property
-                        ? brl(
-                            property.price,
-                            property.transaction_type === "rent",
-                          )
-                        : "Preço sob consulta"}
-                    </p>
-                    <p className="mt-3 font-body text-[11px] opacity-60">
-                      {property
-                        ? `${property.neighborhood} · ${property.city}`
-                        : "Bairro · Cidade"}
-                    </p>
+                  <div className="px-5 pb-6 pt-2">
+                    <ProfileHeaderCard
+                      accent={accent}
+                      profile={{
+                        name: profile.professional_name || "Nome da sua estética",
+                        businessType: profile.business_type,
+                        location,
+                        bio: profile.bio,
+                        avatarUrl: profile.avatar_url,
+                      }}
+                    />
                   </div>
-                </div>
-                {cardMode === "compact" && (
-                  <div>
-                    <div className="aspect-[4/3] rounded-[14px] bg-[linear-gradient(135deg,#746e67,#cfc6ba)]" />
-                    <div className="pt-2">
-                      <p className="font-display text-base font-semibold">
-                        Outro imóvel
-                      </p>
-                      <p className="mt-1 font-body text-[10px] opacity-60">
-                        Ver detalhes
-                      </p>
+                  <div className="px-5 pb-10 pt-6">
+                    <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">
+                      Serviços
+                    </p>
+                    <h2 className="mt-3 font-display text-4xl font-semibold">
+                      Escolha seu cuidado.
+                    </h2>
+                    <div className="mt-8">
+                      <ServiceList services={previewServices} style={style} accent={accent} />
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
@@ -3709,7 +3574,7 @@ export function DashboardApp({ user, route }: Props) {
       <CatalogCustomizationPage
         user={user}
         profile={profile}
-        properties={properties}
+        services={services}
         toast={say}
       />
     );
