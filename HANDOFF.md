@@ -4,6 +4,18 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Claude Code. Aviso de novo agendamento (parte 1, sem custo):
+migration `20260922180000_realtime_appointments` (aplicada) põe `appointments`
+na publicação do Realtime; o painel assina INSERT filtrando por `user_id` e,
+ao chegar reserva, mostra toast, dispara aviso do navegador
+(`src/lib/notifications.ts`) e atualiza a lista sem recarregar. Agenda ganhou
+contador de pendentes no menu lateral e na barra móvel. Configurações tem o
+cartão "Avisos de novo agendamento" (liga/desliga e pede permissão).
+Testado com Supabase simulado (contador, cartão, sem erros); o disparo em
+tempo real só dá para validar com login real em produção.
+Falta a parte 2: e-mail para a profissional (precisa de serviço de envio;
+`pg_net` está disponível e não instalado).
+
 2026-09-22 — Claude Code. Página "Plano e cobrança" (`/dashboard/plano`,
 `src/components/dashboard/BillingPage.tsx`): estado do beta sem cobrança, plano
 com preço e benefícios, forma de pagamento (vazia, desabilitada), histórico

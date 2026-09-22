@@ -33,6 +33,14 @@ import {
   PUBLIC_SITE_ORIGIN,
 } from "../../lib/paths";
 import { BillingPage } from "./BillingPage";
+import { supabase } from "../../lib/supabase";
+import {
+  askNotificationPermission,
+  notificationsEnabled,
+  notificationsSupported,
+  notifyNewAppointment,
+  setNotificationsPreference,
+} from "../../lib/notifications";
 import { LoadingScreen } from "../LoadingScreen";
 import { Logo } from "../Logo";
 import { accentFor, accentKeys, accents } from "../../lib/catalogStyle";
@@ -170,7 +178,7 @@ function Button({
     </button>
   );
 }
-function Sidebar({ profile, route }: { profile: Profile; route: string }) {
+function Sidebar({ profile, route, pending }: { profile: Profile; route: string; pending: number }) {
   const [account, setAccount] = useState(false);
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-[248px] border-r border-line bg-white p-5 lg:flex lg:flex-col">
@@ -189,6 +197,7 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
           <NavItem
             key={item.href}
             item={item}
+            badge={item.href === "/dashboard/agenda" ? pending : 0}
             active={
               route === item.href ||
               (item.href === "/dashboard/servicos" &&
@@ -267,9 +276,11 @@ function Sidebar({ profile, route }: { profile: Profile; route: string }) {
 function NavItem({
   item,
   active,
+  badge = 0,
 }: {
   item: (typeof nav)[number];
   active: boolean;
+  badge?: number;
 }) {
   const Icon = item.icon;
   return (
@@ -279,6 +290,14 @@ function NavItem({
     >
       <Icon size={17} strokeWidth={1.8} />
       {item.label}
+      {badge > 0 && (
+        <span
+          aria-label={`${badge} ${badge === 1 ? "pedido para confirmar" : "pedidos para confirmar"}`}
+          className={`ml-auto grid h-5 min-w-5 place-items-center rounded-full px-1.5 font-mono text-[10px] ${active ? "bg-white/20 text-paper" : "bg-sky text-ink"}`}
+        >
+          {badge}
+        </span>
+      )}
     </a>
   );
 }
@@ -301,7 +320,7 @@ function MobileTopBar({ route }: { route: string }) {
     </header>
   );
 }
-function MobileNav({ route }: { route: string }) {
+function MobileNav({ route, pending }: { route: string; pending: number }) {
   // Início, Serviços, Agenda e Perfil (o botão central é o novo serviço).
   const items = [nav[0], nav[1], nav[2], nav.find((item) => item.href === "/dashboard/perfil")!];
   return (
@@ -325,7 +344,12 @@ function MobileNav({ route }: { route: string }) {
         <Plus size={22} strokeWidth={2} />
       </a>
       {items.slice(2).map((i) => (
-        <MobileItem key={i.href} item={i} active={route.startsWith(i.href)} />
+        <MobileItem
+          key={i.href}
+          item={i}
+          active={route.startsWith(i.href)}
+          badge={i.href === "/dashboard/agenda" ? pending : 0}
+        />
       ))}
     </nav>
   );
@@ -333,17 +357,27 @@ function MobileNav({ route }: { route: string }) {
 function MobileItem({
   item,
   active,
+  badge = 0,
 }: {
   item: (typeof nav)[number];
   active: boolean;
+  badge?: number;
 }) {
   const Icon = item.icon;
   return (
     <a
       href={appPath(item.href)}
       aria-current={active ? "page" : undefined}
-      className={`grid w-full justify-items-center gap-1 px-1 font-body text-[10px] leading-none ${active ? "text-ink" : "text-stone"}`}
+      className={`relative grid w-full justify-items-center gap-1 px-1 font-body text-[10px] leading-none ${active ? "text-ink" : "text-stone"}`}
     >
+      {badge > 0 && (
+        <span
+          aria-label={`${badge} ${badge === 1 ? "pedido para confirmar" : "pedidos para confirmar"}`}
+          className="absolute -top-1 right-[22%] grid h-4 min-w-4 place-items-center rounded-full bg-sky px-1 font-mono text-[9px] text-ink"
+        >
+          {badge}
+        </span>
+      )}
       <Icon size={18} strokeWidth={1.9} />
       <span>{item.label}</span>
     </a>
@@ -1454,6 +1488,44 @@ function CatalogPage({
     </>
   );
 }
+function NotificationsCard({ toast }: { toast: (s: string) => void }) {
+  const [enabled, setEnabled] = useState(() => notificationsEnabled());
+  const supported = notificationsSupported();
+  const blocked = supported && Notification.permission === "denied";
+  const change = async (next: boolean) => {
+    if (!next) {
+      setNotificationsPreference(false);
+      setEnabled(false);
+      return;
+    }
+    const granted = await askNotificationPermission();
+    setEnabled(granted);
+    if (!granted) toast("Seu navegador bloqueou os avisos. Libere nas configurações do site.");
+  };
+  return (
+    <ProfileCard
+      title="Avisos de novo agendamento"
+      text="Receba um aviso assim que uma cliente reservar um horário."
+    >
+      <div className="rounded-2xl border border-line">
+        <ToggleRow
+          label="Avisar no navegador"
+          detail={
+            blocked
+              ? "Bloqueado nas configurações do navegador para este site."
+              : "Funciona enquanto a Vello estiver aberta em alguma aba."
+          }
+          checked={enabled}
+          onChange={(value) => void change(value)}
+        />
+      </div>
+      <p className="mt-4 font-body text-xs leading-relaxed text-stone">
+        Dentro do painel, o aviso aparece na tela e a Agenda mostra quantos pedidos esperam confirmação, mesmo
+        sem esta opção ligada.
+      </p>
+    </ProfileCard>
+  );
+}
 function AccountDataCard({ user, toast }: { user: User; toast: (s: string) => void }) {
   const [exporting, setExporting] = useState(false);
   const [confirming, setConfirming] = useState(false);
@@ -2228,6 +2300,8 @@ function ProfilePage({
             </button>
           </ProfileCard>
 
+          <NotificationsCard toast={toast} />
+
           <AccountDataCard user={user} toast={toast} />
         </div>
 
@@ -2612,11 +2686,41 @@ export function DashboardApp({ user, route }: Props) {
   useEffect(() => {
     void refresh();
   }, [refresh]);
+  // Novo agendamento chega sem recarregar: aviso no painel e no navegador.
+  useEffect(() => {
+    const client = supabase;
+    if (!client) return;
+    const channel = client
+      .channel(`vello-agendamentos-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "appointments", filter: `user_id=eq.${user.id}` },
+        (payload) => {
+          const appointment = payload.new as Appointment;
+          const when = appointmentTime(appointment.starts_at);
+          say(`Novo agendamento: ${appointment.client_name} · ${when}`);
+          notifyNewAppointment({
+            title: "Novo agendamento na Vello",
+            body: `${appointment.client_name} · ${appointment.service_title} · ${when}`,
+            url: appPath("/dashboard/agenda"),
+          });
+          void refresh();
+        },
+      )
+      .subscribe();
+    return () => {
+      void client.removeChannel(channel);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.id]);
   useEffect(() => {
     const close = (e: KeyboardEvent) => e.key === "Escape" && setToast(null);
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
   }, []);
+  const pendingCount = appointments.filter(
+    (appointment) => appointment.status === "pending",
+  ).length;
   if (loading || !profile)
     return <LoadingScreen label="Organizando sua agenda" />;
   let page: React.ReactNode;
@@ -2709,12 +2813,12 @@ export function DashboardApp({ user, route }: Props) {
     );
   return (
     <div className="min-h-screen bg-paper">
-      <Sidebar profile={profile} route={route} />
+      <Sidebar profile={profile} route={route} pending={pendingCount} />
       <MobileTopBar route={route} />
       <main className="min-h-screen px-5 pb-28 pt-5 lg:ml-[248px] lg:px-10 lg:py-10">
         <div className="mx-auto max-w-6xl">{page}</div>
       </main>
-      <MobileNav route={route} />
+      <MobileNav route={route} pending={pendingCount} />
       <Toast text={toast} />
     </div>
   );
