@@ -485,7 +485,7 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
                 <img
                   src={service.images[0].image_url}
                   alt={service.title}
-                  className={classic ? "h-full min-h-[104px] w-full object-cover sm:row-span-2 sm:min-h-[224px]" : "aspect-square w-full object-cover"}
+                  className={classic ? "aspect-square h-24 w-24 shrink-0 self-start rounded-[18px] object-cover sm:h-40 sm:w-40" : "aspect-square w-full object-cover"}
                 />
               ) : (
                 <div
@@ -493,7 +493,7 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
                   aria-label={
                     "Imagem de " + (categories[service.category] || "estética")
                   }
-                  className={"bg-[#E8F1F8] " + (classic ? "h-full min-h-[104px] w-full sm:row-span-2 sm:min-h-[224px]" : "aspect-square w-full")}
+                  className={"bg-[#E8F1F8] " + (classic ? "aspect-square h-24 w-24 shrink-0 self-start rounded-[18px] sm:h-40 sm:w-40" : "aspect-square w-full")}
                   style={categoryCover(service.category)}
                 />
               );
@@ -522,25 +522,34 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
                 return (
                   <article
                     key={service.id}
-                    className="grid grid-cols-[104px_minmax(0,1fr)] overflow-hidden rounded-[24px] border border-line bg-white shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)] sm:grid-cols-[224px_minmax(0,1fr)]"
+                    className="flex gap-3 rounded-[24px] border border-line bg-white p-3 shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)] sm:gap-5 sm:p-4"
                   >
                     {cover}
-                    <div className="min-w-0 p-4 sm:p-5 sm:pb-0">
+                    <div className="flex min-w-0 flex-1 flex-col py-0.5 sm:py-1">
                       {meta}
-                      <h3 className="mt-2 font-display text-lg font-semibold leading-tight sm:mt-3 sm:text-2xl">
+                      <h3 className="mt-1.5 font-display text-lg font-semibold leading-tight sm:mt-2 sm:text-2xl">
                         {service.title}
                       </h3>
                       {service.description && (
-                        <p className="mt-2 line-clamp-2 font-body text-sm leading-relaxed text-ash sm:mt-3">
+                        <p className="mt-1.5 line-clamp-2 font-body text-[13px] leading-relaxed text-ash sm:mt-2 sm:text-sm">
                           {service.description}
                         </p>
                       )}
-                      <p className="mt-3 font-body text-base font-semibold">
-                        {price(service)}
-                      </p>
-                    </div>
-                    <div className="col-span-2 px-4 pb-4 sm:col-span-1 sm:col-start-2 sm:self-end sm:px-5 sm:pb-5 sm:pt-5">
-                      {bookButton}
+                      <div className="mt-auto flex items-end justify-between gap-3 pt-3">
+                        <p className="min-w-0 font-body text-[15px] font-semibold leading-tight sm:text-base">
+                          {price(service)}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => setBooking(service)}
+                          className="vello-primary bg-sky text-ink inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-full px-4 font-body text-sm font-semibold sm:h-11 sm:px-5"
+                        >
+                          <CalendarDays size={16} />
+                          <span>
+                            Agendar<span className="hidden sm:inline"> horário</span>
+                          </span>
+                        </button>
+                      </div>
                     </div>
                   </article>
                 );

@@ -4,6 +4,10 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Claude Code. Cartão Lista refeito (mais tarde no mesmo dia): capa
+quadrada arredondada dentro do cartão (96px celular / 160px computador), texto ao
+lado e linha final com preço à esquerda e botão "Agendar" compacto à direita; a
+versão em grade descrita abaixo foi substituída.
 2026-09-22 — Claude Code. Estilo Lista (`classic`) da página pública corrigido:
 o cartão virou grade (`104px`/`224px` + conteúdo), a capa preenche a altura
 toda (antes era quadrado fixo com espaço branco embaixo) e, no celular, o botão
