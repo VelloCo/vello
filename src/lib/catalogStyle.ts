@@ -46,23 +46,23 @@ export const serviceCategoryNames: Record<string, string> = {
 };
 
 const coverAsset: Record<string, string> = {
-  facial: "/service-covers/facial-v2.jpg",
-  corporal: "/service-covers/corporal-v2.jpg",
-  depilacao: "/service-covers/depilacao-v2.jpg",
-  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios-v2.jpg",
-  unhas: "/service-covers/unhas-v2.jpg",
-  cabelo: "/service-covers/cabelo-v2.jpg",
-  massagem: "/service-covers/massagem-v2.jpg",
-  harmonizacao: "/service-covers/harmonizacao-v2.jpg",
-  outros: "/service-covers/outros-v2.jpg",
+  facial: "/service-covers/facial-cutout-v3.png",
+  corporal: "/service-covers/corporal-cutout-v3.png",
+  depilacao: "/service-covers/depilacao-cutout-v3.png",
+  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios-cutout-v3.png",
+  unhas: "/service-covers/unhas-cutout-v3.png",
+  cabelo: "/service-covers/cabelo-cutout-v3.png",
+  massagem: "/service-covers/massagem-cutout-v3.png",
+  harmonizacao: "/service-covers/harmonizacao-cutout-v3.png",
+  outros: "/service-covers/outros-cutout-v3.png",
 };
 
-export const categoryCoverStyle = (category: string) => ({
-  backgroundColor: "#E8F1F8",
+export const categoryCoverStyle = (category: string, accent?: Accent) => ({
+  backgroundColor: accent?.header || "#E8F1F8",
   backgroundImage: "url(" + appPath(coverAsset[category] || coverAsset.outros) + ")",
   backgroundPosition: "center",
   backgroundRepeat: "no-repeat",
-  backgroundSize: "cover",
+  backgroundSize: "contain",
 });
 
 export function priceLabel(service: { price_type: "fixed" | "from" | "on_request"; price: number | string | null }) {

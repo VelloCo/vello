@@ -111,7 +111,7 @@ function BookButton({ accent, compact = false, onClick }: { accent: Accent; comp
   );
 }
 
-function Cover({ service, list }: { service: CardService; list: boolean }) {
+function Cover({ service, list, accent }: { service: CardService; list: boolean; accent: Accent }) {
   const size = list ? "aspect-square h-24 w-24 shrink-0 self-start rounded-[18px] @2xl:h-40 @2xl:w-40" : "aspect-square w-full";
   return service.imageUrl ? (
     <img src={service.imageUrl} alt={service.title} className={size + " object-cover"} />
@@ -120,7 +120,7 @@ function Cover({ service, list }: { service: CardService; list: boolean }) {
       role="img"
       aria-label={"Imagem de " + (serviceCategoryNames[service.category] || "estética")}
       className={size + " bg-[#E8F1F8]"}
-      style={categoryCoverStyle(service.category)}
+      style={categoryCoverStyle(service.category, accent)}
     />
   );
 }
@@ -153,7 +153,7 @@ export function ServiceCard({
   if (style === "classic")
     return (
       <article className="flex gap-3 rounded-[24px] border border-line bg-white p-3 shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)] @2xl:gap-5 @2xl:p-4">
-        <Cover service={service} list />
+        <Cover service={service} list accent={accent} />
         <div className="flex min-w-0 flex-1 flex-col py-0.5 @2xl:py-1">
           <Meta service={service} list />
           <h3 className="mt-1.5 font-display text-lg font-semibold leading-tight @2xl:mt-2 @2xl:text-2xl">
@@ -173,7 +173,7 @@ export function ServiceCard({
     );
   return (
     <article className="overflow-hidden rounded-[24px] border border-line bg-white shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)]">
-      <Cover service={service} list={false} />
+      <Cover service={service} list={false} accent={accent} />
       <div className="flex min-h-64 flex-1 flex-col p-5">
         <Meta service={service} list={false} />
         <h3 className="mt-3 font-display text-2xl font-semibold">{service.title}</h3>

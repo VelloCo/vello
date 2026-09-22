@@ -4,6 +4,13 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Codex. As nove capas automáticas de serviços foram refeitas com o
+modelo de geração como PNGs transparentes independentes (`*-cutout-v3.png`).
+Personagens, mãos, roupas e instrumentos mantêm cores naturais; o fundo agora é
+uma camada separada que recebe `accent.header`, acompanhando Azul Vello, Rosa,
+Sálvia, Lilás, Areia ou Grafite sem tingir a pessoa. Prévia e catálogo público
+compartilham o mesmo componente e o mesmo resultado.
+
 2026-09-22 — Codex. Removida a recoloração integral das capas automáticas e
 do avatar padrão ao trocar a cor de destaque do catálogo. O blend de
 luminosidade tingia também pele, cabelo e roupa porque personagem e fundo
