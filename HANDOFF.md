@@ -15,7 +15,9 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
   horários inacessível para `anon` e agendamento público preservado.
 - Testes Playwright atualizados para o fluxo atual e configuráveis com
   `VELLO_BASE_URL`. Build, lint, audit de dependências e testes foram repetidos
-  após integrar as alterações mais recentes da `main`.
+  após integrar as alterações mais recentes da `main`. O workflow obsoleto de
+  GitHub Pages foi removido: produção é Vercel, e o job falhava porque Pages
+  nunca esteve habilitado. Playwright continua como verificação da `main`.
 
 2026-09-22 — Claude Code. Lançamento: LGPD, legal, SEO e GEO.
 - LGPD: `ConsentBanner` + `getConsent/setConsent` em `analytics.ts` (GA só
