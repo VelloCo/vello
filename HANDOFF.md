@@ -4,6 +4,13 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Claude Code. Página "Plano e cobrança" (`/dashboard/plano`,
+`src/components/dashboard/BillingPage.tsx`): estado do beta sem cobrança, plano
+com preço e benefícios, forma de pagamento (vazia, desabilitada), histórico
+vazio e dúvidas. Nenhum pagamento é processado. O preço passou a vir de
+`src/lib/plan.ts`, usado também pela landing, para não divergirem. Item "Plano"
+no menu lateral e atalho em Configurações; a barra móvel continua com Perfil.
+
 2026-09-22 — Codex. Beta fechado por convite:
 - O painel `/admin` ganhou o bloco “Convide uma profissional”, que recebe nome
   e e-mail, gera um link individual e oferece copiar ou enviar pelo WhatsApp.

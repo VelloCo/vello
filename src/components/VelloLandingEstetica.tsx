@@ -28,6 +28,9 @@ import {
 } from "lucide-react";
 import { appPath, PUBLIC_CATALOG_DOMAIN } from "../lib/paths";
 import { setJsonLd } from "../lib/seo";
+import { PLAN } from "../lib/plan";
+
+const PRICE = PLAN.price;
 import { Logo } from "./Logo";
 import { Reveal } from "./Primitives";
 import {
@@ -43,7 +46,7 @@ import {
 const signup = appPath("/cadastro");
 const login = appPath("/login");
 const support = appPath("/suporte");
-const PRICE = 65.9;
+
 
 type Category = { label: string; Icon: LucideIcon; tone: string; examples: string };
 

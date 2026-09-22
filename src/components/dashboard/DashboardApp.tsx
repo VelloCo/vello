@@ -6,6 +6,7 @@ import {
   CalendarDays,
   Check,
   ChevronLeft,
+  CreditCard,
   Clock3,
   Copy,
   ExternalLink,
@@ -31,6 +32,7 @@ import {
   PUBLIC_CATALOG_DOMAIN,
   PUBLIC_SITE_ORIGIN,
 } from "../../lib/paths";
+import { BillingPage } from "./BillingPage";
 import { LoadingScreen } from "../LoadingScreen";
 import { Logo } from "../Logo";
 import { accentFor, accentKeys, accents } from "../../lib/catalogStyle";
@@ -76,6 +78,7 @@ const nav = [
     label: "Personalizar catálogo",
     icon: Palette,
   },
+  { href: "/dashboard/plano", label: "Plano", icon: CreditCard },
   { href: "/dashboard/perfil", label: "Perfil", icon: UserRound },
   { href: "/dashboard/configuracoes", label: "Configurações", icon: Settings2 },
 ];
@@ -299,7 +302,8 @@ function MobileTopBar({ route }: { route: string }) {
   );
 }
 function MobileNav({ route }: { route: string }) {
-  const items = [nav[0], nav[1], nav[2], nav[5]];
+  // Início, Serviços, Agenda e Perfil (o botão central é o novo serviço).
+  const items = [nav[0], nav[1], nav[2], nav.find((item) => item.href === "/dashboard/perfil")!];
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 grid h-[72px] grid-cols-5 items-center border-t border-line bg-white/95 px-1 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
       {items.slice(0, 2).map((i) => (
@@ -2230,6 +2234,7 @@ function ProfilePage({
         <aside className="space-y-3 lg:sticky lg:top-10">
           {(
             [
+              ["Plano e cobrança", "Valores e situação da sua conta.", "/dashboard/plano", CreditCard],
               ["Perfil", "Dados e o que aparece na sua página.", "/dashboard/perfil", UserRound],
               ["Meu catálogo", "Abra, copie ou compartilhe seu link.", "/dashboard/catalogo", ExternalLink],
               ["Personalizar catálogo", "Cores e estilo da sua página.", "/dashboard/personalizar", Palette],
@@ -2679,6 +2684,7 @@ export function DashboardApp({ user, route }: Props) {
         toast={say}
       />
     );
+  else if (route === "/dashboard/plano") page = <BillingPage profile={profile} />;
   else if (route === "/dashboard/configuracoes")
     page = (
       <ProfilePage
