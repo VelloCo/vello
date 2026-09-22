@@ -1,5 +1,5 @@
 {
-  "name": "Vello — Agenda e catálogo para estéticas",
+  "name": "Vello — Agenda online para estéticas",
   "short_name": "Vello",
   "start_url": "/",
   "display": "standalone",
@@ -7,6 +7,7 @@
   "theme_color": "#7EAFD0",
   "icons": [
     { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }

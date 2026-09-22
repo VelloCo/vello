@@ -45,7 +45,7 @@ export default function App() {
   const privateRoute = path === "/onboarding" || path.startsWith("/dashboard") || path === "/admin";
 
   useEffect(() => {
-    const page = path === "/" ? ["Vello — Agenda e serviços para estéticas", "Organize sua agenda, apresente seus serviços e facilite novos atendimentos com a Vello."]
+    const page = path === "/" ? ["Vello — Agenda online e página de serviços para estéticas", "Página de serviços, agendamento online e agenda organizada para estéticas e profissionais da beleza. Sua cliente agenda sozinha. Teste grátis por 7 dias."]
       : path === "/login" ? ["Entrar | Vello", "Entre para gerenciar sua agenda e seus serviços na Vello."]
       : path === "/cadastro" ? ["Criar conta | Vello", "Crie sua página de serviços e organize seus atendimentos."]
       : path === "/onboarding" ? ["Configure sua Vello", "Complete o perfil da sua estética e publique seu primeiro serviço."]
