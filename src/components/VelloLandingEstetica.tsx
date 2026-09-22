@@ -5,9 +5,7 @@ import {
   AtSign,
   BellRing,
   CalendarCheck,
-  Check,
   CheckCheck,
-  Clock,
   Eye,
   Feather,
   Hand,
@@ -17,7 +15,6 @@ import {
   Link2,
   MapPin,
   MessageCircle,
-  MousePointer2,
   PersonStanding,
   Plus,
   QrCode,
@@ -32,6 +29,15 @@ import {
 import { appPath } from "../lib/paths";
 import { Logo } from "./Logo";
 import { Reveal } from "./Primitives";
+import {
+  AgendaScreen,
+  AvailabilityCard,
+  BookingDialogScreen,
+  PublicCatalogScreen,
+  PublicPhoneScreen,
+  ReservationsCard,
+  Scaled,
+} from "./landing/AppScreens";
 
 const signup = appPath("/cadastro");
 const login = appPath("/login");
@@ -42,13 +48,13 @@ type Category = { label: string; Icon: LucideIcon; tone: string; examples: strin
 
 const categories: Category[] = [
   { label: "Facial", Icon: Sparkles, tone: "bg-sky-soft text-sky-deep", examples: "Limpeza de pele, peeling, hidratação" },
-  { label: "Corporal", Icon: PersonStanding, tone: "bg-[#E3F4EC] text-[#1F7A52]", examples: "Drenagem, modeladora, radiofrequência" },
-  { label: "Depilação", Icon: Feather, tone: "bg-[#FFF1DC] text-[#94590A]", examples: "Cera, laser, fotodepilação" },
-  { label: "Sobrancelhas e cílios", Icon: Eye, tone: "bg-[#EFEAFD] text-[#5B3FB3]", examples: "Design, henna, lash lifting" },
-  { label: "Unhas", Icon: Hand, tone: "bg-[#FDE8F1] text-[#A8245F]", examples: "Manicure, alongamento, spa dos pés" },
-  { label: "Cabelo", Icon: Scissors, tone: "bg-[#FFEBE3] text-[#A4441C]", examples: "Corte, escova, hidratação capilar" },
-  { label: "Massagem", Icon: HandHeart, tone: "bg-[#E0F4F5] text-[#15707A]", examples: "Relaxante, pedras quentes, shiatsu" },
-  { label: "Harmonização", Icon: Syringe, tone: "bg-[#E9EEF7] text-[#34507A]", examples: "Toxina, preenchimento, bioestimulador" },
+  { label: "Corporal", Icon: PersonStanding, tone: "bg-sky-soft text-sky-deep", examples: "Drenagem, modeladora, radiofrequência" },
+  { label: "Depilação", Icon: Feather, tone: "bg-sky-soft text-sky-deep", examples: "Cera, laser, fotodepilação" },
+  { label: "Sobrancelhas e cílios", Icon: Eye, tone: "bg-sky-soft text-sky-deep", examples: "Design, henna, lash lifting" },
+  { label: "Unhas", Icon: Hand, tone: "bg-sky-soft text-sky-deep", examples: "Manicure, alongamento, spa dos pés" },
+  { label: "Cabelo", Icon: Scissors, tone: "bg-sky-soft text-sky-deep", examples: "Corte, escova, hidratação capilar" },
+  { label: "Massagem", Icon: HandHeart, tone: "bg-sky-soft text-sky-deep", examples: "Relaxante, pedras quentes, shiatsu" },
+  { label: "Harmonização", Icon: Syringe, tone: "bg-sky-soft text-sky-deep", examples: "Toxina, preenchimento, bioestimulador" },
 ];
 
 function CategoryIcon({ label, size = 40 }: { label: string; size?: number }) {
@@ -59,6 +65,7 @@ function CategoryIcon({ label, size = 40 }: { label: string; size?: number }) {
     </span>
   );
 }
+
 const money = (value: number) => value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export function VelloLandingEstetica() {
@@ -257,162 +264,28 @@ function HeroPoint({ icon, title, text }: { icon: ReactNode; title: string; text
   );
 }
 
-const agenda = [
-  ["09:00", "Limpeza de pele profunda", "Ana Paula", true],
-  ["10:30", "Design de sobrancelhas", "Juliana M.", false],
-  ["14:00", "Drenagem linfática", "Carla S.", true],
-  ["16:00", "Massagem relaxante", "Beatriz R.", true],
-] as const;
-
 function DashboardMock() {
-  const week = [42, 58, 50, 74, 66, 88, 60];
   return (
-    <div
-      aria-hidden="true"
-      className="absolute left-[18%] top-0 hidden w-[760px] overflow-hidden rounded-[16px] border border-line bg-white shadow-[0_40px_90px_-50px_rgba(18,40,58,.55)] lg:block"
-    >
-      <div className="flex">
-        <div className="w-[180px] shrink-0 border-r border-mist bg-paper p-4">
-          <img src={`${appPath("/vello-logo.png")}?v=4`} alt="" className="h-7 w-7 object-contain" />
-          <div className="mt-5 rounded-[8px] border border-line bg-white px-3 py-2 font-body text-[11px] text-stone">Pesquisar</div>
-          <div className="mt-5 space-y-1 font-body text-[12px] text-ash">
-            {["Início", "Serviços", "Agenda", "Configurações"].map((item) => (
-              <div key={item} className={`rounded-[8px] px-3 py-2 ${item === "Agenda" ? "bg-sky-soft font-semibold text-ink" : ""}`}>
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="flex-1 p-6">
-          <p className="font-body text-[12px] font-semibold text-ink">Agenda</p>
-          <div className="mt-5 grid grid-cols-2 gap-4 border-b border-mist pb-5">
-            <div>
-              <p className="font-body text-[11px] text-stone">Atendimentos hoje</p>
-              <p className="mt-1 font-display text-[30px] font-semibold tracking-[-.04em]">8</p>
-            </div>
-            <div>
-              <p className="font-body text-[11px] text-stone">Previsto no dia</p>
-              <p className="mt-1 font-display text-[30px] font-semibold tracking-[-.04em]">R$ 1.240,00</p>
-            </div>
-          </div>
-          <div className="mt-4 flex gap-1 font-body text-[11px] text-ash">
-            {["Para confirmar", "Hoje", "Esta semana", "Histórico"].map((tab, i) => (
-              <span key={tab} className={`rounded-[6px] px-2.5 py-1 ${i === 1 ? "border border-line bg-white font-semibold text-ink" : ""}`}>
-                {tab}
-              </span>
-            ))}
-          </div>
-          <div className="mt-4 rounded-[12px] border border-mist p-4">
-            <p className="font-body text-[11px] text-stone">Agendamentos na semana</p>
-            <div className="mt-3 flex h-[92px] items-end gap-3">
-              {week.map((h, i) => (
-                <div key={i} className="flex h-full flex-1 flex-col items-center justify-end gap-1.5">
-                  <div className={`w-full rounded-t-[5px] ${i === 5 ? "bg-sky-strong" : "bg-sky/60"}`} style={{ height: `${h}%` }} />
-                  <span className="font-body text-[9px] text-stone">{["S", "T", "Q", "Q", "S", "S", "D"][i]}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="mt-4 divide-y divide-mist rounded-[12px] border border-mist">
-            {agenda.slice(0, 3).map(([time, service, client, confirmed]) => (
-              <div key={time} className="flex items-center gap-3 px-4 py-2.5 font-body text-[11px]">
-                <span className="w-10 font-semibold text-ink">{time}</span>
-                <span className="flex-1 text-ink">
-                  {service} <span className="text-stone">· {client}</span>
-                </span>
-                <StatusChip confirmed={confirmed} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+    <div className="absolute left-[18%] top-0 hidden w-[760px] overflow-hidden rounded-[16px] border border-line bg-white shadow-[0_40px_90px_-50px_rgba(18,40,58,.55)] lg:block">
+      <Scaled scale={760 / 1180}>
+        <AgendaScreen />
+      </Scaled>
     </div>
   );
 }
 
-function StatusChip({ confirmed, small = false }: { confirmed: boolean; small?: boolean }) {
-  return (
-    <span
-      className={`shrink-0 rounded-full font-body font-medium ${small ? "px-2 py-0.5 text-[9px]" : "px-2.5 py-0.5 text-[10px]"} ${
-        confirmed ? "bg-sky-soft text-sky-deep" : "bg-[#FFF4E0] text-[#8A5A00]"
-      }`}
-    >
-      {confirmed ? "Confirmado" : "Para confirmar"}
-    </span>
-  );
-}
-
-const phoneServices = [
-  { name: "Limpeza de pele profunda", label: "Facial", time: "60 min", price: "R$ 150,00", active: true },
-  { name: "Drenagem linfática", label: "Corporal", time: "50 min", price: "R$ 120,00", active: false },
-];
-
 function PhoneMock() {
-  const slots = ["09:00", "10:00", "11:30", "14:00", "15:30", "17:00"];
   return (
-    <div
-      aria-hidden="true"
-      className="absolute left-1/2 top-2 w-[270px] -translate-x-1/2 rounded-[40px] border-[7px] border-white bg-white shadow-[0_40px_80px_-40px_rgba(18,40,58,.7)] ring-1 ring-line lg:left-0 lg:top-24 lg:translate-x-0"
-    >
-      <div className="overflow-hidden rounded-[33px] bg-paper">
-        <div className="flex items-center justify-between px-6 pt-3 font-body text-[11px] font-semibold">
+    <div className="absolute left-1/2 top-2 w-[270px] -translate-x-1/2 rounded-[40px] border-[7px] border-white bg-white shadow-[0_40px_80px_-40px_rgba(18,40,58,.7)] ring-1 ring-line lg:left-0 lg:top-24 lg:translate-x-0">
+      <div className="relative h-[520px] overflow-hidden rounded-[33px] bg-white">
+        <div aria-hidden="true" className="flex h-8 items-center justify-between px-6 font-body text-[11px] font-semibold">
           <span>9:41</span>
           <span className="h-5 w-20 rounded-full bg-ink" />
           <span className="text-[10px]">5G</span>
         </div>
-        <div className="flex items-center gap-2.5 px-4 pt-4">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-ink font-display text-[12px] font-semibold text-white">SA</span>
-          <span>
-            <b className="block font-display text-[13px] font-semibold leading-tight">Studio Aurora</b>
-            <span className="block font-body text-[10px] text-stone">Estética facial e corporal</span>
-          </span>
-        </div>
-        <div className="mx-3 mt-3 space-y-1.5">
-          {phoneServices.map(({ name, label, time, price, active }) => (
-            <div
-              key={name}
-              className={`flex items-center gap-2.5 rounded-[14px] border bg-white p-2.5 ${
-                active ? "border-sky-strong shadow-[0_8px_20px_-14px_rgba(18,40,58,.5)]" : "border-transparent"
-              }`}
-            >
-              <CategoryIcon label={label} size={38} />
-              <span className="min-w-0 flex-1">
-                <b className="block truncate font-display text-[12px] font-semibold leading-tight">{name}</b>
-                <span className="mt-1 flex items-center gap-1 font-body text-[10px] text-stone">
-                  <Clock size={10} /> {time} · <b className="font-semibold text-ink">{price}</b>
-                </span>
-              </span>
-              {active && <Check size={14} className="text-sky-deep" />}
-            </div>
-          ))}
-        </div>
-        <div className="px-3 pt-3">
-          <p className="font-body text-[10px] font-semibold uppercase tracking-[.08em] text-stone">Escolha o dia</p>
-          <div className="mt-2 grid grid-cols-4 gap-1.5">
-            {[["Seg", "22"], ["Ter", "23"], ["Qua", "24"], ["Qui", "25"]].map(([d, n], i) => (
-              <span key={n} className={`rounded-[10px] py-1.5 text-center font-body ${i === 1 ? "bg-ink text-white" : "bg-white text-ink"}`}>
-                <span className="block text-[9px] opacity-70">{d}</span>
-                <span className="block text-[13px] font-semibold">{n}</span>
-              </span>
-            ))}
-          </div>
-          <p className="mt-3 font-body text-[10px] font-semibold uppercase tracking-[.08em] text-stone">Horários livres</p>
-          <div className="mt-2 grid grid-cols-3 gap-1.5">
-            {slots.map((slot) => (
-              <span
-                key={slot}
-                className={`rounded-[8px] border py-1.5 text-center font-body text-[11px] font-medium ${
-                  slot === "14:00" ? "border-sky-strong bg-sky-soft text-ink" : "border-line bg-white text-ash"
-                }`}
-              >
-                {slot}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="p-3 pb-5">
-          <div className="rounded-full bg-sky py-2.5 text-center font-body text-[12px] font-semibold text-ink">Agendar terça, 14:00</div>
-        </div>
+        <Scaled scale={256 / 390}>
+          <PublicPhoneScreen />
+        </Scaled>
       </div>
     </div>
   );
@@ -536,68 +409,23 @@ function ShareCard({ title, text, visual, border = false }: { title: string; tex
 }
 
 function CatalogVisual() {
-  const services = [
-    ["Limpeza de pele", "Facial", "R$ 150"],
-    ["Drenagem linfática", "Corporal", "R$ 120"],
-    ["Design de sobrancelhas", "Sobrancelhas e cílios", "R$ 60"],
-    ["Massagem relaxante", "Massagem", "a partir de R$ 130"],
-  ];
   return (
-    <div
-      aria-hidden="true"
-      className="absolute left-8 top-10 w-[620px] origin-top-left -rotate-[4deg] rounded-[16px] border border-line bg-white p-5 shadow-[0_30px_70px_-40px_rgba(18,40,58,.5)] md:left-12 md:top-14"
-    >
-      <p className="font-body text-[10px] font-semibold uppercase tracking-[.1em] text-sky-deep">Studio Aurora</p>
-      <p className="mt-1 font-display text-[22px] font-semibold tracking-[-.04em]">Nossos serviços</p>
-      <div className="mt-3 flex gap-1.5">
-        {["Todos", "Facial", "Corporal", "Sobrancelhas"].map((f, i) => (
-          <span key={f} className={`rounded-full px-3 py-1 font-body text-[10px] ${i ? "border border-line text-ash" : "bg-ink text-white"}`}>
-            {f}
-          </span>
-        ))}
-      </div>
-      <div className="mt-4 grid grid-cols-4 gap-2.5">
-        {services.map(([name, label, price]) => (
-          <div key={name} className="rounded-[12px] border border-mist p-2.5">
-            <CategoryIcon label={label} size={44} />
-            <p className="mt-6 font-body text-[8px] uppercase tracking-[.08em] text-stone">{label}</p>
-            <div className="mt-1">
-              <p className="font-body text-[10px] font-semibold leading-tight text-ink">{name}</p>
-              <p className="mt-1 font-body text-[9px] text-stone">{price}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className="absolute left-8 top-10 origin-top-left -rotate-[3deg] overflow-hidden rounded-[16px] border border-line shadow-[0_30px_70px_-40px_rgba(18,40,58,.5)] md:left-12 md:top-12">
+      <Scaled scale={0.56}>
+        <PublicCatalogScreen />
+      </Scaled>
     </div>
   );
 }
 
 function BookingVisual() {
   return (
-    <div aria-hidden="true" className="absolute inset-0 grid place-items-center">
+    <div className="absolute inset-0 grid place-items-center">
       <div className="absolute h-[260px] w-[260px] rounded-full bg-sky/40 blur-[70px]" />
-      <div className="relative w-[340px] rounded-[20px] border border-white bg-white/90 p-5 shadow-[0_30px_70px_-36px_rgba(18,40,58,.55)] backdrop-blur">
-        <p className="font-body text-[11px] text-stone">Terça, 23 de setembro</p>
-        <div className="mt-3 grid grid-cols-3 gap-2">
-          {["09:00", "10:00", "11:30", "14:00", "15:30", "17:00"].map((slot) => (
-            <span
-              key={slot}
-              className={`rounded-[10px] border py-2 text-center font-body text-[13px] font-medium ${
-                slot === "14:00" ? "border-sky-strong bg-sky-soft text-ink" : "border-line text-ash"
-              }`}
-            >
-              {slot}
-            </span>
-          ))}
-        </div>
-        <div className="mt-4 flex items-center justify-between rounded-[12px] bg-paper px-3 py-2.5">
-          <span className="font-body text-[12px] text-ash">Maria Clara · (51) 9••••-4821</span>
-          <Check size={15} className="text-sky-deep" />
-        </div>
-        <div className="relative mt-4 rounded-full bg-sky py-3 text-center font-body text-[13px] font-semibold text-ink">
-          Confirmar agendamento
-          <MousePointer2 size={26} className="absolute -bottom-5 right-10 fill-white text-ink" />
-        </div>
+      <div className="relative scale-[.82] md:scale-100">
+        <Scaled scale={0.6}>
+          <BookingDialogScreen />
+        </Scaled>
       </div>
     </div>
   );
@@ -643,22 +471,11 @@ function Suite() {
         <Frame className="grid md:grid-cols-2">
           <SuiteCard
             title="Nada de horário duplicado."
-            text="Cada horário reservado sai da lista na hora. Duas clientes nunca marcam o mesmo horário."
+            text="Cada horário reservado sai da lista na hora. Você confirma, conclui ou cancela cada reserva com um toque."
             visual={
-              <div className="relative w-[300px] space-y-2">
-                {agenda.map(([time, service, client, confirmed], i) => (
-                  <div
-                    key={time}
-                    className={`flex items-center gap-3 rounded-[12px] border border-line bg-white px-4 py-3 font-body text-[12px] shadow-[0_10px_24px_-20px_rgba(18,40,58,.6)] ${i === 1 ? "translate-x-5" : ""}`}
-                  >
-                    <span className="font-semibold">{time}</span>
-                    <span className="flex-1 truncate text-ash">
-                      {service} · {client}
-                    </span>
-                    <StatusChip confirmed={confirmed} small />
-                  </div>
-                ))}
-              </div>
+              <Scaled scale={0.56} className="w-[520px]">
+                <ReservationsCard limit={2} />
+              </Scaled>
             }
           />
           <SuiteCard
@@ -666,23 +483,9 @@ function Suite() {
             title="Seus horários, suas regras."
             text="Defina os dias e horários de atendimento. A página só oferece o que realmente está livre."
             visual={
-              <div className="w-[300px] rounded-[16px] border border-line bg-white p-4 shadow-[0_14px_30px_-22px_rgba(18,40,58,.6)]">
-                {[
-                  ["Segunda a sexta", "09:00 – 19:00", true],
-                  ["Sábado", "09:00 – 14:00", true],
-                  ["Domingo", "Fechado", false],
-                ].map(([day, hours, on]) => (
-                  <div key={String(day)} className="flex items-center justify-between border-b border-mist py-3 last:border-0">
-                    <span>
-                      <b className="block font-body text-[13px] font-semibold">{day}</b>
-                      <span className="font-body text-[11px] text-stone">{hours}</span>
-                    </span>
-                    <span className={`flex h-6 w-11 items-center rounded-full p-0.5 ${on ? "justify-end bg-sky-strong" : "bg-line"}`}>
-                      <span className="h-5 w-5 rounded-full bg-white shadow" />
-                    </span>
-                  </div>
-                ))}
-              </div>
+              <Scaled scale={0.56}>
+                <AvailabilityCard />
+              </Scaled>
             }
           />
         </Frame>
