@@ -4,7 +4,6 @@ import {
   AtSign,
   BellRing,
   CalendarCheck,
-  CalendarClock,
   Check,
   Clock,
   LayoutGrid,
@@ -880,9 +879,14 @@ function Closing() {
   return (
     <section>
       <Frame wide className="px-0 md:px-[104px]">
-        <div className="relative grid overflow-hidden bg-sky md:grid-cols-2">
-          <div aria-hidden="true" className="vello-dots absolute inset-y-0 right-0 w-1/2 opacity-60 [mask-image:linear-gradient(90deg,transparent,#000)]" />
-          <Reveal className="relative px-6 py-16 md:px-16 md:py-24">
+        <div className="relative flex flex-col overflow-hidden bg-[#CBE8FD] md:block">
+          <img
+            src={appPath("/landing/vello-cta-final.webp")}
+            alt="Ilustração de uma mulher leve e feliz, cercada por fitas azuis e folhas"
+            loading="lazy"
+            className="order-last aspect-[4/3] w-full object-cover object-[82%_50%] md:absolute md:inset-0 md:aspect-auto md:h-full md:object-[right_center]"
+          />
+          <Reveal className="relative px-6 pb-4 pt-16 md:max-w-[560px] md:px-16 md:py-28">
             <h2 className="balance font-display text-[clamp(38px,4.4vw,54px)] font-medium leading-[1.02] tracking-[-.045em]">
               Chegou até aqui? Sua agenda merece a Vello.
             </h2>
@@ -899,24 +903,6 @@ function Closing() {
               </span>
             </a>
           </Reveal>
-          <div className="relative flex min-h-[320px] items-end justify-center">
-            <div className="absolute right-8 top-10 hidden rotate-[4deg] items-center gap-3 rounded-[14px] bg-white p-3 pr-5 shadow-[0_18px_40px_-24px_rgba(18,40,58,.7)] sm:flex">
-              <span className="grid h-9 w-9 place-items-center rounded-full bg-sky-soft text-sky-deep">
-                <CalendarClock size={18} />
-              </span>
-              <span>
-                <b className="block font-body text-[13px] font-semibold">Novo agendamento</b>
-                <span className="font-body text-[12px] text-stone">Terça, 14:00 · Limpeza de pele</span>
-              </span>
-            </div>
-            <img
-              src={appPath("/vello-onboarding-avatar.png")}
-              alt=""
-              aria-hidden="true"
-              loading="lazy"
-              className="relative h-[300px] w-auto object-contain md:h-[380px]"
-            />
-          </div>
         </div>
       </Frame>
     </section>
