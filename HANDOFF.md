@@ -4,6 +4,14 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-21 — Claude Code. Configurações reorganizada em cartões (Horários de
+atendimento com interruptor por dia, Regras de reserva com unidades e dicas,
+Segurança) e coluna lateral com atalhos (Perfil, Meu catálogo, Personalizar) e
+"Sair da conta". Para Configurações não ficar escondida no celular, o painel
+ganhou `MobileTopBar` (logo + botão "Configurações" sempre visível, só abaixo
+de `lg`). O atalho "Horários de atendimento" do Início agora leva a
+Configurações (antes ia para Agenda). Mesma lógica de salvar.
+
 2026-09-21 — Claude Code. Botão/rota de Configurações voltou a funcionar: havia
 em `src/App.tsx` um redirecionamento antigo de `/dashboard/configuracoes` para
 `/dashboard/perfil` (removido). Página Perfil reorganizada em cartões

@@ -420,6 +420,25 @@ function NavItem({
     </a>
   );
 }
+function MobileTopBar({ route }: { route: string }) {
+  const active = route === "/dashboard/configuracoes";
+  return (
+    <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-white/90 px-5 backdrop-blur lg:hidden">
+      <a href={appPath("/dashboard")} className="inline-flex items-center gap-2">
+        <img src={`${appPath("/vello-logo.png")}?v=4`} alt="" className="h-6 w-6 object-contain" />
+        <b className="font-display text-lg text-ink">Vello</b>
+      </a>
+      <a
+        href={appPath("/dashboard/configuracoes")}
+        aria-label="Configurações"
+        aria-current={active ? "page" : undefined}
+        className={`inline-flex h-10 items-center gap-2 rounded-full border px-3.5 font-body text-xs font-medium transition ${active ? "border-ink bg-ink text-paper" : "border-line bg-white text-ink"}`}
+      >
+        <Settings2 size={16} strokeWidth={1.9} /> Configurações
+      </a>
+    </header>
+  );
+}
 function MobileNav({ route }: { route: string }) {
   const items = [nav[0], nav[1], nav[2], nav[5]];
   return (
@@ -1108,7 +1127,7 @@ function EsteticaHomePage({
           <div className="mt-6 grid gap-2">
             {[
               ["Adicionar serviço", "/dashboard/servicos/novo"],
-              ["Horários de atendimento", "/dashboard/agenda"],
+              ["Horários de atendimento", "/dashboard/configuracoes"],
               ["Abrir catálogo", publicCatalogUrl(profile.slug)],
             ].map(([text, href]) => (
               <button
@@ -2401,6 +2420,66 @@ function ProfileCard({
     </section>
   );
 }
+function Switch({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <label className="inline-flex cursor-pointer">
+      <input
+        type="checkbox"
+        aria-label={label}
+        checked={checked}
+        onChange={(event) => onChange(event.target.checked)}
+        className="peer sr-only"
+      />
+      <span
+        aria-hidden="true"
+        className="flex h-6 w-11 shrink-0 items-center rounded-full bg-line p-0.5 transition peer-checked:bg-ink peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink [&>span]:transition peer-checked:[&>span]:translate-x-5"
+      >
+        <span className="h-5 w-5 rounded-full bg-white shadow" />
+      </span>
+    </label>
+  );
+}
+function HintField({
+  label,
+  hint,
+  suffix,
+  value,
+  onChange,
+}: {
+  label: string;
+  hint: string;
+  suffix: string;
+  value: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-3 block font-body text-[11px] font-medium uppercase tracking-[0.08em] text-ash">
+        {label}
+      </span>
+      <span className="flex h-12 items-center rounded-xl border border-line pr-3 focus-within:border-ink">
+        <input
+          type="number"
+          inputMode="numeric"
+          min={0}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+          className="h-full min-w-0 flex-1 rounded-xl px-3 font-body text-sm outline-none"
+        />
+        <span className="font-body text-xs text-stone">{suffix}</span>
+      </span>
+      <span className="mt-2 block font-body text-xs leading-relaxed text-ash">{hint}</span>
+    </label>
+  );
+}
 function ToggleRow({
   label,
   detail,
@@ -2848,6 +2927,16 @@ function ProfilePage({
       </>
     );
   }
+  const updateHour = (
+    index: number,
+    values: Partial<(typeof hours)[number]>,
+  ) =>
+    setHours((current) =>
+      current.map((item, itemIndex) =>
+        itemIndex === index ? { ...item, ...values } : item,
+      ),
+    );
+  const openDays = hours.filter((hour) => hour.enabled).length;
   return (
     <>
       <header>
@@ -2855,174 +2944,119 @@ function ProfilePage({
           Sua estética
         </p>
         <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">
-          {settingsMode ? "Configurações" : "Perfil"}
+          Configurações
         </h1>
-        <p className="mt-2 font-body text-ash">
-          {settingsMode
-            ? "Defina sua disponibilidade, as regras das reservas e a segurança da conta."
-            : "Seus dados e as informações que aparecem para clientes no catálogo."}
+        <p className="mt-2 max-w-xl font-body text-ash">
+          Quando as clientes podem reservar, como as reservas funcionam e a
+          segurança da sua conta.
         </p>
       </header>
-      <section className="mt-7 max-w-3xl rounded-[24px] border border-line bg-white p-5 sm:p-7">
-        {(profileView === "availability" || settingsMode) && (
-          <section>
-            {settingsMode && (
-              <a
-                href={appPath("/dashboard/catalogo")}
-                className="mb-7 flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"
-              >
-                <span>
-                  <b className="block font-body text-sm">Meu catálogo</b>
-                  <span className="mt-1 block font-body text-xs text-ash">
-                    Abra, copie ou compartilhe seu link.
-                  </span>
-                </span>
-                <ExternalLink size={18} className="shrink-0 text-ash" />
-              </a>
-            )}
-            <p className="font-display text-xl font-semibold">
-              Agenda e reservas
-            </p>
-            <p className="mt-1 font-body text-sm text-ash">
-              Escolha quando clientes podem reservar e como cada reserva é
-              confirmada.
-            </p>
-            <div className="mt-5 space-y-3">
+
+      <div className="mt-8 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="space-y-5">
+          <ProfileCard
+            title="Horários de atendimento"
+            text={`Sua página só oferece horários nos dias abertos. ${openDays} ${openDays === 1 ? "dia aberto" : "dias abertos"} por semana.`}
+          >
+            <div className="divide-y divide-line rounded-2xl border border-line">
               {hours.map((hour, index) => (
                 <div
                   key={hour.weekday}
-                  className="grid gap-3 rounded-2xl border border-line p-3 sm:grid-cols-[1fr_120px_120px]"
+                  className="grid grid-cols-[1fr_auto] items-center gap-3 px-4 py-3 sm:grid-cols-[1fr_auto_auto] sm:gap-5"
                 >
-                  <label className="flex items-center gap-3 font-body text-sm font-semibold">
-                    <input
-                      type="checkbox"
-                      checked={hour.enabled}
-                      onChange={(event) =>
-                        setHours((current) =>
-                          current.map((item, itemIndex) =>
-                            itemIndex === index
-                              ? { ...item, enabled: event.target.checked }
-                              : item,
-                          ),
-                        )
-                      }
-                      className="h-4 w-4 accent-black"
-                    />
+                  <span className="font-body text-sm font-semibold">
                     {weekdays[hour.weekday]}
-                  </label>
-                  <input
-                    type="time"
-                    value={hour.start_time}
-                    disabled={!hour.enabled}
-                    onChange={(event) =>
-                      setHours((current) =>
-                        current.map((item, itemIndex) =>
-                          itemIndex === index
-                            ? { ...item, start_time: event.target.value }
-                            : item,
-                        ),
-                      )
-                    }
-                    className="h-11 rounded-xl border border-line px-3 font-body text-sm disabled:opacity-45"
-                  />
-                  <input
-                    type="time"
-                    value={hour.end_time}
-                    disabled={!hour.enabled}
-                    onChange={(event) =>
-                      setHours((current) =>
-                        current.map((item, itemIndex) =>
-                          itemIndex === index
-                            ? { ...item, end_time: event.target.value }
-                            : item,
-                        ),
-                      )
-                    }
-                    className="h-11 rounded-xl border border-line px-3 font-body text-sm disabled:opacity-45"
+                    {!hour.enabled && (
+                      <span className="ml-2 font-normal text-stone">Fechado</span>
+                    )}
+                  </span>
+                  <span className="col-span-2 row-start-2 flex items-center gap-2 sm:col-span-1 sm:row-start-auto">
+                    <input
+                      type="time"
+                      aria-label={`Início de ${weekdays[hour.weekday]}`}
+                      value={hour.start_time}
+                      disabled={!hour.enabled}
+                      onChange={(event) => updateHour(index, { start_time: event.target.value })}
+                      className="h-10 min-w-0 flex-1 rounded-xl border border-line px-3 font-body text-sm disabled:opacity-40 sm:w-[112px] sm:flex-none"
+                    />
+                    <span className="font-body text-xs text-stone">até</span>
+                    <input
+                      type="time"
+                      aria-label={`Fim de ${weekdays[hour.weekday]}`}
+                      value={hour.end_time}
+                      disabled={!hour.enabled}
+                      onChange={(event) => updateHour(index, { end_time: event.target.value })}
+                      className="h-10 min-w-0 flex-1 rounded-xl border border-line px-3 font-body text-sm disabled:opacity-40 sm:w-[112px] sm:flex-none"
+                    />
+                  </span>
+                  <Switch
+                    label={`Abrir ${weekdays[hour.weekday]}`}
+                    checked={hour.enabled}
+                    onChange={(enabled) => updateHour(index, { enabled })}
                   />
                 </div>
               ))}
             </div>
-            <div className="mt-7 grid gap-4 sm:grid-cols-3">
-              <Field
-                label="Intervalo (minutos)"
-                type="number"
+          </ProfileCard>
+
+          <ProfileCard
+            title="Regras de reserva"
+            text="As clientes escolhem serviço, dia e horário direto na sua página Vello."
+          >
+            <div className="grid gap-5 sm:grid-cols-3">
+              <HintField
+                label="Intervalo entre horários"
+                suffix="min"
+                hint="De quanto em quanto tempo os horários aparecem."
                 value={bookingSettings.booking_slot_minutes}
                 onChange={(value) =>
-                  setBookingSettings((current) => ({
-                    ...current,
-                    booking_slot_minutes: value,
-                  }))
+                  setBookingSettings((current) => ({ ...current, booking_slot_minutes: value }))
                 }
               />
-              <Field
-                label="Aviso mínimo (minutos)"
-                type="number"
+              <HintField
+                label="Aviso mínimo"
+                suffix="min"
+                hint="Antecedência mínima para reservar."
                 value={bookingSettings.booking_min_notice_minutes}
                 onChange={(value) =>
-                  setBookingSettings((current) => ({
-                    ...current,
-                    booking_min_notice_minutes: value,
-                  }))
+                  setBookingSettings((current) => ({ ...current, booking_min_notice_minutes: value }))
                 }
               />
-              <Field
-                label="Agenda aberta (dias)"
-                type="number"
+              <HintField
+                label="Agenda aberta"
+                suffix="dias"
+                hint="Até quantos dias à frente dá para reservar."
                 value={bookingSettings.booking_max_days_ahead}
                 onChange={(value) =>
-                  setBookingSettings((current) => ({
-                    ...current,
-                    booking_max_days_ahead: value,
-                  }))
+                  setBookingSettings((current) => ({ ...current, booking_max_days_ahead: value }))
                 }
               />
             </div>
-            <div className="mt-6 border-t border-line pt-6">
-              <p className="rounded-2xl bg-[#E8F1F8] p-4 font-body text-sm text-ash">
-                <b className="block text-ink">Agendamento pelo catálogo</b>
-                <span className="mt-1 block text-xs">
-                  Clientes escolhem serviço, dia e horário diretamente na sua
-                  página Vello.
-                </span>
-              </p>
-              <label className="mt-3 flex items-center justify-between gap-4 rounded-2xl border border-line bg-cream/45 p-4 font-body text-sm">
-                <span>
-                  <b className="block">Confirmar automaticamente</b>
-                  <small className="mt-1 block text-xs text-ash">
-                    Caso desligado, cada reserva fica pendente até sua
-                    confirmação.
-                  </small>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={bookingSettings.booking_auto_confirm}
-                  onChange={(event) =>
-                    setBookingSettings((current) => ({
-                      ...current,
-                      booking_auto_confirm: event.target.checked,
-                    }))
-                  }
-                  className="h-4 w-4 accent-black"
-                />
-              </label>
+            <div className="mt-6 rounded-2xl border border-line">
+              <ToggleRow
+                label="Confirmar automaticamente"
+                detail="Desligado, cada reserva fica em “Para confirmar” até você aprovar."
+                checked={bookingSettings.booking_auto_confirm}
+                onChange={(checked) =>
+                  setBookingSettings((current) => ({ ...current, booking_auto_confirm: checked }))
+                }
+              />
             </div>
-            <Button
-              onClick={saveAvailability}
-              disabled={availabilitySaving}
-              className="mt-7"
-            >
-              {availabilitySaving ? "Salvando..." : "Salvar disponibilidade"}
-            </Button>
-          </section>
-        )}
-        {(profileView === "security" || settingsMode) && (
-          <section className="mt-10 border-t border-line pt-8">
-            <p className="font-display text-xl font-semibold">Segurança</p>
-            <p className="mt-1 font-body text-sm text-ash">
-              Atualize a senha de acesso quando precisar.
-            </p>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+          </ProfileCard>
+
+          <Button
+            onClick={saveAvailability}
+            disabled={availabilitySaving}
+            className="w-full sm:w-auto"
+          >
+            {availabilitySaving ? "Salvando..." : "Salvar horários e regras"}
+          </Button>
+
+          <ProfileCard
+            title="Segurança"
+            text="Atualize a senha de acesso quando precisar."
+          >
+            <div className="grid gap-5 sm:grid-cols-2">
               <Field
                 label="Nova senha"
                 type="password"
@@ -3040,24 +3074,44 @@ function ProfilePage({
               type="button"
               disabled={passwordSaving || !newPassword}
               onClick={changePassword}
-              className="mt-4 h-10 rounded-full border border-line px-4 font-body text-sm font-medium transition hover:border-ink disabled:cursor-not-allowed disabled:opacity-50"
+              className="mt-5 h-11 rounded-full border border-line px-5 font-body text-sm font-medium transition hover:border-ink disabled:cursor-not-allowed disabled:opacity-50"
             >
               {passwordSaving ? "Atualizando..." : "Atualizar senha"}
             </button>
-          </section>
-        )}
-        {(profileView === "security" || settingsMode) && (
+          </ProfileCard>
+        </div>
+
+        <aside className="space-y-3 lg:sticky lg:top-10">
+          {(
+            [
+              ["Perfil", "Dados e o que aparece na sua página.", "/dashboard/perfil", UserRound],
+              ["Meu catálogo", "Abra, copie ou compartilhe seu link.", "/dashboard/catalogo", ExternalLink],
+              ["Personalizar catálogo", "Cores e estilo da sua página.", "/dashboard/personalizar", Palette],
+            ] as const
+          ).map(([title, text, href, Icon]) => (
+            <a
+              key={href}
+              href={appPath(href)}
+              className="flex items-center justify-between gap-4 rounded-[20px] border border-line bg-white p-4 transition hover:border-ink"
+            >
+              <span>
+                <b className="block font-body text-sm">{title}</b>
+                <span className="mt-1 block font-body text-xs text-ash">{text}</span>
+              </span>
+              <Icon size={18} className="shrink-0 text-ash" />
+            </a>
+          ))}
           <button
             onClick={async () => {
               await signOut();
               go("/login");
             }}
-            className="mt-8 flex h-11 w-full items-center justify-center gap-2 rounded-full border border-red-200 font-body text-sm font-medium text-red-700 md:hidden"
+            className="flex h-12 w-full items-center justify-center gap-2 rounded-full border border-red-200 bg-white font-body text-sm font-medium text-red-700 transition hover:bg-red-50"
           >
             <LogOut size={16} /> Sair da conta
           </button>
-        )}
-      </section>
+        </aside>
+      </div>
     </>
   );
 }
@@ -3704,7 +3758,8 @@ export function DashboardApp({ user, route }: Props) {
   return (
     <div className="min-h-screen bg-paper">
       <Sidebar profile={profile} route={route} />
-      <main className="min-h-screen px-5 pb-28 pt-7 lg:ml-[248px] lg:px-10 lg:py-10">
+      <MobileTopBar route={route} />
+      <main className="min-h-screen px-5 pb-28 pt-5 lg:ml-[248px] lg:px-10 lg:py-10">
         <div className="mx-auto max-w-6xl">{page}</div>
       </main>
       <MobileNav route={route} />
