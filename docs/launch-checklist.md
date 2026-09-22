@@ -4,9 +4,11 @@ Atualização de 4 de setembro de 2026: consulte [GUIA-CONTINUIDADE.md](GUIA-CON
 
 ## Pronto no código
 
+- Convites individuais de beta no painel administrativo, com link temporário
+  do Supabase e definição de senha pela própria profissional.
 - Landing page, páginas de Termos, Privacidade, Suporte e 404.
 - Metadados para compartilhamento, sitemap, robots e manifest.
-- Fluxo de cadastro, onboarding, imóveis, catálogo público e seleções.
+- Fluxo de convite, onboarding, serviços, catálogo público e agendamentos.
 - Painel administrativo em `/admin`, protegido por papel administrativo no Supabase.
 - Integração opcional com Plausible para pageviews.
 
@@ -15,7 +17,7 @@ Atualização de 4 de setembro de 2026: consulte [GUIA-CONTINUIDADE.md](GUIA-CON
 1. No Supabase Auth, adicione as URLs de redirecionamento:
    - `https://velloesteticas.vercel.app/onboarding`
    - `https://velloesteticas.vercel.app/redefinir-senha`
-2. Configure e teste confirmação de e-mail, recuperação de senha e Google OAuth.
+2. Configure e teste convite, recuperação de senha e confirmação de e-mail.
 3. Dê acesso ao administrador pelo Supabase Dashboard, em Authentication > Users > App metadata:
    ```json
    { "vello_role": "admin" }
@@ -23,7 +25,8 @@ Atualização de 4 de setembro de 2026: consulte [GUIA-CONTINUIDADE.md](GUIA-CON
    A conta precisa sair e entrar novamente após a alteração.
 4. Confira `VITE_SUPPORT_EMAIL` nas variáveis de ambiente da Vercel. O Google Analytics usa o ID `G-X51JZE369J`.
 5. Confira se a configuração administrativa já foi aplicada ao Supabase antes de usar `/admin`. Não reexecute migrations por tentativa.
-6. Faça um teste completo: cadastro, e-mail, onboarding, upload, publicação, catálogo público, WhatsApp e seleção.
+6. Faça um teste completo: gerar convite no admin, aceitar o link, definir
+   senha, concluir onboarding, publicar serviço e realizar um agendamento.
 
 ## Antes de cobrar
 

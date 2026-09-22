@@ -57,7 +57,7 @@ function Routes() {
   useEffect(() => {
     const page = path === "/" ? ["Vello — Agenda online e página de serviços para estéticas", "Página de serviços, agendamento online e agenda organizada para estéticas e profissionais da beleza. Sua cliente agenda sozinha. Teste grátis por 7 dias."]
       : path === "/login" ? ["Entrar | Vello", "Entre para gerenciar sua agenda e seus serviços na Vello."]
-      : path === "/cadastro" ? ["Criar conta | Vello", "Crie sua página de serviços e organize seus atendimentos."]
+      : path === "/cadastro" ? ["Beta fechado | Vello", "A Vello está recebendo as primeiras profissionais por convite."]
       : path === "/onboarding" ? ["Configure sua Vello", "Complete o perfil da sua estética e publique seu primeiro serviço."]
       : path.startsWith("/dashboard") ? ["Painel | Vello", "Gerencie agenda, serviços e a página pública da sua estética."]
       : path === "/admin" ? ["Administração | Vello", "Acompanhe a ativação e o uso da Vello."]
@@ -154,7 +154,7 @@ function Routes() {
   if (path === "/login") return <AuthPage mode="login" />;
   if (path === "/cadastro") return <AuthPage mode="signup" />;
   if (path === "/esqueci-senha") return <AuthPage mode="forgot" />;
-  if (path === "/redefinir-senha") return <AuthPage mode="reset" />;
+  if (path === "/redefinir-senha") return <AuthPage mode="reset" invited={Boolean(user?.user_metadata?.vello_beta_invite)} />;
   if (path === "/verificar-email") return <AuthPage mode="verify" />;
   if (path === "/termos") return <LegalPage kind="terms" />;
   if (path === "/privacidade") return <LegalPage kind="privacy" />;

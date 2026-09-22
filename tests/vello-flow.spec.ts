@@ -16,9 +16,12 @@ test.describe('Vello – fluxo público e proteção de rotas', () => {
     await expect(page.getByLabel('E-mail')).toBeVisible();
     await expect(page.locator('input[type="password"]').first()).toBeVisible();
     await expect(page.getByRole('link', { name: /Esqueci minha senha/i })).toBeVisible();
-    await page.getByRole('link', { name: /Criar conta/i }).click();
+    await page.getByRole('link', { name: /Saiba sobre o beta/i }).click();
     await expect(page).toHaveURL(/\/cadastro$/);
-    await expect(page.getByRole('heading', { name: /Crie sua conta/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Beta fechado por convite/i })).toBeVisible();
+
+    await page.goto(`${baseUrl}/redefinir-senha`, { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('heading', { name: /Crie uma nova senha/i })).toBeVisible();
   });
 
   test('rotas privadas não ficam expostas sem sessão', async ({ page }) => {

@@ -4,6 +4,19 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Codex. Beta fechado por convite:
+- O painel `/admin` ganhou o bloco “Convide uma profissional”, que recebe nome
+  e e-mail, gera um link individual e oferece copiar ou enviar pelo WhatsApp.
+- A Edge Function `create-invite` usa a API administrativa do Supabase somente
+  no servidor. Ela valida novamente o JWT e `app_metadata.vello_role=admin`
+  antes de gerar o link; a chave privilegiada nunca chega ao navegador.
+- O convite é o link temporário oficial do Supabase: confirma o e-mail, abre
+  `/redefinir-senha`, deixa a profissional escolher a própria senha e segue ao
+  onboarding. Nenhuma senha é enviada na URL ou conhecida pelo administrador.
+- O cadastro público e o Google OAuth foram ocultados durante o beta. A rota
+  `/cadastro` agora explica que o acesso é por convite; login e recuperação de
+  senha continuam disponíveis. Edge Function versão 2 aplicada em produção.
+
 2026-09-22 — Codex. Auditoria de código, fluxo e segurança:
 - Domínio canônico corrigido para `https://velloesteticas.vercel.app` em links
   públicos, SEO, sitemap, testes e exemplos; login/cadastro revisados para o
