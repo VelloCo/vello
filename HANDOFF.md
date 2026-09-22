@@ -4,6 +4,16 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-21 — Claude Code. Design da landing aplicado ao app sem mudar
+estrutura: ação principal agora é pílula azul (`vello-primary bg-sky text-ink`,
+classe em `src/index.css`) no `Button` do painel, botão central do menu móvel,
+login/cadastro, onboarding, recorte de avatar, página pública, 404, suporte e
+tela de erro; estados selecionados (menu ativo, filtros, horário escolhido)
+continuam `bg-ink`. `h1/h2.font-display` usam peso 500 (regra fora de @layer).
+Painéis escuros ganharam `vello-dots-dark`. Novos botões primários devem usar
+`vello-primary bg-sky text-ink rounded-full`. Textos de login/cadastro ainda
+falam de imóveis/catálogo (pendente da etapa 4).
+
 2026-09-21 — Codex. O catálogo público não exibe mais a contagem de serviços
 disponíveis junto ao título. Os favicons do catálogo, painel e instalação PWA
 foram regenerados a partir da marca Vello com transparência real, sem o antigo

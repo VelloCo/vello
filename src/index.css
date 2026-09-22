@@ -331,3 +331,26 @@ textarea:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .vello-marquee { animation: none; }
 }
+
+/* Sistema da landing aplicado ao app: ação principal em pílula azul com texto escuro. */
+.vello-primary {
+  box-shadow: 0 10px 24px -14px rgba(58, 115, 156, .8);
+  transition: transform 160ms var(--ease-vello-out), background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.vello-primary:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .vello-primary:not(:disabled):hover {
+    background-color: #6FA3C7;
+    box-shadow: 0 14px 28px -16px rgba(58, 115, 156, .9);
+  }
+}
+
+/* Títulos com peso médio, como na landing (fora de @layer para vencer font-semibold). */
+h1.font-display,
+h2.font-display {
+  font-weight: 500;
+}

@@ -151,7 +151,7 @@ function PrimaryButton({
   return (
     <button
       {...props}
-      className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-ink px-6 font-body text-sm font-semibold text-paper shadow-[0_12px_24px_-14px_rgba(18,40,58,.72)] transition duration-150 hover:bg-[#245D85] active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-60"
+      className="vello-primary bg-sky text-ink inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 font-body text-sm font-semibold transition duration-150 active:scale-[.98] disabled:cursor-not-allowed disabled:opacity-60"
     >
       {children}
     </button>

@@ -182,7 +182,7 @@ function Button({
   return (
     <button
       {...props}
-      className={`vello-action vello-action-dark inline-flex h-11 items-center justify-center gap-2 rounded-full bg-ink px-5 font-body text-sm font-semibold text-paper disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
+      className={`vello-primary bg-sky text-ink vello-action inline-flex h-11 items-center justify-center gap-2 rounded-full px-5 font-body text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60 ${className}`}
     >
       {children}
     </button>
@@ -437,7 +437,7 @@ function MobileNav({ route }: { route: string }) {
       <a
         href={appPath("/dashboard/servicos/novo")}
         aria-label="Novo serviço"
-        className="-mt-8 grid h-14 w-14 place-self-center place-items-center rounded-full bg-ink text-paper shadow-[0_10px_24px_rgba(18,40,58,.28)] transition hover:bg-[#245D85]"
+        className="vello-primary bg-sky text-ink -mt-8 grid h-14 w-14 place-self-center place-items-center rounded-full transition"
       >
         <Plus size={22} strokeWidth={2} />
       </a>
@@ -1090,7 +1090,7 @@ function EsteticaHomePage({
           )}
         </div>
 
-        <div className="rounded-[24px] bg-ink p-6 text-paper">
+        <div className="rounded-[24px] vello-dots-dark bg-ink p-6 text-paper">
           <p className="font-mono text-[10px] uppercase tracking-wide text-paper/60">
             Catálogo público
           </p>
@@ -1906,7 +1906,7 @@ function SelectionsPage({
               <div className="mt-auto pt-6">
                 <button
                   onClick={() => go(`/dashboard/selecoes/${s.id}`)}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-ink px-4 font-body text-sm font-semibold text-paper transition hover:scale-[1.01]"
+                  className="vello-primary bg-sky text-ink flex h-11 w-full items-center justify-center gap-2 rounded-full px-4 font-body text-sm font-semibold transition"
                 >
                   <PencilLine size={15} /> Editar seleção
                 </button>
@@ -2344,7 +2344,7 @@ function CatalogPage({
           <div className="mt-6 grid gap-3">
             <a
               href={appPath("/dashboard/servicos")}
-              className="flex h-12 items-center justify-center gap-2 rounded-full bg-ink font-body text-sm font-semibold text-paper transition hover:scale-[1.01]"
+              className="vello-primary bg-sky text-ink flex h-12 items-center justify-center gap-2 rounded-full font-body text-sm font-semibold transition"
             >
               <Sparkles size={16} /> Gerenciar serviços
             </a>

@@ -110,7 +110,7 @@ function NotFound() {
         </p>
         <a
           href={appPath("/")}
-          className="mt-7 inline-flex rounded-full bg-ink px-5 py-3 font-body text-sm font-semibold text-paper"
+          className="vello-primary bg-sky text-ink mt-7 inline-flex rounded-full px-5 py-3 font-body text-sm font-semibold"
         >
           Conhecer a Vello
         </a>
@@ -239,7 +239,7 @@ function BookingDialog({
             </p>
             <button
               onClick={onClose}
-              className="mt-5 h-11 rounded-full bg-ink px-5 font-body text-sm font-semibold text-paper"
+              className="vello-primary bg-sky text-ink mt-5 h-11 rounded-full px-5 font-body text-sm font-semibold"
             >
               Concluir
             </button>
@@ -337,7 +337,7 @@ function BookingDialog({
               type="button"
               disabled={saving || loading || !slot}
               onClick={book}
-              className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-ink px-5 font-body text-sm font-semibold text-paper disabled:opacity-45"
+              className="vello-primary bg-sky text-ink mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full px-5 font-body text-sm font-semibold disabled:opacity-45"
             >
               {saving ? (
                 <LoaderCircle size={17} className="animate-spin" />
@@ -526,7 +526,7 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
                     <button
                       type="button"
                       onClick={() => setBooking(service)}
-                      className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-ink px-4 font-body text-sm font-semibold text-paper"
+                      className="vello-primary bg-sky text-ink mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full px-4 font-body text-sm font-semibold"
                     >
                       <CalendarDays size={16} />
                       Agendar horário

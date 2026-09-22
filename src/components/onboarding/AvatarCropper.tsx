@@ -237,7 +237,7 @@ export function AvatarCropper({
             type="button"
             onClick={confirmCrop}
             disabled={processing || !natural.width}
-            className="h-12 rounded-full bg-ink font-body text-sm font-semibold text-paper transition hover:bg-charcoal disabled:cursor-wait disabled:opacity-60"
+            className="vello-primary bg-sky text-ink h-12 rounded-full font-body text-sm font-semibold transition disabled:cursor-wait disabled:opacity-60"
           >
             {processing ? "Salvando..." : "Usar esta foto"}
           </button>

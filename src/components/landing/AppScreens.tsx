@@ -264,7 +264,7 @@ function ServiceArticle({ service }: { service: (typeof demoServices)[number] })
         <p className="mt-3 line-clamp-3 font-body text-sm leading-relaxed text-ash">{service.description}</p>
         <div className="mt-auto pt-6">
           <p className="font-body text-base font-semibold">{service.price}</p>
-          <span className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-ink px-4 font-body text-sm font-semibold text-paper">
+          <span className="vello-primary mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-sky px-4 font-body text-sm font-semibold text-ink">
             <CalendarDays size={16} />
             Agendar horário
           </span>
@@ -406,7 +406,7 @@ export function BookingDialogScreen() {
           </span>
         ))}
       </div>
-      <span className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-ink px-5 font-body text-sm font-semibold text-paper">
+      <span className="vello-primary mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-sky px-5 font-body text-sm font-semibold text-ink">
         <CalendarDays size={17} />
         Confirmar agendamento
       </span>
