@@ -4,6 +4,15 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-21 — Claude Code. Botão/rota de Configurações voltou a funcionar: havia
+em `src/App.tsx` um redirecionamento antigo de `/dashboard/configuracoes` para
+`/dashboard/perfil` (removido). Página Perfil reorganizada em cartões
+(`ProfileCard`): Identidade, Onde você atende, Sua página pública, O que aparece
+para clientes (interruptores `ToggleRow`), com prévia ao vivo do cabeçalho da
+página pública e atalho para Configurações numa coluna lateral. Mesmos campos e
+mesma lógica de salvar; Configurações não mudou. Para testar o painel sem login,
+há um script com Supabase simulado no scratchpad do Claude (não versionado).
+
 2026-09-21 — Claude Code. Design da landing aplicado ao app sem mudar
 estrutura: ação principal agora é pílula azul (`vello-primary bg-sky text-ink`,
 classe em `src/index.css`) no `Button` do painel, botão central do menu móvel,

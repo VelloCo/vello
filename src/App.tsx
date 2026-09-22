@@ -121,10 +121,6 @@ export default function App() {
     window.location.replace(appPath("/onboarding"));
     return null;
   }
-  if (path === "/dashboard/configuracoes" && user) {
-    window.location.replace(appPath("/dashboard/perfil"));
-    return null;
-  }
   if (path === "/onboarding" && user) return <Onboarding user={user} />;
   if (path === "/admin" && user) return <AdminApp />;
   if (path.startsWith("/dashboard") && user)

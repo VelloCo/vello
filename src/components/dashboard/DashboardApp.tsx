@@ -34,6 +34,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   appPath,
   publicCatalogLabel,
+  PUBLIC_CATALOG_DOMAIN,
   PUBLIC_SITE_ORIGIN,
 } from "../../lib/paths";
 import { LoadingScreen } from "../LoadingScreen";
@@ -2383,6 +2384,55 @@ function CatalogPage({
     </>
   );
 }
+function ProfileCard({
+  title,
+  text,
+  children,
+}: {
+  title: string;
+  text: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="rounded-[24px] border border-line bg-white p-5 sm:p-7">
+      <h2 className="font-display text-xl font-semibold tracking-[-.03em]">{title}</h2>
+      <p className="mt-1 font-body text-sm text-ash">{text}</p>
+      <div className="mt-6">{children}</div>
+    </section>
+  );
+}
+function ToggleRow({
+  label,
+  detail,
+  checked,
+  onChange,
+}: {
+  label: string;
+  detail: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+}) {
+  return (
+    <label className="flex cursor-pointer items-center justify-between gap-4 px-4 py-4 font-body text-sm">
+      <span>
+        <b className="block">{label}</b>
+        <small className="mt-1 block text-xs text-ash">{detail}</small>
+      </span>
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(event) => onChange(event.target.checked)}
+        className="peer sr-only"
+      />
+      <span
+        aria-hidden="true"
+        className="flex h-6 w-11 shrink-0 items-center rounded-full bg-line p-0.5 transition peer-checked:bg-ink peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink [&>span]:transition peer-checked:[&>span]:translate-x-5"
+      >
+        <span className="h-5 w-5 rounded-full bg-white shadow" />
+      </span>
+    </label>
+  );
+}
 function ProfilePage({
   user,
   profile,
@@ -2391,7 +2441,6 @@ function ProfilePage({
   toast,
   initialView = "identity",
   settingsMode = false,
-  fixedView = false,
 }: {
   user: User;
   profile: Profile;
@@ -2400,7 +2449,6 @@ function ProfilePage({
   toast: (s: string) => void;
   initialView?: "identity" | "public" | "availability" | "security";
   settingsMode?: boolean;
-  fixedView?: boolean;
 }) {
   const [form, setForm] = useState(profile);
   const [newPassword, setNewPassword] = useState("");
@@ -2513,6 +2561,293 @@ function ProfilePage({
       setAvailabilitySaving(false);
     }
   };
+  if (!settingsMode && profileView === "identity") {
+    const location = [
+      form.show_address ? form.address : null,
+      form.neighborhood,
+      form.city,
+      form.state,
+    ]
+      .filter(Boolean)
+      .join(" · ");
+    const avatar = form.avatar_url || appPath("/vello-onboarding-avatar-v2.jpg");
+    return (
+      <>
+        <header className="flex flex-wrap items-end justify-between gap-4">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">
+              Sua estética
+            </p>
+            <h1 className="mt-3 font-display text-4xl font-semibold tracking-[-.045em]">
+              Perfil
+            </h1>
+            <p className="mt-2 max-w-xl font-body text-ash">
+              Seus dados e o que as clientes veem na sua página Vello.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={publicCatalogUrl(form.slug)}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-white px-4 font-body text-sm font-medium text-ink transition hover:border-ink"
+            >
+              <ExternalLink size={15} /> Ver minha página
+            </a>
+            <span className="hidden sm:block">
+              <Button onClick={save} disabled={saving}>
+                {saving ? "Salvando..." : "Salvar alterações"}
+              </Button>
+            </span>
+          </div>
+        </header>
+
+        <div className="mt-8 grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+          <div className="space-y-5">
+            <ProfileCard
+              title="Identidade"
+              text="Como sua estética se apresenta para as clientes."
+            >
+              <div className="flex flex-wrap items-center gap-4">
+                <span className="h-20 w-20 shrink-0 overflow-hidden rounded-full bg-[#E8F1F8] ring-4 ring-[#E8F1F8]">
+                  <img
+                    src={avatar}
+                    alt="Foto do perfil"
+                    className="h-full w-full object-cover"
+                  />
+                </span>
+                <div className="min-w-0 flex-1 basis-[180px]">
+                  <b className="block font-body text-sm">Foto de perfil</b>
+                  <span className="mt-1 block font-body text-xs text-ash">
+                    Sua foto, da equipe ou da fachada. JPG, PNG ou WebP, até 5 MB.
+                  </span>
+                  <input
+                    ref={avatarInput}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={(event) => changeAvatar(event.target.files?.[0])}
+                  />
+                </div>
+                <button
+                  type="button"
+                  disabled={avatarSaving}
+                  onClick={() => avatarInput.current?.click()}
+                  className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-full border border-line px-4 font-body text-sm font-medium transition hover:border-ink disabled:opacity-50 sm:w-auto"
+                >
+                  <ImagePlus size={15} />
+                  {avatarSaving
+                    ? "Enviando..."
+                    : form.avatar_url
+                      ? "Trocar foto"
+                      : "Adicionar foto"}
+                </button>
+              </div>
+              <div className="mt-6 grid gap-2 sm:grid-cols-2">
+                {(
+                  [
+                    ["autonoma", "Profissional autônoma", "Você atende por conta própria."],
+                    ["clinica", "Clínica ou espaço", "Você representa um local de atendimento."],
+                  ] as const
+                ).map(([value, label, detail]) => {
+                  const active =
+                    form.business_type === value ||
+                    (!form.business_type && value === "autonoma");
+                  return (
+                    <button
+                      key={value}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() =>
+                        setForm((current) => ({ ...current, business_type: value }))
+                      }
+                      className={`flex items-start gap-3 rounded-2xl border p-4 text-left transition ${active ? "border-ink bg-[#F7FAFC] ring-1 ring-ink" : "border-line hover:border-sky"}`}
+                    >
+                      <span
+                        className={`mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full border ${active ? "border-ink bg-ink text-paper" : "border-line"}`}
+                      >
+                        {active && <Check size={12} strokeWidth={3} />}
+                      </span>
+                      <span>
+                        <b className="block font-body text-sm">{label}</b>
+                        <span className="mt-1 block font-body text-xs text-ash">
+                          {detail}
+                        </span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+              <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                <Field
+                  label="Nome da estética ou profissional"
+                  value={form.professional_name || ""}
+                  onChange={(v) => setForm((x) => ({ ...x, professional_name: v }))}
+                />
+                <Field
+                  label="WhatsApp"
+                  value={form.whatsapp || ""}
+                  onChange={(v) => setForm((x) => ({ ...x, whatsapp: v }))}
+                />
+              </div>
+            </ProfileCard>
+
+            <ProfileCard
+              title="Onde você atende"
+              text="Cidade e bairro aparecem na sua página. O endereço completo, só se você permitir."
+            >
+              <div className="grid gap-5 sm:grid-cols-[1fr_110px]">
+                <Field
+                  label="Cidade"
+                  value={form.city || ""}
+                  onChange={(v) => setForm((x) => ({ ...x, city: v }))}
+                />
+                <Field
+                  label="Estado"
+                  value={form.state || ""}
+                  onChange={(v) =>
+                    setForm((x) => ({ ...x, state: v.toUpperCase().slice(0, 2) }))
+                  }
+                />
+              </div>
+              <div className="mt-5 grid gap-5 sm:grid-cols-2">
+                <Field
+                  label="Bairro"
+                  value={form.neighborhood || ""}
+                  onChange={(v) => setForm((x) => ({ ...x, neighborhood: v }))}
+                />
+                <Field
+                  label="Endereço do atendimento"
+                  value={form.address || ""}
+                  onChange={(v) => setForm((x) => ({ ...x, address: v }))}
+                />
+              </div>
+            </ProfileCard>
+
+            <ProfileCard
+              title="Sua página pública"
+              text="O link que você compartilha e o texto de apresentação."
+            >
+              <label className="block">
+                <span className="mb-3 block font-body text-[11px] font-medium uppercase tracking-[0.08em] text-ash">
+                  Link Vello
+                </span>
+                <span className="flex h-12 w-full items-center overflow-hidden rounded-xl border border-line focus-within:border-ink">
+                  <span className="hidden h-full shrink-0 items-center border-r border-line bg-[#F7FAFC] px-3 font-mono text-xs text-stone sm:flex">
+                    {PUBLIC_CATALOG_DOMAIN}/
+                  </span>
+                  <input
+                    value={form.slug || ""}
+                    onChange={(event) =>
+                      setForm((x) => ({ ...x, slug: slugify(event.target.value) }))
+                    }
+                    className="h-full min-w-0 flex-1 px-3 font-body text-sm outline-none"
+                  />
+                </span>
+              </label>
+              <div className="mt-5">
+                <Field
+                  label="Instagram"
+                  value={form.instagram || ""}
+                  onChange={(v) => setForm((x) => ({ ...x, instagram: v }))}
+                />
+              </div>
+              <label className="mt-5 block">
+                <span className="mb-3 block font-body text-[11px] font-medium uppercase tracking-[0.08em] text-ash">
+                  Sobre seu atendimento
+                </span>
+                <textarea
+                  value={form.bio || ""}
+                  onChange={(e) => setForm((x) => ({ ...x, bio: e.target.value }))}
+                  className="min-h-28 w-full rounded-xl border border-line p-3 font-body text-sm outline-none focus:border-ink"
+                  placeholder="Conte brevemente sobre sua especialidade e sua forma de atender..."
+                />
+              </label>
+            </ProfileCard>
+
+            <ProfileCard
+              title="O que aparece para clientes"
+              text="Você decide o que fica visível na sua página."
+            >
+              <div className="divide-y divide-line rounded-2xl border border-line">
+                <ToggleRow
+                  label="Mostrar Instagram"
+                  detail="Exibe um atalho para o seu perfil."
+                  checked={Boolean(form.show_instagram)}
+                  onChange={(checked) =>
+                    setForm((x) => ({ ...x, show_instagram: checked }))
+                  }
+                />
+                <ToggleRow
+                  label="Mostrar endereço completo"
+                  detail="Desligado, a página mostra só bairro e cidade."
+                  checked={form.show_address ?? false}
+                  onChange={(checked) =>
+                    setForm((x) => ({ ...x, show_address: checked }))
+                  }
+                />
+              </div>
+            </ProfileCard>
+
+            <Button onClick={save} disabled={saving} className="w-full sm:w-auto">
+              {saving ? "Salvando..." : "Salvar alterações"}
+            </Button>
+          </div>
+
+          <aside className="space-y-4 lg:sticky lg:top-10">
+            <div className="rounded-[24px] border border-line bg-white p-4">
+              <p className="px-1 font-mono text-[10px] uppercase tracking-[.14em] text-stone">
+                Prévia da sua página
+              </p>
+              <div className="relative mt-3 overflow-hidden rounded-[20px] border border-[#CFE0EB] bg-[#E8F1F8] p-4">
+                <div aria-hidden="true" className="absolute -right-10 -top-16 h-40 w-40 rounded-full bg-white/45 blur-2xl" />
+                <div className="relative flex items-center gap-3">
+                  <span className="h-14 w-14 shrink-0 overflow-hidden rounded-full bg-white ring-4 ring-white/80">
+                    <img src={avatar} alt="" className="h-full w-full object-cover" />
+                  </span>
+                  <div className="min-w-0">
+                    <p className="inline-flex rounded-full border border-white/80 bg-white/70 px-2.5 py-0.5 font-mono text-[8px] uppercase tracking-[.14em] text-[#356D95]">
+                      {form.business_type === "clinica"
+                        ? "Clínica de estética"
+                        : "Estética e bem-estar"}
+                    </p>
+                    <p className="mt-1 truncate font-display text-xl font-semibold tracking-[-.03em]">
+                      {form.professional_name || "Nome da sua estética"}
+                    </p>
+                    {location && (
+                      <p className="mt-0.5 truncate font-body text-xs font-medium text-[#46677E]">
+                        {location}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                {form.bio && (
+                  <p className="relative mt-3 line-clamp-3 border-t border-white/70 pt-3 font-body text-xs leading-relaxed text-[#46677E]">
+                    {form.bio}
+                  </p>
+                )}
+              </div>
+              <p className="mt-3 truncate px-1 font-mono text-[11px] text-stone">
+                {publicCatalogLabel(form.slug)}
+              </p>
+            </div>
+            <a
+              href={appPath("/dashboard/configuracoes")}
+              className="flex items-center justify-between gap-4 rounded-[24px] border border-line bg-white p-5 transition hover:border-ink"
+            >
+              <span>
+                <b className="block font-body text-sm">Configurações</b>
+                <span className="mt-1 block font-body text-xs text-ash">
+                  Horários, regras de reserva e senha.
+                </span>
+              </span>
+              <Settings2 size={18} className="shrink-0 text-ash" />
+            </a>
+          </aside>
+        </div>
+      </>
+    );
+  }
   return (
     <>
       <header>
@@ -2529,269 +2864,6 @@ function ProfilePage({
         </p>
       </header>
       <section className="mt-7 max-w-3xl rounded-[24px] border border-line bg-white p-5 sm:p-7">
-        {profileView === "identity" && (
-          <>
-            <div className="flex items-center gap-4 border-b border-line pb-7">
-              <span className="grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-full bg-cream font-display text-xl">
-                {form.avatar_url ? (
-                  <img
-                    src={form.avatar_url}
-                    alt="Foto do perfil"
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <img
-                    src={appPath("/vello-logo.png")}
-                    alt="Logo Vello"
-                    className="h-10 w-10 object-contain"
-                  />
-                )}
-              </span>
-              <span>
-                <b className="block font-body text-sm">Foto de perfil</b>
-                <span className="mt-1 block font-body text-xs text-ash">
-                  Use uma foto sua, da equipe ou da fachada. JPG, PNG ou WebP ·
-                  até 5 MB.
-                </span>
-                <input
-                  ref={avatarInput}
-                  type="file"
-                  accept="image/jpeg,image/png,image/webp"
-                  className="hidden"
-                  onChange={(event) => changeAvatar(event.target.files?.[0])}
-                />
-                <button
-                  type="button"
-                  disabled={avatarSaving}
-                  onClick={() => avatarInput.current?.click()}
-                  className="mt-3 inline-flex items-center gap-1.5 font-body text-sm font-semibold underline underline-offset-4 disabled:opacity-50"
-                >
-                  <ImagePlus size={15} />{" "}
-                  {avatarSaving
-                    ? "Enviando..."
-                    : form.avatar_url
-                      ? "Trocar foto"
-                      : "Adicionar foto"}
-                </button>
-              </span>
-            </div>
-            <div className="mb-7 rounded-2xl bg-[#E8F1F8] p-4">
-              <p className="font-body text-sm font-semibold text-ink">
-                Qual é o seu negócio?
-              </p>
-              <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                {(
-                  [
-                    [
-                      "autonoma",
-                      "Profissional autônoma",
-                      "Você atende por conta própria.",
-                    ],
-                    [
-                      "clinica",
-                      "Clínica ou espaço",
-                      "Você representa um local de atendimento.",
-                    ],
-                  ] as const
-                ).map(([value, label, detail]) => (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() =>
-                      setForm((current) => ({
-                        ...current,
-                        business_type: value,
-                      }))
-                    }
-                    className={`rounded-xl border p-3 text-left transition ${form.business_type === value || (!form.business_type && value === "autonoma") ? "border-ink bg-white ring-1 ring-ink" : "border-transparent bg-white/60 hover:border-[#7EAFD0]"}`}
-                  >
-                    <b className="block font-body text-sm">{label}</b>
-                    <span className="mt-1 block font-body text-xs text-ash">
-                      {detail}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-        <div className="grid gap-5 sm:grid-cols-2">
-          {profileView === "identity" && (
-            <Field
-              label="Nome da estética ou profissional"
-              value={form.professional_name || ""}
-              onChange={(v) => setForm((x) => ({ ...x, professional_name: v }))}
-            />
-          )}
-          {profileView === "identity" && (
-            <Field
-              label="WhatsApp"
-              value={form.whatsapp || ""}
-              onChange={(v) => setForm((x) => ({ ...x, whatsapp: v }))}
-            />
-          )}
-          {profileView === "identity" && (
-            <div className="mt-2 border-t border-line pt-5 sm:col-span-2">
-              <p className="font-display text-lg font-semibold">
-                Página pública
-              </p>
-              <p className="mt-1 font-body text-sm text-ash">
-                Esses dados aparecem para clientes no seu catálogo.
-              </p>
-            </div>
-          )}
-          {profileView === "identity" && (
-            <Field
-              label="Cidade"
-              value={form.city || ""}
-              onChange={(v) => setForm((x) => ({ ...x, city: v }))}
-            />
-          )}
-          {profileView === "identity" && (
-            <Field
-              label="Estado"
-              value={form.state || ""}
-              onChange={(v) =>
-                setForm((x) => ({ ...x, state: v.toUpperCase().slice(0, 2) }))
-              }
-            />
-          )}
-          {profileView === "identity" && (
-            <Field
-              label="Bairro"
-              value={form.neighborhood || ""}
-              onChange={(v) => setForm((x) => ({ ...x, neighborhood: v }))}
-            />
-          )}
-          {profileView === "identity" && (
-            <Field
-              label="Instagram"
-              value={form.instagram || ""}
-              onChange={(v) => setForm((x) => ({ ...x, instagram: v }))}
-            />
-          )}
-          {profileView === "identity" && (
-            <Field
-              label="Link Vello"
-              value={form.slug || ""}
-              onChange={(v) => setForm((x) => ({ ...x, slug: slugify(v) }))}
-            />
-          )}
-        </div>
-        {profileView === "identity" && (
-          <>
-            <label className="mt-5 block">
-              <span className="mb-3 block font-body text-[11px] font-medium uppercase tracking-[.08em] text-ash">
-                Endereço do atendimento
-              </span>
-              <input
-                value={form.address || ""}
-                onChange={(event) =>
-                  setForm((current) => ({
-                    ...current,
-                    address: event.target.value,
-                  }))
-                }
-                placeholder="Rua, número, complemento"
-                className="h-11 w-full rounded-xl border border-line px-3 font-body text-sm outline-none transition focus:border-ink"
-              />
-              <span className="mt-2 block font-body text-xs text-ash">
-                O endereço completo só aparece na página pública se você
-                autorizar abaixo.
-              </span>
-            </label>
-            <label className="mt-5 block">
-              <span className="mb-3 block font-display text-xs font-extrabold uppercase">
-                Sobre seu atendimento
-              </span>
-              <textarea
-                value={form.bio || ""}
-                onChange={(e) =>
-                  setForm((x) => ({ ...x, bio: e.target.value }))
-                }
-                className="min-h-28 w-full rounded-xl border border-line p-3 font-body text-sm"
-                placeholder="Conte brevemente sobre sua especialidade e sua forma de atender..."
-              />
-            </label>
-            <div className="mt-6 border-t border-line pt-6">
-              <p className="font-display text-lg font-semibold">
-                O que aparece na sua página
-              </p>
-              <p className="mt-1 font-body text-sm text-ash">
-                Você mantém o controle sobre as informações visíveis para
-                clientes.
-              </p>
-              <label className="mt-5 flex items-center justify-between gap-4 rounded-xl border border-line px-4 py-3 font-body text-sm">
-                <span>
-                  <b className="block">Mostrar Instagram</b>
-                  <small className="mt-1 block text-xs text-ash">
-                    Exibe um atalho para seu perfil.
-                  </small>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={form.show_instagram}
-                  onChange={(e) =>
-                    setForm((x) => ({ ...x, show_instagram: e.target.checked }))
-                  }
-                />
-              </label>
-              <label className="mt-3 flex items-center justify-between gap-4 rounded-xl border border-line px-4 py-3 font-body text-sm">
-                <span>
-                  <b className="block">Mostrar endereço completo</b>
-                  <small className="mt-1 block text-xs text-ash">
-                    Se desligado, mostramos apenas cidade e bairro.
-                  </small>
-                </span>
-                <input
-                  type="checkbox"
-                  checked={form.show_address ?? false}
-                  onChange={(e) =>
-                    setForm((x) => ({ ...x, show_address: e.target.checked }))
-                  }
-                />
-              </label>
-              <div className="mt-5 rounded-xl bg-cream p-4 font-body text-sm text-ash">
-                Horários e regras de reserva ficam em{" "}
-                <a
-                  href={appPath("/dashboard/configuracoes")}
-                  className="font-semibold text-ink underline underline-offset-4"
-                >
-                  Configurações
-                </a>
-                .{" "}
-                <a
-                  href={publicCatalogUrl(form.slug)}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="ml-1 font-semibold text-ink underline underline-offset-4"
-                >
-                  Abrir minha página
-                </a>
-                .
-              </div>
-            </div>
-          </>
-        )}
-        {profileView === "identity" && (
-          <Button onClick={save} disabled={saving} className="mt-7">
-            {saving ? "Salvando..." : "Salvar alterações"}
-          </Button>
-        )}
-        {fixedView && !settingsMode && profileView === "identity" && (
-          <a
-            href={appPath("/dashboard/configuracoes")}
-            className="mt-7 flex items-center justify-between gap-4 rounded-2xl border border-line bg-[#F7FAFC] p-4 transition hover:border-ink"
-          >
-            <span>
-              <b className="block font-body text-sm">Configurações</b>
-              <span className="mt-1 block font-body text-xs text-ash">
-                Disponibilidade, reservas e segurança.
-              </span>
-            </span>
-            <Settings2 size={18} className="shrink-0 text-ash" />
-          </a>
-        )}
         {(profileView === "availability" || settingsMode) && (
           <section>
             {settingsMode && (
@@ -3595,7 +3667,6 @@ export function DashboardApp({ user, route }: Props) {
         businessHours={businessHours}
         refresh={refresh}
         toast={say}
-        fixedView
       />
     );
   else if (route === "/dashboard/perfil/pagina")
@@ -3606,7 +3677,6 @@ export function DashboardApp({ user, route }: Props) {
         businessHours={businessHours}
         refresh={refresh}
         toast={say}
-        fixedView
       />
     );
   else if (route === "/dashboard/configuracoes")
