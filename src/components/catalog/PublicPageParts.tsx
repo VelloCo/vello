@@ -44,11 +44,24 @@ export function ProfileHeaderCard({ profile, accent }: { profile: HeaderProfile;
       />
       <div className="relative flex max-w-3xl items-center gap-4 @2xl:gap-6">
         <span className="grid h-[76px] w-[76px] shrink-0 place-items-center overflow-hidden rounded-full bg-white ring-4 ring-white/80 shadow-[0_14px_30px_-20px_rgba(18,40,58,.55)] @2xl:h-24 @2xl:w-24">
-          <img
-            src={profile.avatarUrl || appPath("/vello-onboarding-avatar-v2.jpg")}
-            alt={profile.avatarUrl ? "Foto de " + profile.name : "Imagem padrão da Vello"}
-            className="h-full w-full object-cover"
-          />
+          {profile.avatarUrl ? (
+            <img
+              src={profile.avatarUrl}
+              alt={"Foto de " + profile.name}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <span
+              role="img"
+              aria-label="Imagem padrão da Vello"
+              className="h-full w-full bg-cover bg-center"
+              style={{
+                backgroundImage: "url(" + appPath("/vello-onboarding-avatar-v2.jpg") + ")",
+                backgroundColor: accent.coverTint,
+                backgroundBlendMode: accent.coverTint ? "luminosity" : undefined,
+              }}
+            />
+          )}
         </span>
         <div className="min-w-0 flex-1">
           <p
@@ -103,7 +116,7 @@ function BookButton({ accent, compact = false, onClick }: { accent: Accent; comp
   );
 }
 
-function Cover({ service, list }: { service: CardService; list: boolean }) {
+function Cover({ service, list, accent }: { service: CardService; list: boolean; accent: Accent }) {
   const size = list ? "aspect-square h-24 w-24 shrink-0 self-start rounded-[18px] @2xl:h-40 @2xl:w-40" : "aspect-square w-full";
   return service.imageUrl ? (
     <img src={service.imageUrl} alt={service.title} className={size + " object-cover"} />
@@ -112,7 +125,7 @@ function Cover({ service, list }: { service: CardService; list: boolean }) {
       role="img"
       aria-label={"Imagem de " + (serviceCategoryNames[service.category] || "estética")}
       className={size + " bg-[#E8F1F8]"}
-      style={categoryCoverStyle(service.category)}
+      style={categoryCoverStyle(service.category, accent)}
     />
   );
 }
@@ -145,7 +158,7 @@ export function ServiceCard({
   if (style === "classic")
     return (
       <article className="flex gap-3 rounded-[24px] border border-line bg-white p-3 shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)] @2xl:gap-5 @2xl:p-4">
-        <Cover service={service} list />
+        <Cover service={service} list accent={accent} />
         <div className="flex min-w-0 flex-1 flex-col py-0.5 @2xl:py-1">
           <Meta service={service} list />
           <h3 className="mt-1.5 font-display text-lg font-semibold leading-tight @2xl:mt-2 @2xl:text-2xl">
@@ -165,7 +178,7 @@ export function ServiceCard({
     );
   return (
     <article className="overflow-hidden rounded-[24px] border border-line bg-white shadow-[0_18px_45px_-40px_rgba(18,40,58,.28)]">
-      <Cover service={service} list={false} />
+      <Cover service={service} list={false} accent={accent} />
       <div className="flex min-h-64 flex-1 flex-col p-5">
         <Meta service={service} list={false} />
         <h3 className="mt-3 font-display text-2xl font-semibold">{service.title}</h3>

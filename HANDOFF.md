@@ -4,6 +4,11 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Claude Code. Capas padrão (serviço sem foto) e avatar padrão da
+página pública agora seguem a cor de destaque: nas cores que não são azul,
+`coverTint` + `background-blend-mode: luminosity` deixam a ilustração em duas
+cores no tom escolhido. No Azul Vello nada muda. Fotos enviadas não são alteradas.
+
 2026-09-22 — Claude Code. Personalizar catálogo refeito. Antes a prévia era da
 versão de corretores (imóvel, CRECI) e as cores escolhidas não chegavam à página
 pública. Agora: `src/lib/catalogStyle.ts` define 6 cores de destaque prontas
