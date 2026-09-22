@@ -1,4 +1,33 @@
+# Vello
 User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /admin
+Disallow: /onboarding
+Disallow: /login
+Disallow: /cadastro
+Disallow: /esqueci-senha
+Disallow: /redefinir-senha
+Disallow: /verificar-email
+
+# Buscadores e assistentes de IA podem ler a página pública (GEO).
+User-agent: GPTBot
+Allow: /
+Disallow: /dashboard
+Disallow: /admin
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /dashboard
+Disallow: /admin
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
 Allow: /
 
 Sitemap: https://vellocorretores.vercel.app/sitemap.xml

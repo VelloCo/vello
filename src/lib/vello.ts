@@ -296,3 +296,38 @@ export async function uploadAvatar(userId: string, picked: File) {
   if (error) throw error;
   return client.storage.from("avatars").getPublicUrl(path).data.publicUrl;
 }
+
+/* LGPD: portabilidade e exclusão da conta pela própria profissional. */
+export async function exportMyData(userId: string) {
+  const client = requireSupabase();
+  const [profile, services, hours, appointments] = await Promise.all([
+    client.from("profiles").select("*").eq("user_id", userId).maybeSingle(),
+    client.from("services").select("*, service_images(*)").eq("user_id", userId),
+    client.from("business_hours").select("*").eq("user_id", userId),
+    client.from("appointments").select("*").eq("user_id", userId),
+  ]);
+  const failed = [profile, services, hours, appointments].find((result) => result.error);
+  if (failed?.error) throw failed.error;
+  return {
+    exported_at: new Date().toISOString(),
+    profile: profile.data,
+    services: services.data,
+    business_hours: hours.data,
+    appointments: appointments.data,
+  };
+}
+
+async function removeUserFiles(bucket: string, userId: string) {
+  const client = requireSupabase();
+  const { data } = await client.storage.from(bucket).list(userId, { limit: 1000 });
+  const paths = (data || []).map((file) => `${userId}/${file.name}`);
+  if (paths.length) await client.storage.from(bucket).remove(paths);
+}
+
+export async function deleteMyAccount(userId: string) {
+  for (const bucket of ["avatars", "service-images"]) {
+    await removeUserFiles(bucket, userId).catch(() => undefined);
+  }
+  const { error } = await requireSupabase().rpc("delete_my_account");
+  if (error) throw error;
+}

@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { LoadingScreen } from "./components/LoadingScreen";
+import { ConsentBanner } from "./components/ConsentBanner";
 import { appPath } from "./lib/paths";
 import { initAnalytics, trackPage } from "./lib/analytics";
 
@@ -26,9 +27,12 @@ const NotFoundPage = lazy(() => import("./components/LaunchPages").then((m) => (
 
 export default function App() {
   return (
-    <Suspense fallback={<LoadingScreen />}>
-      <Routes />
-    </Suspense>
+    <>
+      <Suspense fallback={<LoadingScreen />}>
+        <Routes />
+      </Suspense>
+      <ConsentBanner />
+    </>
   );
 }
 
@@ -64,7 +68,8 @@ function Routes() {
     document.title = page[0];
     document.querySelector('meta[name="description"]')?.setAttribute("content", page[1]);
     const robots = document.querySelector('meta[name="robots"]');
-    robots?.setAttribute("content", authRoute || privateRoute ? "noindex,nofollow" : "index,follow");
+    const indexable = ["/", "/termos", "/privacidade", "/suporte"].includes(path) || /^\/[A-Za-z0-9-]+\/?$/.test(path);
+    robots?.setAttribute("content", authRoute || privateRoute ? "noindex,nofollow" : indexable ? "index,follow" : "noindex,follow");
     document.querySelector('link[rel="canonical"]')?.setAttribute(
       "href",
       `${window.location.origin}${appPath(path)}`,

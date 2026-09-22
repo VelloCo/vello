@@ -1,6 +1,33 @@
 const domain = import.meta.env.VITE_PLAUSIBLE_DOMAIN as string | undefined;
 const googleAnalyticsId = "G-X51JZE369J";
 let lastPage: string | undefined;
+const CONSENT_KEY = "vello-analytics-consent";
+
+/* LGPD: o Google Analytics só carrega depois que o visitante aceita. */
+export type Consent = "granted" | "denied";
+export function getConsent(): Consent | null {
+  try {
+    const value = localStorage.getItem(CONSENT_KEY);
+    return value === "granted" || value === "denied" ? value : null;
+  } catch {
+    return null;
+  }
+}
+export function setConsent(value: Consent) {
+  try {
+    localStorage.setItem(CONSENT_KEY, value);
+  } catch {
+    // Sem armazenamento: vale só para esta visita.
+  }
+  if (value === "granted") {
+    initAnalytics();
+    if (lastPage) {
+      const page = lastPage;
+      lastPage = undefined;
+      trackPage(page);
+    }
+  }
+}
 
 declare global {
   interface Window {
@@ -20,7 +47,7 @@ export function initAnalytics() {
     document.head.appendChild(script);
   }
 
-  if (googleAnalyticsId && !document.querySelector('script[data-vello-ga]')) {
+  if (googleAnalyticsId && getConsent() === "granted" && !document.querySelector('script[data-vello-ga]')) {
     window.dataLayer = window.dataLayer || [];
     window.gtag = function () { window.dataLayer?.push(arguments); };
     window.gtag("js", new Date());

@@ -42,7 +42,9 @@ import {
 import { signOut, updatePassword } from "../../lib/auth";
 import {
   brlCents,
+  deleteMyAccount,
   deleteService,
+  exportMyData,
   getAppointments,
   getBusinessHours,
   getProfile,
@@ -1446,6 +1448,103 @@ function CatalogPage({
     </>
   );
 }
+function AccountDataCard({ user, toast }: { user: User; toast: (s: string) => void }) {
+  const [exporting, setExporting] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const [typed, setTyped] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const download = async () => {
+    setExporting(true);
+    try {
+      const data = await exportMyData(user.id);
+      const url = URL.createObjectURL(
+        new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }),
+      );
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `vello-meus-dados-${new Date().toISOString().slice(0, 10)}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      toast("Não foi possível gerar o arquivo.");
+    } finally {
+      setExporting(false);
+    }
+  };
+  const remove = async () => {
+    setDeleting(true);
+    try {
+      await deleteMyAccount(user.id);
+      await signOut().catch(() => undefined);
+      window.location.replace(appPath("/"));
+    } catch {
+      toast("Não foi possível excluir a conta. Fale com o suporte.");
+      setDeleting(false);
+    }
+  };
+  return (
+    <ProfileCard
+      title="Seus dados"
+      text="Baixe uma cópia dos seus dados ou exclua sua conta, como garante a LGPD."
+    >
+      <div className="flex flex-wrap gap-3">
+        <button
+          type="button"
+          onClick={download}
+          disabled={exporting}
+          className="h-11 rounded-full border border-line px-5 font-body text-sm font-medium transition hover:border-ink disabled:opacity-50"
+        >
+          {exporting ? "Gerando arquivo..." : "Baixar meus dados"}
+        </button>
+        {!confirming && (
+          <button
+            type="button"
+            onClick={() => setConfirming(true)}
+            className="h-11 rounded-full border border-red-200 px-5 font-body text-sm font-medium text-red-700 transition hover:bg-red-50"
+          >
+            Excluir minha conta
+          </button>
+        )}
+      </div>
+      {confirming && (
+        <div className="mt-5 rounded-2xl border border-red-200 bg-red-50/60 p-4">
+          <p className="font-body text-sm font-semibold text-red-800">
+            Isto apaga para sempre sua página, serviços, fotos, horários e agendamentos.
+          </p>
+          <p className="mt-1 font-body text-xs text-red-800/80">
+            Para confirmar, digite EXCLUIR abaixo.
+          </p>
+          <input
+            value={typed}
+            onChange={(event) => setTyped(event.target.value)}
+            aria-label="Digite EXCLUIR para confirmar"
+            className="mt-3 h-11 w-full rounded-xl border border-red-200 bg-white px-3 font-body text-sm outline-none focus:border-red-700"
+          />
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button
+              type="button"
+              disabled={typed.trim().toUpperCase() !== "EXCLUIR" || deleting}
+              onClick={remove}
+              className="h-10 rounded-full bg-red-700 px-4 font-body text-sm font-semibold text-white disabled:opacity-40"
+            >
+              {deleting ? "Excluindo..." : "Excluir definitivamente"}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setConfirming(false);
+                setTyped("");
+              }}
+              className="h-10 rounded-full px-4 font-body text-sm text-ash hover:text-ink"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      )}
+    </ProfileCard>
+  );
+}
 function ProfileCard({
   title,
   text,
@@ -2122,6 +2221,8 @@ function ProfilePage({
               {passwordSaving ? "Atualizando..." : "Atualizar senha"}
             </button>
           </ProfileCard>
+
+          <AccountDataCard user={user} toast={toast} />
         </div>
 
         <aside className="space-y-3 lg:sticky lg:top-10">

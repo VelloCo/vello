@@ -8,6 +8,7 @@ import {
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { appPath } from "../../lib/paths";
+import { setJsonLd, setPageMeta } from "../../lib/seo";
 import { accentFor, priceLabel, type Accent } from "../../lib/catalogStyle";
 import { ProfileHeaderCard, ServiceList } from "./PublicPageParts";
 import { requireSupabase } from "../../lib/supabase";
@@ -308,6 +309,13 @@ function BookingDialog({
               )}
               {saving ? "Confirmando..." : "Confirmar agendamento"}
             </button>
+            <p className="mt-3 text-center font-body text-[11px] leading-relaxed text-stone">
+              Seu nome e WhatsApp vão só para a profissional, para confirmar o horário. Evite colocar
+              dados de saúde na observação.{" "}
+              <a href={appPath("/privacidade")} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+                Privacidade
+              </a>
+            </p>
           </>
         )}
       </div>
@@ -335,6 +343,44 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
       active = false;
     };
   }, [slug]);
+  // SEO de cada estética: título, descrição e dados estruturados de salão.
+  useEffect(() => {
+    if (page === null) setPageMeta({ title: "Página não encontrada | Vello", robots: "noindex,follow" });
+    if (!page) return;
+    const place = [page.profile.neighborhood, page.profile.city, page.profile.state].filter(Boolean).join(", ");
+    const names = page.services.slice(0, 3).map((service) => service.title).join(", ");
+    setPageMeta({
+      title: `${page.profile.professional_name}${page.profile.city ? ` em ${page.profile.city}` : ""} — Agende online | Vello`,
+      description:
+        (page.profile.bio?.slice(0, 150) ||
+          `Veja os serviços${names ? ` (${names})` : ""} e agende seu horário online com ${page.profile.professional_name}.`) +
+        (place ? ` ${place}.` : ""),
+      image: page.profile.avatar_url || undefined,
+      robots: "index,follow",
+    });
+    return setJsonLd("vello-business", {
+      "@context": "https://schema.org",
+      "@type": "BeautySalon",
+      name: page.profile.professional_name,
+      url: window.location.origin + window.location.pathname,
+      image: page.profile.avatar_url || undefined,
+      description: page.profile.bio || undefined,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: page.profile.address || undefined,
+        addressLocality: page.profile.city || undefined,
+        addressRegion: page.profile.state || undefined,
+        addressCountry: "BR",
+      },
+      makesOffer: page.services.map((service) => ({
+        "@type": "Offer",
+        itemOffered: { "@type": "Service", name: service.title, description: service.description || undefined },
+        ...(service.price_type !== "on_request" && service.price != null
+          ? { price: Number(service.price).toFixed(2), priceCurrency: "BRL" }
+          : {}),
+      })),
+    });
+  }, [page]);
   if (page === undefined) return <LoadingScreen label="Abrindo serviços" />;
   if (!page) return <NotFound />;
   const location = [

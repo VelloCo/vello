@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
@@ -27,6 +27,7 @@ import {
   Zap,
 } from "lucide-react";
 import { appPath, PUBLIC_CATALOG_DOMAIN } from "../lib/paths";
+import { setJsonLd } from "../lib/seo";
 import { Logo } from "./Logo";
 import { Reveal } from "./Primitives";
 import {
@@ -731,6 +732,21 @@ function Faq() {
     ],
     ["Quanto custa?", `R$ ${money(PRICE)} por mês, sem taxa por agendamento. Os primeiros 7 dias são grátis.`],
   ];
+  useEffect(
+    () =>
+      setJsonLd("vello-faq", {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: questions.map(([name, text]) => ({
+          "@type": "Question",
+          name,
+          acceptedAnswer: { "@type": "Answer", text },
+        })),
+      }),
+    // As perguntas são fixas; o efeito roda uma vez.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
   return (
     <section id="duvidas" className="scroll-mt-24">
       <Frame wide className="grid gap-12 px-5 py-20 md:px-16 md:py-28 lg:grid-cols-2">

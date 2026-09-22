@@ -1,0 +1,29 @@
+# Vello
+
+> Vello é uma plataforma brasileira para estéticas e profissionais da beleza: página de serviços, agendamento online e agenda organizada. A cliente escolhe o serviço, o dia e um horário livre direto na página da profissional, sem baixar aplicativo nem criar conta.
+
+## Para quem é
+- Profissionais autônomas, studios e clínicas de estética e beleza no Brasil.
+- Categorias: facial, corporal, depilação, sobrancelhas e cílios, unhas, cabelo, massagem e harmonização.
+
+## O que a Vello faz
+- Página pública de serviços com link próprio (ex.: vellocorretores.vercel.app/nome-da-estetica), com categoria, duração, preço fixo, "a partir de" ou "sob consulta" e fotos.
+- Agendamento online: a cliente informa nome e WhatsApp e escolhe um horário livre; horários ocupados somem na hora e não há reserva duplicada.
+- Confirmação automática ou manual dos pedidos.
+- Agenda no painel: pedidos para confirmar, atendimentos do dia, histórico e contato pelo WhatsApp.
+- Horários de atendimento por dia da semana, intervalo entre horários, aviso mínimo e dias de antecedência.
+- Personalização: estilo Editorial (grade) ou Lista e seis cores de destaque.
+
+## Preço
+- R$ 65,90 por mês, sem taxa por agendamento. 7 dias grátis. Durante a fase beta, uso sem cobrança.
+
+## Privacidade
+- Segue a LGPD: exportação e exclusão da conta pelo próprio painel; Google Analytics só com consentimento.
+
+## Links
+- Site: https://vellocorretores.vercel.app/
+- Criar conta: https://vellocorretores.vercel.app/cadastro
+- Termos de Uso: https://vellocorretores.vercel.app/termos
+- Política de Privacidade: https://vellocorretores.vercel.app/privacidade
+- Suporte: https://vellocorretores.vercel.app/suporte
+- Instagram: https://instagram.com/velloestetica

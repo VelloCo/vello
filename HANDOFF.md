@@ -4,6 +4,26 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Claude Code. Lançamento: LGPD, legal, SEO e GEO.
+- LGPD: `ConsentBanner` + `getConsent/setConsent` em `analytics.ts` (GA só
+  carrega após "Aceitar"); Configurações ganhou "Seus dados" (baixar JSON e
+  excluir conta). Migration `20260922140000_delete_my_account` aplicada:
+  RPC `delete_my_account()` apaga só o usuário logado (cascata); o app remove
+  antes as fotos dos buckets `avatars` e `service-images`.
+- Termos e Privacidade reescritos para estéticas (papéis controladora/operadora,
+  bases legais, fornecedores, transferência internacional, retenção, direitos,
+  cookies, encarregado). Identidade legal vem de `VITE_LEGAL_NAME` e
+  `VITE_LEGAL_DOCUMENT` (CNPJ) — definir na Vercel antes do lançamento.
+- Aviso de privacidade na janela de agendamento.
+- SEO/GEO: JSON-LD (Organization, WebSite, SoftwareApplication com oferta,
+  FAQPage na landing, BeautySalon em cada página pública), `robots.txt` com
+  áreas privadas bloqueadas e bots de IA liberados, `sitemap.xml` com
+  lastmod, `public/llms.txt`, noindex em 404 e páginas inexistentes,
+  `src/lib/seo.ts` para metadados por página.
+- Pendências do usuário: ativar "Leaked password protection" e senha mínima
+  de 8 no Supabase Auth; razão social/CNPJ; domínio próprio (o atual tem
+  "corretores" no nome); confirmar remoção das tabelas antigas de imóveis.
+
 2026-09-22 — Claude Code. Segurança, limpeza de corretores e otimização:
 - Migrations aplicadas em produção: `20260922120000_security_hardening`
   (limites no `book_appointment`: 20 reservas online/hora por página e 5
