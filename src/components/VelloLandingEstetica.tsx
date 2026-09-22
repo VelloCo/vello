@@ -1,21 +1,32 @@
 import { useState, type ReactNode } from "react";
+import type { LucideIcon } from "lucide-react";
 import {
   ArrowRight,
   AtSign,
   BellRing,
   CalendarCheck,
   Check,
+  CheckCheck,
   Clock,
+  Eye,
+  Feather,
+  Hand,
+  HandHeart,
+  Headset,
   LayoutGrid,
   Link2,
   MapPin,
   MessageCircle,
   MousePointer2,
+  PersonStanding,
   Plus,
   QrCode,
+  Scissors,
+  Send,
   Share2,
   ShieldCheck,
   Sparkles,
+  Syringe,
   Zap,
 } from "lucide-react";
 import { appPath } from "../lib/paths";
@@ -27,17 +38,27 @@ const login = appPath("/login");
 const support = appPath("/suporte");
 const PRICE = 65.9;
 
-const covers = [
-  ["Facial", "facial"],
-  ["Corporal", "corporal"],
-  ["Depilação", "depilacao"],
-  ["Sobrancelhas e cílios", "sobrancelhas-cilios"],
-  ["Unhas", "unhas"],
-  ["Cabelo", "cabelo"],
-  ["Massagem", "massagem"],
-] as const;
+type Category = { label: string; Icon: LucideIcon; tone: string; examples: string };
 
-const cover = (file: string) => appPath(`/service-covers/${file}.jpg`);
+const categories: Category[] = [
+  { label: "Facial", Icon: Sparkles, tone: "bg-sky-soft text-sky-deep", examples: "Limpeza de pele, peeling, hidratação" },
+  { label: "Corporal", Icon: PersonStanding, tone: "bg-[#E3F4EC] text-[#1F7A52]", examples: "Drenagem, modeladora, radiofrequência" },
+  { label: "Depilação", Icon: Feather, tone: "bg-[#FFF1DC] text-[#94590A]", examples: "Cera, laser, fotodepilação" },
+  { label: "Sobrancelhas e cílios", Icon: Eye, tone: "bg-[#EFEAFD] text-[#5B3FB3]", examples: "Design, henna, lash lifting" },
+  { label: "Unhas", Icon: Hand, tone: "bg-[#FDE8F1] text-[#A8245F]", examples: "Manicure, alongamento, spa dos pés" },
+  { label: "Cabelo", Icon: Scissors, tone: "bg-[#FFEBE3] text-[#A4441C]", examples: "Corte, escova, hidratação capilar" },
+  { label: "Massagem", Icon: HandHeart, tone: "bg-[#E0F4F5] text-[#15707A]", examples: "Relaxante, pedras quentes, shiatsu" },
+  { label: "Harmonização", Icon: Syringe, tone: "bg-[#E9EEF7] text-[#34507A]", examples: "Toxina, preenchimento, bioestimulador" },
+];
+
+function CategoryIcon({ label, size = 40 }: { label: string; size?: number }) {
+  const { Icon, tone } = categories.find((item) => item.label === label) ?? categories[0];
+  return (
+    <span className={`grid shrink-0 place-items-center rounded-[12px] ${tone}`} style={{ width: size, height: size }}>
+      <Icon size={Math.round(size * 0.46)} strokeWidth={1.8} />
+    </span>
+  );
+}
 const money = (value: number) => value.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export function VelloLandingEstetica() {
@@ -321,6 +342,11 @@ function StatusChip({ confirmed, small = false }: { confirmed: boolean; small?: 
   );
 }
 
+const phoneServices = [
+  { name: "Limpeza de pele profunda", label: "Facial", time: "60 min", price: "R$ 150,00", active: true },
+  { name: "Drenagem linfática", label: "Corporal", time: "50 min", price: "R$ 120,00", active: false },
+];
+
 function PhoneMock() {
   const slots = ["09:00", "10:00", "11:30", "14:00", "15:30", "17:00"];
   return (
@@ -335,22 +361,30 @@ function PhoneMock() {
           <span className="text-[10px]">5G</span>
         </div>
         <div className="flex items-center gap-2.5 px-4 pt-4">
-          <span className="h-9 w-9 overflow-hidden rounded-full bg-sky-soft">
-            <img src={appPath("/vello-onboarding-avatar.png")} alt="" className="h-full w-full object-cover" />
-          </span>
+          <span className="grid h-9 w-9 place-items-center rounded-full bg-ink font-display text-[12px] font-semibold text-white">SA</span>
           <span>
             <b className="block font-display text-[13px] font-semibold leading-tight">Studio Aurora</b>
             <span className="block font-body text-[10px] text-stone">Estética facial e corporal</span>
           </span>
         </div>
-        <div className="mx-3 mt-3 overflow-hidden rounded-[16px] bg-white shadow-[0_8px_20px_-14px_rgba(18,40,58,.4)]">
-          <img src={cover("facial")} alt="" className="h-[92px] w-full object-cover" />
-          <div className="p-3">
-            <p className="font-display text-[13px] font-semibold leading-tight">Limpeza de pele profunda</p>
-            <p className="mt-1 flex items-center gap-1.5 font-body text-[10px] text-stone">
-              <Clock size={10} /> 60 min · <b className="font-semibold text-ink">R$ 150,00</b>
-            </p>
-          </div>
+        <div className="mx-3 mt-3 space-y-1.5">
+          {phoneServices.map(({ name, label, time, price, active }) => (
+            <div
+              key={name}
+              className={`flex items-center gap-2.5 rounded-[14px] border bg-white p-2.5 ${
+                active ? "border-sky-strong shadow-[0_8px_20px_-14px_rgba(18,40,58,.5)]" : "border-transparent"
+              }`}
+            >
+              <CategoryIcon label={label} size={38} />
+              <span className="min-w-0 flex-1">
+                <b className="block truncate font-display text-[12px] font-semibold leading-tight">{name}</b>
+                <span className="mt-1 flex items-center gap-1 font-body text-[10px] text-stone">
+                  <Clock size={10} /> {time} · <b className="font-semibold text-ink">{price}</b>
+                </span>
+              </span>
+              {active && <Check size={14} className="text-sky-deep" />}
+            </div>
+          ))}
         </div>
         <div className="px-3 pt-3">
           <p className="font-body text-[10px] font-semibold uppercase tracking-[.08em] text-stone">Escolha o dia</p>
@@ -474,7 +508,7 @@ function Share() {
         <div className="grid border-t border-mist md:grid-cols-2">
           <ShareCard
             title="Sua vitrine de serviços"
-            text="Cada serviço com capa, duração e preço. Sem foto? A Vello usa uma capa ilustrada da categoria."
+            text="Cada serviço com categoria, duração e preço. A cliente filtra e encontra o que procura em segundos."
             visual={<CatalogVisual />}
           />
           <ShareCard
@@ -503,10 +537,10 @@ function ShareCard({ title, text, visual, border = false }: { title: string; tex
 
 function CatalogVisual() {
   const services = [
-    ["Limpeza de pele", "facial", "R$ 150"],
-    ["Drenagem linfática", "corporal", "R$ 120"],
-    ["Design de sobrancelhas", "sobrancelhas-cilios", "R$ 60"],
-    ["Massagem relaxante", "massagem", "a partir de R$ 130"],
+    ["Limpeza de pele", "Facial", "R$ 150"],
+    ["Drenagem linfática", "Corporal", "R$ 120"],
+    ["Design de sobrancelhas", "Sobrancelhas e cílios", "R$ 60"],
+    ["Massagem relaxante", "Massagem", "a partir de R$ 130"],
   ];
   return (
     <div
@@ -523,10 +557,11 @@ function CatalogVisual() {
         ))}
       </div>
       <div className="mt-4 grid grid-cols-4 gap-2.5">
-        {services.map(([name, file, price]) => (
-          <div key={name} className="overflow-hidden rounded-[10px] border border-mist">
-            <img src={cover(file)} alt="" className="aspect-square w-full object-cover" />
-            <div className="p-2">
+        {services.map(([name, label, price]) => (
+          <div key={name} className="rounded-[12px] border border-mist p-2.5">
+            <CategoryIcon label={label} size={44} />
+            <p className="mt-6 font-body text-[8px] uppercase tracking-[.08em] text-stone">{label}</p>
+            <div className="mt-1">
               <p className="font-body text-[10px] font-semibold leading-tight text-ink">{name}</p>
               <p className="mt-1 font-body text-[9px] text-stone">{price}</p>
             </div>
@@ -745,7 +780,7 @@ function Row({ label, value }: { label: string; value: string }) {
 /* ---------- Categorias ---------- */
 
 function Categories() {
-  const rows = [covers, [...covers].reverse()];
+  const rows = [categories, [...categories].reverse()];
   return (
     <section>
       <Frame wide className="vello-dots">
@@ -760,16 +795,16 @@ function Categories() {
           {rows.map((row, r) => (
             <div key={r} className="vello-marquee-row vello-fade-x overflow-hidden">
               <div className={`vello-marquee flex w-max gap-4 ${r ? "vello-marquee-reverse" : ""}`}>
-                {[...row, ...row].map(([label, file], i) => (
+                {[...row, ...row].map(({ label, examples }, i) => (
                   <div
-                    key={`${file}-${i}`}
+                    key={`${label}-${i}`}
                     aria-hidden={i >= row.length}
                     className="flex w-[300px] shrink-0 items-center gap-4 rounded-[14px] border border-line bg-white p-3 md:w-[360px]"
                   >
-                    <img src={cover(file)} alt="" loading="lazy" className="h-16 w-16 rounded-[10px] object-cover" />
-                    <span>
+                    <CategoryIcon label={label} size={56} />
+                    <span className="min-w-0">
                       <b className="block font-display text-[18px] font-medium tracking-[-.02em]">{label}</b>
-                      <span className="font-body text-[13px] text-stone">Capa pronta para os seus serviços</span>
+                      <span className="block truncate font-body text-[13px] text-stone">{examples}</span>
                     </span>
                   </div>
                 ))}
@@ -788,16 +823,8 @@ function SupportBlock() {
   return (
     <section>
       <Frame wide className="grid md:grid-cols-2">
-        <div className="relative grid min-h-[360px] place-items-center overflow-hidden bg-[linear-gradient(160deg,#E8F1F8,#A9CDE6)] md:min-h-[480px]">
-          <img
-            src={appPath("/vello-onboarding-avatar.png")}
-            alt="Ilustração de uma profissional de estética"
-            loading="lazy"
-            className="absolute bottom-0 h-[92%] w-auto object-contain"
-          />
-          <span className="absolute left-6 top-6 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 font-body text-[13px] font-medium shadow-[0_10px_24px_-16px_rgba(18,40,58,.6)] md:left-10 md:top-10">
-            <Sparkles size={15} className="text-sky-deep" /> Oi! Posso ajudar?
-          </span>
+        <div className="grid min-h-[420px] place-items-center overflow-hidden bg-[linear-gradient(160deg,#E8F1F8,#A9CDE6)] px-5 py-12 md:min-h-[480px]">
+          <SupportChat />
         </div>
         <Reveal className="flex flex-col justify-center px-6 py-16 md:px-16">
           <div>
@@ -815,6 +842,57 @@ function SupportBlock() {
         </Reveal>
       </Frame>
     </section>
+  );
+}
+
+const supportMessages = [
+  { mine: true, text: "Oi! Como libero os horários de sábado?", time: "10:02" },
+  { mine: false, text: "Oi! Em Configurações, abra Disponibilidade, ative o sábado e escolha o horário.", time: "10:03" },
+  { mine: true, text: "Deu certo, já apareceu na minha página!", time: "10:05" },
+  { mine: false, text: "Perfeito! Qualquer coisa é só chamar.", time: "10:05" },
+];
+
+function SupportChat() {
+  return (
+    <div
+      aria-hidden="true"
+      className="w-full max-w-[380px] overflow-hidden rounded-[22px] border border-white bg-white/90 shadow-[0_30px_70px_-36px_rgba(18,40,58,.6)] backdrop-blur"
+    >
+      <div className="flex items-center gap-3 border-b border-mist px-4 py-3">
+        <span className="grid h-10 w-10 place-items-center rounded-full bg-ink text-white">
+          <Headset size={18} />
+        </span>
+        <span>
+          <b className="block font-body text-[14px] font-semibold">Suporte Vello</b>
+          <span className="flex items-center gap-1.5 font-body text-[12px] text-stone">
+            <span className="h-2 w-2 rounded-full bg-[#2FB36B]" /> online agora
+          </span>
+        </span>
+      </div>
+      <div className="space-y-2.5 bg-paper/70 px-4 py-5">
+        {supportMessages.map(({ mine, text, time }) => (
+          <div key={text} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
+            <div
+              className={`max-w-[80%] rounded-[16px] px-3.5 py-2.5 font-body text-[13px] leading-snug text-ink ${
+                mine ? "rounded-br-[4px] bg-sky" : "rounded-bl-[4px] border border-mist bg-white"
+              }`}
+            >
+              {text}
+              <span className="ml-2 inline-flex items-center gap-0.5 align-bottom text-[10px] text-ink/55">
+                {time}
+                {mine && <CheckCheck size={12} />}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="flex items-center gap-2 border-t border-mist px-3 py-3">
+        <span className="flex-1 rounded-full bg-paper px-4 py-2.5 font-body text-[13px] text-stone">Escreva sua dúvida…</span>
+        <span className="grid h-9 w-9 place-items-center rounded-full bg-ink text-white">
+          <Send size={15} />
+        </span>
+      </div>
+    </div>
   );
 }
 
@@ -836,7 +914,7 @@ function Faq() {
     ],
     [
       "Como mostro os meus serviços e preços?",
-      "Cada serviço tem categoria, duração, fotos e preço fixo, a partir de ou sob consulta. Sem foto, a Vello usa uma capa ilustrada da categoria.",
+      "Cada serviço tem categoria, duração e preço fixo, a partir de ou sob consulta. Fotos são opcionais.",
     ],
     [
       "Funciona para clínica com várias profissionais?",

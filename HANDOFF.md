@@ -11,7 +11,10 @@ hachuradas, hero com degradê azul e mockups (painel + celular), recursos,
 “Quanto custa?”, divulgação, suíte, seção escura com calculadora de custo por
 atendimento (R$ 65,90/mês), letreiro de categorias com as capas de
 `public/service-covers`, suporte, dúvidas e CTA final. Sem depoimentos (não há
-clientes reais ainda). `VelloLandingMinimal.tsx` e `VelloLanding.tsx` (corretores)
+clientes reais ainda). Ilustrações da landing (capas de categoria e avatar) trocadas por ícones e
+mockups de interface, a pedido do usuário; só o bloco final usa ilustração
+(`public/landing/vello-cta-final.webp`). `favicon.ico` real criado (antes caía
+no rewrite e devolvia HTML). `VelloLandingMinimal.tsx` e `VelloLanding.tsx` (corretores)
 ficaram sem uso. Novo token `sky-strong` (#4A86B3) para títulos grandes.
 
 2026-09-21 — Codex. Início da aplicação dos princípios Apple na Vello:
