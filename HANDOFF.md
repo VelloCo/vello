@@ -4,6 +4,12 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Codex. Removida a recoloração integral das capas automáticas e
+do avatar padrão ao trocar a cor de destaque do catálogo. O blend de
+luminosidade tingia também pele, cabelo e roupa porque personagem e fundo
+fazem parte do mesmo JPEG. As ilustrações agora preservam as cores originais;
+a paleta escolhida continua aplicada ao cabeçalho e aos botões de agendamento.
+
 2026-09-22 — Claude Code. Capas padrão (serviço sem foto) e avatar padrão da
 página pública agora seguem a cor de destaque: nas cores que não são azul,
 `coverTint` + `background-blend-mode: luminosity` deixam a ilustração em duas
