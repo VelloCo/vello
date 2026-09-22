@@ -331,7 +331,6 @@ export function PublicPhoneScreen() {
             <h2 className="mt-3 font-display text-4xl font-semibold">Escolha seu cuidado.</h2>
           </div>
         </div>
-        <p className="mt-3 font-body text-sm text-ash">3 serviços disponíveis</p>
         <div className="mt-8">
           <ServiceArticle service={demoServices[0]} />
         </div>
@@ -350,7 +349,6 @@ export function PublicCatalogScreen() {
             <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">Serviços</p>
             <h2 className="mt-3 font-display text-4xl font-semibold">Escolha seu cuidado.</h2>
           </div>
-          <p className="font-body text-sm text-ash">3 serviços disponíveis</p>
         </div>
         <div className="mt-10 grid grid-cols-3 gap-5">
           {demoServices.map((service) => (
