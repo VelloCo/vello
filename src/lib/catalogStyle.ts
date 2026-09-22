@@ -57,13 +57,39 @@ const coverAsset: Record<string, string> = {
   outros: "/service-covers/outros-cutout-v3.png",
 };
 
-export const categoryCoverStyle = (category: string, accent?: Accent) => ({
-  backgroundColor: accent?.header || "#E8F1F8",
+const effectsAsset: Record<string, string> = {
+  facial: "/service-covers/facial-effects-v4.png",
+  corporal: "/service-covers/corporal-effects-v4.png",
+  depilacao: "/service-covers/depilacao-effects-v4.png",
+  sobrancelhas_cilios: "/service-covers/sobrancelhas-cilios-effects-v4.png",
+  unhas: "/service-covers/unhas-effects-v4.png",
+  cabelo: "/service-covers/cabelo-effects-v4.png",
+  massagem: "/service-covers/massagem-effects-v4.png",
+  harmonizacao: "/service-covers/harmonizacao-effects-v4.png",
+  outros: "/service-covers/outros-effects-v4.png",
+};
+
+export const categoryCoverStyle = (category: string) => ({
   backgroundImage: "url(" + appPath(coverAsset[category] || coverAsset.outros) + ")",
   backgroundPosition: "center",
   backgroundRepeat: "no-repeat",
   backgroundSize: "contain",
 });
+
+export const categoryEffectsStyle = (category: string, accent: Accent) => {
+  const mask = "url(" + appPath(effectsAsset[category] || effectsAsset.outros) + ")";
+  return {
+    background: `linear-gradient(135deg, ${accent.tag}, ${accent.button} 62%, ${accent.glow})`,
+    WebkitMaskImage: mask,
+    WebkitMaskPosition: "center",
+    WebkitMaskRepeat: "no-repeat",
+    WebkitMaskSize: "contain",
+    maskImage: mask,
+    maskPosition: "center",
+    maskRepeat: "no-repeat",
+    maskSize: "contain",
+  };
+};
 
 export function priceLabel(service: { price_type: "fixed" | "from" | "on_request"; price: number | string | null }) {
   if (service.price_type === "on_request") return "Sob consulta";

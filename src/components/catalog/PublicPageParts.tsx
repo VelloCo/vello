@@ -8,6 +8,7 @@ import { CalendarDays, Clock3, MapPin } from "lucide-react";
 import { appPath } from "../../lib/paths";
 import {
   categoryCoverStyle,
+  categoryEffectsStyle,
   serviceCategoryNames,
   type Accent,
 } from "../../lib/catalogStyle";
@@ -119,9 +120,20 @@ function Cover({ service, list, accent }: { service: CardService; list: boolean;
     <div
       role="img"
       aria-label={"Imagem de " + (serviceCategoryNames[service.category] || "estética")}
-      className={size + " bg-[#E8F1F8]"}
-      style={categoryCoverStyle(service.category, accent)}
-    />
+      className={size + " relative overflow-hidden"}
+      style={{ backgroundColor: accent.header }}
+    >
+      <span
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={categoryEffectsStyle(service.category, accent)}
+      />
+      <span
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={categoryCoverStyle(service.category)}
+      />
+    </div>
   );
 }
 

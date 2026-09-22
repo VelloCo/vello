@@ -4,6 +4,13 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-22 — Codex. As capas automáticas voltaram a ter os efeitos editoriais
+ao redor das personagens. O modelo gerou nove camadas individuais
+`*-effects-v4.png`, com fitas, folhas, brilhos e pontilhado transparentes para
+cada categoria. A composição agora separa fundo, efeitos e personagem: fundo e
+efeitos recebem a paleta escolhida, enquanto pele, cabelo, roupas e instrumentos
+mantêm cores naturais.
+
 2026-09-22 — Codex. As nove capas automáticas de serviços foram refeitas com o
 modelo de geração como PNGs transparentes independentes (`*-cutout-v3.png`).
 Personagens, mãos, roupas e instrumentos mantêm cores naturais; o fundo agora é
