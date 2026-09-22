@@ -7,6 +7,7 @@ import {
   Share2,
   X,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { appPath } from "../../lib/paths";
 import { requireSupabase } from "../../lib/supabase";
@@ -402,14 +403,14 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
       : "editorial";
   return (
     <main className="min-h-screen bg-[#F7FAFC] text-ink">
-      <header className="border-b border-line bg-white">
-        <div className="mx-auto flex h-[72px] max-w-[1180px] items-center justify-between px-5 sm:px-8">
+      <header className="bg-[#F7FAFC]">
+        <div className="mx-auto flex h-16 max-w-[1180px] items-center justify-between px-5 sm:h-[72px] sm:px-8">
           <a href={appPath("/")}>
             <Logo className="origin-left scale-[.78]" />
           </a>
           <button
             onClick={share}
-            className="inline-flex h-10 items-center gap-2 rounded-full border border-line px-4 font-body text-sm font-medium"
+            className="inline-flex h-10 items-center gap-2 rounded-full border border-line bg-white px-4 font-body text-sm font-medium shadow-[0_8px_24px_-20px_rgba(18,40,58,.55)] transition active:scale-[.97]"
           >
             <Share2 size={16} />{" "}
             <span className="hidden sm:inline">
@@ -418,10 +419,17 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
           </button>
         </div>
       </header>
-      <section className="border-b border-line bg-white px-5 py-10 sm:px-8 sm:py-16">
-        <div className="mx-auto max-w-[1180px]">
-          <div className="flex max-w-3xl flex-col gap-6 sm:flex-row sm:items-center">
-            <span className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-[26px] bg-[#E8F1F8]">
+      <section className="px-5 pb-6 pt-2 sm:px-8 sm:pb-8 sm:pt-4">
+        <motion.div
+          initial={{ opacity: 0, transform: "translateY(10px)" }}
+          animate={{ opacity: 1, transform: "translateY(0)" }}
+          transition={{ duration: 0.35, ease: [0.23, 1, 0.32, 1] }}
+          className="relative mx-auto max-w-[1180px] overflow-hidden rounded-[28px] border border-[#CFE0EB] bg-[#E8F1F8] p-5 shadow-[0_24px_60px_-48px_rgba(18,40,58,.42)] sm:rounded-[34px] sm:p-8"
+        >
+          <div aria-hidden="true" className="absolute -right-12 -top-20 h-52 w-52 rounded-full bg-white/45 blur-2xl" />
+          <div aria-hidden="true" className="absolute -bottom-24 right-1/4 h-44 w-44 rounded-full bg-[#BFD9EB]/45 blur-3xl" />
+          <div className="relative flex max-w-3xl items-center gap-4 sm:gap-6">
+            <span className="grid h-[76px] w-[76px] shrink-0 place-items-center overflow-hidden rounded-full bg-white ring-4 ring-white/80 shadow-[0_14px_30px_-20px_rgba(18,40,58,.55)] sm:h-24 sm:w-24">
               {page.profile.avatar_url ? (
                 <img
                   src={page.profile.avatar_url}
@@ -430,35 +438,35 @@ export function PublicServiceCatalog({ slug }: { slug: string }) {
                 />
               ) : (
                 <img
-                  src={appPath("/vello-logo.png")}
-                  alt="Vello"
-                  className="h-12 w-12 object-contain"
+                  src={appPath("/vello-onboarding-avatar-v2.jpg")}
+                  alt="Imagem padrão da Vello"
+                  className="h-full w-full object-cover"
                 />
               )}
             </span>
-            <div>
-              <p className="font-mono text-[10px] uppercase tracking-[.16em] text-stone">
+            <div className="min-w-0 flex-1">
+              <p className="inline-flex rounded-full border border-white/80 bg-white/70 px-3 py-1 font-mono text-[9px] uppercase tracking-[.14em] text-[#356D95] shadow-[0_6px_20px_-18px_rgba(18,40,58,.5)]">
                 {page.profile.business_type === "clinica"
                   ? "Clínica de estética"
                   : "Estética e bem-estar"}
               </p>
-              <h1 className="mt-3 font-display text-[clamp(38px,6vw,62px)] font-semibold leading-none">
+              <h1 className="mt-2 truncate font-display text-[clamp(30px,5vw,48px)] font-semibold leading-[1.02] tracking-[-.04em]">
                 {page.profile.professional_name}
               </h1>
-              {page.profile.bio && (
-                <p className="mt-4 max-w-2xl font-body text-[16px] leading-relaxed text-ash">
-                  {page.profile.bio}
-                </p>
-              )}
               {location && (
-                <p className="mt-4 flex items-center gap-2 font-body text-sm text-ash">
-                  <MapPin size={15} />
+                <p className="mt-2 flex items-center gap-1.5 font-body text-sm font-medium text-[#46677E]">
+                  <MapPin size={14} aria-hidden="true" />
                   {location}
                 </p>
               )}
             </div>
           </div>
-        </div>
+          {page.profile.bio && (
+            <p className="relative mt-5 max-w-2xl border-t border-white/70 pt-4 font-body text-[15px] leading-relaxed text-[#46677E] sm:ml-[120px] sm:mt-4">
+              {page.profile.bio}
+            </p>
+          )}
+        </motion.div>
       </section>
       <section className="mx-auto max-w-[1180px] px-5 py-12 sm:px-8 sm:py-16">
         <div className="flex flex-wrap items-end justify-between gap-4">

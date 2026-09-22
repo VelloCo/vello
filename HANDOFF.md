@@ -34,6 +34,11 @@ minimalistas, seguindo a referência editorial azul da Vello, para facial,
 corporal, depilação, sobrancelhas/cílios, unhas, cabelo, massagem,
 harmonização e outros. Painel e catálogo público também passaram a reservar
 área 1:1 para as imagens, evitando deformação visual.
+O topo do catálogo público de serviços foi redesenhado como um cartão azul
+compacto: avatar circular com aro claro, tipo da estética em selo, nome com
+escala controlada, localização agrupada e bio separada por uma linha sutil.
+O cabeçalho superior ficou mais leve e o botão de compartilhar ganhou resposta
+tátil no toque.
 O onboarding não apresenta mais a opção de desligar agendamentos online:
 eles são parte fixa da Vello e são salvos sempre ativos. Permanece apenas a
 escolha de confirmação automática ou manual dos pedidos.
