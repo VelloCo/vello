@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import { appPath } from "../lib/paths";
 import { requireSupabase } from "../lib/supabase";
+import { mensagemDaFuncao } from "../lib/functionError";
 import { Logo } from "./Logo";
 
 type DashboardData = {
@@ -65,8 +66,7 @@ export function AdminApp() {
       void loadInvites();
       setInviteState("ready");
     } catch (causa) {
-      const detalhe = String((causa as { context?: { body?: string } })?.context?.body ?? causa);
-      setInviteError(detalhe.includes("já tem conta") ? "Esse e-mail já tem conta ativa na Vello." : "Não foi possível gerar o convite. Confira o e-mail e tente de novo.");
+      setInviteError(await mensagemDaFuncao(causa, "Não foi possível gerar o convite. Confira o e-mail e tente de novo."));
       setInviteState("error");
     }
   };

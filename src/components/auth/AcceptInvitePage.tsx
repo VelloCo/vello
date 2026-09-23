@@ -7,6 +7,7 @@ import { PasswordInput } from './PasswordInput';
 import { login } from '../../lib/auth';
 import { appPath } from '../../lib/paths';
 import { requireSupabase } from '../../lib/supabase';
+import { mensagemDaFuncao } from '../../lib/functionError';
 
 type Convite = { email: string; name: string; expires_at: string };
 
@@ -45,14 +46,9 @@ export function AcceptInvitePage({ token }: { token: string }) {
         setConvite(data as Convite);
         setNome((data as Convite).name || '');
       } catch (causa) {
+        const texto = await mensagemDaFuncao(causa, 'Convite não encontrado. Confira se o link veio completo.');
         if (!ativo) return;
-        const texto = String((causa as { context?: { body?: string } })?.context?.body ?? causa);
-        setErroConvite(
-          texto.includes('expirou') ? 'Este convite expirou. Peça um novo à equipe Vello.'
-            : texto.includes('usado') ? 'Este convite já foi usado. Entre com seu e-mail e senha.'
-            : texto.includes('cancelado') ? 'Este convite foi cancelado. Fale com a equipe Vello.'
-            : 'Convite não encontrado. Confira se o link veio completo.',
-        );
+        setErroConvite(texto);
         setConvite(null);
       }
     })();
@@ -77,13 +73,7 @@ export function AcceptInvitePage({ token }: { token: string }) {
       await login(String(data.email), senha);
       window.location.href = appPath('/onboarding');
     } catch (causa) {
-      const texto = String((causa as { context?: { body?: string } })?.context?.body ?? causa);
-      setErro(
-        texto.includes('expirou') ? 'Este convite expirou. Peça um novo à equipe Vello.'
-          : texto.includes('já foi usado') ? 'Este convite já foi usado. Entre com seu e-mail e senha.'
-          : texto.includes('já tem conta') ? 'Esse e-mail já tem conta. Entre pelo login.'
-          : 'Não foi possível concluir o convite. Tente novamente.',
-      );
+      setErro(await mensagemDaFuncao(causa, 'Não foi possível concluir o convite. Tente novamente.'));
       setSalvando(false);
     }
   };
