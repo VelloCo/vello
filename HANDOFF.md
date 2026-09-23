@@ -4,6 +4,16 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-23 — Claude Code. Link de convite caía na landing: no Supabase Auth, o
+domínio `velloesteticas.vercel.app` não está na lista de Redirect URLs e o Site
+URL ainda é `vellocorretores.vercel.app`, então o `verify` ignora o `redirect_to`
+e manda para a raiz do domínio antigo. Correção definitiva é no painel do
+Supabase (Authentication > URL Configuration): Site URL para o domínio novo e
+`https://velloesteticas.vercel.app/**` nas Redirect URLs — pendente do usuário.
+No app, `src/App.tsx` agora detecta `#access_token=...&type=invite|recovery|signup`
+(e os erros correspondentes) na raiz e redireciona para `/redefinir-senha` (ou
+`/onboarding`) preservando o hash, para ninguém mais cair na landing.
+
 2026-09-23 — Claude Code. Campo de senha aparecia com dois "olhinhos": o botão
 da Vello e o nativo do Edge/Chrome no Windows. `input[type=password]::-ms-reveal`
 e `::-ms-clear` escondidos em `src/index.css`. Aproveitei para tirar o botão de

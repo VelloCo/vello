@@ -36,6 +36,26 @@ export default function App() {
   );
 }
 
+/*
+ * Links de convite e de recuperação de senha voltam do Supabase com os dados
+ * no final do endereço (#access_token=...). Se o Supabase mandar para a raiz
+ * (por exemplo, quando o domínio não está na lista de permitidos dele), a
+ * pessoa cairia na landing. Aqui levamos ela para a tela certa, sem perder
+ * o link.
+ */
+function rotaDoLinkDeAuth() {
+  const hash = window.location.hash;
+  if (!hash || hash.length < 2) return null;
+  const params = new URLSearchParams(hash.slice(1));
+  const tipo = params.get("type");
+  const erro = params.get("error_code") || params.get("error");
+  if (params.get("access_token") && (tipo === "recovery" || tipo === "invite" || tipo === "signup")) {
+    return tipo === "signup" ? "/onboarding" : "/redefinir-senha";
+  }
+  if (erro && (tipo === "recovery" || tipo === "invite")) return "/redefinir-senha";
+  return null;
+}
+
 function Routes() {
   const [location, setLocation] = useState(getLocation);
   const [user, setUser] = useState<
@@ -85,6 +105,12 @@ function Routes() {
     initAnalytics();
     trackPage(path);
   }, [authRoute, path, privateRoute]);
+
+  useEffect(() => {
+    if (path !== "/") return;
+    const destino = rotaDoLinkDeAuth();
+    if (destino) window.location.replace(appPath(destino) + window.location.hash);
+  }, [path]);
 
   // O cliente do Supabase só é baixado nas telas que precisam de login;
   // landing e página pública não pagam esse peso.
