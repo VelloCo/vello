@@ -97,7 +97,7 @@ function Routes() {
       "href",
       `${window.location.origin}${appPath(path)}`,
     );
-    const socialImage = `${window.location.origin}${appPath("/og-vello-estetica-social.jpg")}`;
+    const socialImage = `${window.location.origin}${appPath("/og-vello-social-v2.jpg")}`;
     document.querySelector('meta[property="og:title"]')?.setAttribute("content", page[0]);
     document.querySelector('meta[property="og:description"]')?.setAttribute("content", page[1]);
     document.querySelector('meta[property="og:url"]')?.setAttribute("content", `${window.location.origin}${appPath(path)}`);
