@@ -4,6 +4,12 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-23 — Claude Code. Campo de senha aparecia com dois "olhinhos": o botão
+da Vello e o nativo do Edge/Chrome no Windows. `input[type=password]::-ms-reveal`
+e `::-ms-clear` escondidos em `src/index.css`. Aproveitei para tirar o botão de
+dentro do `<label>` em `PasswordInput` (o campo era anunciado como
+"Senha Mostrar senha"); agora usa `htmlFor`/`useId` e `aria-controls`.
+
 2026-09-22 — Claude Code. Aviso de novo agendamento (parte 1, sem custo):
 migration `20260922180000_realtime_appointments` (aplicada) põe `appointments`
 na publicação do Realtime; o painel assina INSERT filtrando por `user_id` e,

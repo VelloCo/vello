@@ -346,3 +346,10 @@ h2.font-display {
 .vello-loading-ring { animation: vello-loading-ring 1.9s ease-in-out infinite; }
 .vello-loading-ring-reverse { animation-name: vello-loading-ring-reverse; }
 .vello-loading-dot { animation: vello-loading-dot 1s ease-in-out infinite; }
+
+/* O Edge/Chrome no Windows desenham um "olhinho" nativo no campo de senha,
+   que ficava em cima do botão da Vello. Fica só o nosso. */
+input[type='password']::-ms-reveal,
+input[type='password']::-ms-clear {
+  display: none;
+}
