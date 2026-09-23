@@ -17,6 +17,7 @@ const getLocation = () => ({
 // estética não baixa o painel, e vice-versa.
 const Landing = lazy(() => import("./components/VelloLandingEstetica").then((m) => ({ default: m.VelloLandingEstetica })));
 const AdminApp = lazy(() => import("./components/AdminApp").then((m) => ({ default: m.AdminApp })));
+const AcceptInvitePage = lazy(() => import("./components/auth/AcceptInvitePage").then((m) => ({ default: m.AcceptInvitePage })));
 const AuthPage = lazy(() => import("./components/auth/AuthPage").then((m) => ({ default: m.AuthPage })));
 const Onboarding = lazy(() => import("./components/onboarding/Onboarding").then((m) => ({ default: m.Onboarding })));
 const PublicServiceCatalog = lazy(() => import("./components/catalog/PublicServiceCatalog").then((m) => ({ default: m.PublicServiceCatalog })));
@@ -73,6 +74,7 @@ function Routes() {
     "/verificar-email",
   ].includes(path);
   const privateRoute = path === "/onboarding" || path.startsWith("/dashboard") || path === "/admin";
+  const conviteRota = path.startsWith("/convite/");
 
   useEffect(() => {
     const page = path === "/" ? ["Vello — Agenda online e página de serviços para estéticas", "Página de serviços, agendamento online e agenda organizada para estéticas e profissionais da beleza. Sua cliente agenda sozinha. Teste grátis por 7 dias."]
@@ -84,12 +86,13 @@ function Routes() {
       : path === "/termos" ? ["Termos de Uso | Vello", "Termos de uso da Vello."]
       : path === "/privacidade" ? ["Política de Privacidade | Vello", "Política de privacidade da Vello."]
       : path === "/suporte" ? ["Suporte | Vello", "Fale com o suporte da Vello."]
+      : path.startsWith("/convite/") ? ["Seu convite | Vello", "Crie sua senha e entre na Vello."]
       : ["Serviços | Vello", "Conheça os serviços disponíveis nesta estética Vello."];
     document.title = page[0];
     document.querySelector('meta[name="description"]')?.setAttribute("content", page[1]);
     const robots = document.querySelector('meta[name="robots"]');
     const indexable = ["/", "/termos", "/privacidade", "/suporte"].includes(path) || /^\/[A-Za-z0-9-]+\/?$/.test(path);
-    robots?.setAttribute("content", authRoute || privateRoute ? "noindex,nofollow" : indexable ? "index,follow" : "noindex,follow");
+    robots?.setAttribute("content", authRoute || privateRoute || conviteRota ? "noindex,nofollow" : indexable ? "index,follow" : "noindex,follow");
     document.querySelector('link[rel="canonical"]')?.setAttribute(
       "href",
       `${window.location.origin}${appPath(path)}`,
@@ -104,7 +107,7 @@ function Routes() {
     document.querySelector('meta[name="twitter:image"]')?.setAttribute("content", socialImage);
     initAnalytics();
     trackPage(path);
-  }, [authRoute, path, privateRoute]);
+  }, [authRoute, conviteRota, path, privateRoute]);
 
   useEffect(() => {
     if (path !== "/") return;
@@ -185,6 +188,8 @@ function Routes() {
   if (path === "/termos") return <LegalPage kind="terms" />;
   if (path === "/privacidade") return <LegalPage kind="privacy" />;
   if (path === "/suporte") return <SupportPage />;
+  const conviteRoute = path.match(/^\/convite\/([A-Za-z0-9_-]{16,200})$/);
+  if (conviteRoute) return <AcceptInvitePage token={conviteRoute[1]} />;
   if (path === "/404") return <NotFoundPage />;
   const publicRoute = path.match(/^\/([A-Za-z0-9-]+)\/?$/);
   if (publicRoute) return <PublicServiceCatalog slug={publicRoute[1].toLowerCase()} />;

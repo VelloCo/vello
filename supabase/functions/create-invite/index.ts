@@ -1,8 +1,14 @@
 import "@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "@supabase/supabase-js";
 
+/*
+ * Gera um convite do beta fechado. O convite é só um código com validade:
+ * a conta da profissional nasce quando ela escolhe a senha (accept-invite).
+ * Assim dá para reconvidar o mesmo e-mail e abrir o link sem consumi-lo.
+ */
 const productionOrigin = "https://velloesteticas.vercel.app";
 const allowedOrigins = new Set([productionOrigin, "http://localhost:5173", "http://127.0.0.1:5173"]);
+const HORAS_PADRAO = 48;
 
 function headers(origin: string | null) {
   return {
@@ -16,6 +22,16 @@ function headers(origin: string | null) {
 
 function json(body: unknown, status: number, origin: string | null) {
   return new Response(JSON.stringify(body), { status, headers: headers(origin) });
+}
+
+function novoToken() {
+  const bytes = crypto.getRandomValues(new Uint8Array(32));
+  return btoa(String.fromCharCode(...bytes)).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function hash(token: string) {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(token));
+  return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
 Deno.serve(async (request) => {
@@ -40,7 +56,7 @@ Deno.serve(async (request) => {
     return json({ error: "Acesso restrito ao administrador." }, 403, origin);
   }
 
-  let payload: { email?: unknown; name?: unknown };
+  let payload: { email?: unknown; name?: unknown; hours?: unknown };
   try {
     payload = await request.json();
   } catch {
@@ -49,27 +65,55 @@ Deno.serve(async (request) => {
 
   const email = typeof payload.email === "string" ? payload.email.trim().toLowerCase() : "";
   const name = typeof payload.name === "string" ? payload.name.trim().slice(0, 120) : "";
+  const horas = Math.min(Math.max(Number(payload.hours) || HORAS_PADRAO, 1), 720);
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
     return json({ error: "Informe um e-mail válido." }, 400, origin);
   }
 
-  const adminClient = createClient(supabaseUrl, serviceRoleKey, {
+  const admin = createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
-  const { data, error } = await adminClient.auth.admin.generateLink({
-    type: "invite",
-    email,
-    options: {
-      data: { full_name: name || email.split("@")[0], vello_beta_invite: true },
-      redirectTo: `${productionOrigin}/redefinir-senha`,
-    },
-  });
 
-  if (error || !data.properties?.action_link) {
-    console.error("create-invite failed", error?.message);
-    const existing = error?.message.toLowerCase().includes("already") || error?.message.toLowerCase().includes("registered");
-    return json({ error: existing ? "Esse e-mail já possui uma conta na Vello." : "Não foi possível gerar o convite agora." }, 400, origin);
+  const { data: status, error: statusError } = await admin.rpc("beta_user_status", { p_email: email });
+  if (statusError) {
+    console.error("beta_user_status", statusError.message);
+    return json({ error: "Não foi possível gerar o convite agora." }, 500, origin);
+  }
+  if (status === "active") {
+    return json({ error: "Esse e-mail já tem conta ativa na Vello." }, 400, origin);
   }
 
-  return json({ email, invite_link: data.properties.action_link }, 200, origin);
+  // Um convite válido por e-mail: os anteriores são cancelados.
+  await admin
+    .from("beta_invites")
+    .update({ revoked_at: new Date().toISOString() })
+    .is("used_at", null)
+    .is("revoked_at", null)
+    .ilike("email", email);
+
+  const token = novoToken();
+  const expiresAt = new Date(Date.now() + horas * 3600_000).toISOString();
+  const { error: insertError } = await admin.from("beta_invites").insert({
+    email,
+    name,
+    token_hash: await hash(token),
+    expires_at: expiresAt,
+    created_by: caller.user?.id ?? null,
+  });
+  if (insertError) {
+    console.error("insert invite", insertError.message);
+    return json({ error: "Não foi possível gerar o convite agora." }, 500, origin);
+  }
+
+  return json(
+    {
+      email,
+      name,
+      hours: horas,
+      expires_at: expiresAt,
+      invite_link: `${productionOrigin}/convite/${token}`,
+    },
+    200,
+    origin,
+  );
 });

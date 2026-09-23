@@ -4,6 +4,23 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-23 — Claude Code. Convites do beta refeitos (não usam mais o convite do
+Supabase, que criava a conta na hora, expirava em 1h e era consumido pela
+pré-visualização de link do WhatsApp).
+- Migration `20260923120000_beta_invites` (aplicada): tabela `beta_invites`
+  (token só em hash, validade, usado, cancelado, tentativas), RLS sem policies
+  (só service_role), RPCs `list_beta_invites()` e `revoke_beta_invite(uuid)`
+  (admin) e `beta_user_status(text)` (service_role).
+- Edge functions publicadas: `create-invite` (admin; cancela convites anteriores
+  do mesmo e-mail; validade 24h/48h/7d/30d; devolve `/convite/<token>`) e
+  `accept-invite` (`verify_jwt=false`; `check:true` só mostra o e-mail sem
+  consumir; ao enviar a senha cria a conta — ou define a senha de conta antiga
+  nunca usada — e marca o convite como usado; máx. 10 tentativas por convite).
+- Front: rota `/convite/:token` com `AcceptInvitePage` (noindex), painel de
+  admin com seletor de validade e lista de convites com status e cancelar.
+- Testado em produção ponta a ponta com e-mail descartável (tela → conta →
+  onboarding → reuso bloqueado); conta e convite de teste removidos depois.
+
 2026-09-23 — Claude Code. Link de convite caía na landing: no Supabase Auth, o
 domínio `velloesteticas.vercel.app` não está na lista de Redirect URLs e o Site
 URL ainda é `vellocorretores.vercel.app`, então o `verify` ignora o `redirect_to`
