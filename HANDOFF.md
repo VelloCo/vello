@@ -4,6 +4,18 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-23 — Claude Code. Convite para e-mail que já tem conta. O convite antigo
+do Supabase criava a conta com senha aleatória (bcrypt preenchido), então não dá
+para saber se a profissional chegou a escolher senha — o caso da Angélica:
+conta criada 22:08, entrou 22:09 pelo link, sem perfil e sem onboarding.
+Migration `20260923140000_beta_invites_allow_existing` (aplicada) + funções
+redeployadas: `create-invite` aceita `allowExisting` (só admin) e devolve
+`motivo: conta_existente`; `accept-invite` define a senha da conta existente
+quando o convite foi criado assim. No admin, o erro agora mostra o motivo real
+e oferece "Gerar mesmo assim (ela define uma senha nova)"; o cartão do convite
+avisa quando é redefinição. `src/lib/functionError.ts` lê a mensagem que a
+função devolveu (antes só aparecia texto genérico).
+
 2026-09-23 — Claude Code. Convites do beta refeitos (não usam mais o convite do
 Supabase, que criava a conta na hora, expirava em 1h e era consumido pela
 pré-visualização de link do WhatsApp).

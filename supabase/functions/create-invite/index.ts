@@ -56,7 +56,7 @@ Deno.serve(async (request) => {
     return json({ error: "Acesso restrito ao administrador." }, 403, origin);
   }
 
-  let payload: { email?: unknown; name?: unknown; hours?: unknown };
+  let payload: { email?: unknown; name?: unknown; hours?: unknown; allowExisting?: unknown };
   try {
     payload = await request.json();
   } catch {
@@ -79,8 +79,9 @@ Deno.serve(async (request) => {
     console.error("beta_user_status", statusError.message);
     return json({ error: "Não foi possível gerar o convite agora." }, 500, origin);
   }
-  if (status === "active") {
-    return json({ error: "Esse e-mail já tem conta ativa na Vello." }, 400, origin);
+  const permitirExistente = payload.allowExisting === true;
+  if (status === "active" && !permitirExistente) {
+    return json({ error: "Esse e-mail já tem conta na Vello.", motivo: "conta_existente" }, 400, origin);
   }
 
   // Um convite válido por e-mail: os anteriores são cancelados.
@@ -98,6 +99,7 @@ Deno.serve(async (request) => {
     name,
     token_hash: await hash(token),
     expires_at: expiresAt,
+    allow_existing: permitirExistente,
     created_by: caller.user?.id ?? null,
   });
   if (insertError) {
@@ -111,6 +113,7 @@ Deno.serve(async (request) => {
       name,
       hours: horas,
       expires_at: expiresAt,
+      reset: status === "active",
       invite_link: `${productionOrigin}/convite/${token}`,
     },
     200,

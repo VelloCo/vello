@@ -57,7 +57,7 @@ Deno.serve(async (request) => {
 
   const { data: convite } = await admin
     .from("beta_invites")
-    .select("id, email, name, expires_at, used_at, revoked_at, attempts")
+    .select("id, email, name, expires_at, used_at, revoked_at, attempts, allow_existing")
     .eq("token_hash", await hash(token))
     .maybeSingle();
 
@@ -84,12 +84,12 @@ Deno.serve(async (request) => {
   const { data: status } = await admin.rpc("beta_user_status", { p_email: convite.email });
   const metadata = { full_name: nome || convite.name || convite.email.split("@")[0], vello_beta_invite: true };
 
-  if (status === "active") {
+  if (status === "active" && !convite.allow_existing) {
     return json({ error: "Esse e-mail já tem conta ativa. Entre pelo login." }, 409, origin);
   }
 
-  if (status === "pending") {
-    // Conta criada por um convite antigo e nunca usada: só define a senha.
+  if (status === "pending" || status === "active") {
+    // Conta já existente (convite antigo ou liberada pelo admin): define a senha.
     const { data: lista, error: listError } = await admin.auth.admin.listUsers({ page: 1, perPage: 200 });
     const existente = lista?.users.find((user) => user.email?.toLowerCase() === convite.email.toLowerCase());
     if (listError || !existente) {
