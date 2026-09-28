@@ -14,7 +14,6 @@ export function Compare() {
     <section id="sobre" className="section">
       <div className="container">
         <div className="section-head">
-          <p className="kicker reveal">05 — Antes / depois</p>
           <h2 className="display h2 reveal" style={{ '--d': '80ms' } as React.CSSProperties}>
             Ter presença digital <br className="hide-sm" />
             <span className="dim">não é o mesmo que planejá-la.</span>

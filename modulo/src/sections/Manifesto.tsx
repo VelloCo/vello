@@ -10,7 +10,6 @@ export function Manifesto() {
   return (
     <section className="manifesto section-dark">
       <div ref={ref} className="manifesto-inner container">
-        <p className="kicker kicker-dark">Manifesto</p>
         <p className="manifesto-text">
           {LINES.map((line, li) => (
             <span key={li} className={`m-line ${li === 0 ? 'm-first' : ''}`}>

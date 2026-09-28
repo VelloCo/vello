@@ -4,6 +4,17 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-28 — Claude Code. Skills de design instaladas no projeto:
+`apple-design` (`npx skills add emilkowalski/skills`, em `.agents/skills/` com
+link em `.claude/skills/`) e `impeccable` (o `npx impeccable install` falhou
+com 403 no download assinado; copiada do repositório pbakaus/impeccable para
+`.claude/skills/impeccable/`). Aplicadas na landing da Módulo: removidos os
+rótulos "01 — Seção" acima dos títulos e a grade decorativa do bloco preto,
+ícones Unicode trocados por SVG, tracking mínimo -0.04em e títulos até 6rem,
+contraste corrigido, feedback ao pressionar botões, header sem divisória,
+troca de modelos 3D cancelável, suporte a reduced motion / reduced
+transparency / more contrast. Detector do impeccable: 0 achados.
+
 2026-09-28 — Claude Code. Landing page da **Módulo** (outra marca: agência de
 digital para móveis planejados) criada como projeto independente em `modulo/`,
 na branch `claude/modulo-premium-landing-ulpwg4` (NÃO foi para a `main`; não

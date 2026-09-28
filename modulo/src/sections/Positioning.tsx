@@ -22,7 +22,6 @@ export function Positioning() {
     <section id="posicionamento" className="section">
       <div className="container split">
         <div className="split-copy">
-          <p className="kicker reveal">01 — Posicionamento</p>
           <h2 className="display h2 reveal" style={{ '--d': '80ms' } as React.CSSProperties}>
             Planejado até <br className="hide-sm" />
             no digital.

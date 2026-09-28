@@ -8,7 +8,6 @@ export function Portfolio() {
       <div className="container">
         <div className="section-head section-head-row">
           <div>
-            <p className="kicker reveal">04 — Projetos</p>
             <h2 className="display h2 reveal" style={{ '--d': '80ms' } as React.CSSProperties}>
               Projetos que não <br className="hide-sm" />
               parecem templates.

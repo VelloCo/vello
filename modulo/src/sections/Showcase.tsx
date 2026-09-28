@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { SHOWCASE_FALLBACK, SHOWCASE_MODELS } from '../config/site'
 import { ModelViewer } from '../components/ModelViewer'
 
@@ -7,22 +7,36 @@ export function Showcase() {
   const [switching, setSwitching] = useState(false)
   const [shown, setShown] = useState(0)
   const model = SHOWCASE_MODELS[shown]
+  const timers = useRef<number[]>([])
+
+  const clearTimers = () => {
+    timers.current.forEach((t) => window.clearTimeout(t))
+    timers.current = []
+  }
+  useEffect(() => clearTimers, [])
 
   // Transição: esmaece o modelo atual, troca o arquivo e revela o novo
-  // quando ele terminar de carregar (onLoad).
+  // quando ele terminar de carregar (onLoad). Um clique novo no meio da
+  // troca cancela a anterior — a última escolha sempre vence.
   const select = (i: number) => {
     if (i === active) return
+    clearTimers()
     setActive(i)
+    if (i === shown) {
+      setSwitching(false)
+      return
+    }
     setSwitching(true)
-    window.setTimeout(() => setShown(i), 380)
-    window.setTimeout(() => setSwitching(false), 3000) // segurança se o load não disparar
+    timers.current.push(
+      window.setTimeout(() => setShown(i), 380),
+      window.setTimeout(() => setSwitching(false), 3000), // segurança se o load não disparar
+    )
   }
 
   return (
     <section id="3d" className="section section-dark showcase">
       <div className="container">
         <div className="showcase-head">
-          <p className="kicker kicker-dark reveal">03 — Experiências 3D</p>
           <h2 className="display h2 reveal" style={{ '--d': '80ms' } as React.CSSProperties}>
             Seu projeto.
             <br />
@@ -55,7 +69,6 @@ export function Showcase() {
             />
           </div>
           <div className="stage-meta" aria-hidden>
-            <span>{String(shown + 1).padStart(2, '0')} / {String(SHOWCASE_MODELS.length).padStart(2, '0')}</span>
             <span>Arraste · Pinça · Ctrl + roda</span>
           </div>
         </div>

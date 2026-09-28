@@ -16,7 +16,6 @@ export function Process() {
     <section className="section section-tint">
       <div className="container">
         <div className="section-head">
-          <p className="kicker reveal">06 — Processo</p>
           <h2 className="display h2 reveal" style={{ '--d': '80ms' } as React.CSSProperties}>
             Do projeto ao digital.
           </h2>

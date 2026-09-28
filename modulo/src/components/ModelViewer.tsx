@@ -149,6 +149,8 @@ export function ModelViewer({
     el.resetTurntableRotation?.(0)
   }
 
+  // Com "reduzir movimento" ligado, o modelo não gira sozinho.
+  const [reducedMotion] = useState(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   const s = String(scale)
   return (
     <div className={`mv-wrap mv-${tone} ${className}`} style={style} data-loaded={loaded || undefined}>
@@ -169,7 +171,7 @@ export function ModelViewer({
           max-camera-orbit="auto 95deg auto"
           interpolation-decay="140"
           rotation-per-second={rotationSpeed}
-          auto-rotate={autoRotate ? '' : undefined}
+          auto-rotate={autoRotate && !reducedMotion ? '' : undefined}
           auto-rotate-delay="2500"
           camera-controls={cameraControls ? '' : undefined}
           touch-action="pan-y"
@@ -183,8 +185,16 @@ export function ModelViewer({
 
       {controls && (
         <div className="mv-controls" role="group" aria-label="Controles do modelo 3D">
-          <button type="button" onClick={() => zoom(1)} aria-label="Aproximar">+</button>
-          <button type="button" onClick={() => zoom(-1)} aria-label="Afastar">−</button>
+          <button type="button" onClick={() => zoom(1)} aria-label="Aproximar">
+            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
+              <path d="M8 3v10M3 8h10" />
+            </svg>
+          </button>
+          <button type="button" onClick={() => zoom(-1)} aria-label="Afastar">
+            <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
+              <path d="M3 8h10" />
+            </svg>
+          </button>
           <button type="button" onClick={reset} aria-label="Voltar ao ângulo inicial">
             <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="1.3" aria-hidden>
               <path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9" />

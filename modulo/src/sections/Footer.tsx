@@ -17,7 +17,12 @@ export function Footer() {
       </div>
       <div className="container footer-bottom">
         <span>© 2026 Módulo.</span>
-        <a href="#top">Voltar ao topo ↑</a>
+        <a href="#top" className="to-top">
+          Voltar ao topo
+          <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden>
+            <path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" />
+          </svg>
+        </a>
       </div>
     </footer>
   )

@@ -13,7 +13,6 @@ export function Services() {
     <section id="servicos" className="section section-tint">
       <div className="container">
         <div className="section-head">
-          <p className="kicker reveal">02 — Serviços</p>
           <h2 className="display h2 reveal" style={{ '--d': '80ms' } as React.CSSProperties}>
             Tudo que sua marca <br className="hide-sm" />
             precisa para crescer.
