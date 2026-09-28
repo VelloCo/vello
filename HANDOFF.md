@@ -4,6 +4,20 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-28 — Claude Code. Landing page da **Módulo** (outra marca: agência de
+digital para móveis planejados) criada como projeto independente em `modulo/`,
+na branch `claude/modulo-premium-landing-ulpwg4` (NÃO foi para a `main`; não
+afeta o build nem o deploy do Vello). Vite + React + Tailwind v4 +
+`@google/model-viewer` (npm, carregado sob demanda). Seções: hero com 3D,
+posicionamento, serviços, 3D com troca de ambientes, portfólio, antes/depois,
+processo, manifesto, CTA e rodapé. O zip de modelos do usuário
+(files.catbox.moe) estava bloqueado pela rede do ambiente; os `.glb` em
+`modulo/public/models/` são provisórios, gerados por
+`modulo/scripts/generate-placeholder-models.mjs`. Pendente: trocar pelos
+modelos reais, contatos reais e projetos reais em `modulo/src/config/site.ts`
+(hoje placeholders), e criar projeto na Vercel com Root Directory `modulo`.
+Detalhes em `modulo/README.md`.
+
 2026-09-23 — Claude Code. Convite para e-mail que já tem conta. O convite antigo
 do Supabase criava a conta com senha aleatória (bcrypt preenchido), então não dá
 para saber se a profissional chegou a escolher senha — o caso da Angélica:
