@@ -1,0 +1,53 @@
+# Publica a landing da Módulo (pasta modulo/) no GitHub Pages:
+# https://velloco.github.io/vello/
+#
+# Requer, uma vez, em Settings do repositório:
+#   Pages > Build and deployment > Source: GitHub Actions
+#   Environments > github-pages > permitir a branch que dispara o deploy
+name: Módulo — GitHub Pages
+
+on:
+  push:
+    branches: [claude/modulo-premium-landing-ulpwg4]
+    paths: ['modulo/**', '.github/workflows/modulo-pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: modulo-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: modulo
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: modulo/package-lock.json
+      - run: npm ci
+      - name: Build
+        run: npx tsc -b && npx vite build --base=/vello/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: modulo/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
