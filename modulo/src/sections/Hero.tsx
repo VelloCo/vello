@@ -1,5 +1,6 @@
-import { CONTACT, HERO_MODEL } from '../config/site'
-import { ModelViewer } from '../components/ModelViewer'
+import { CONTACT } from '../config/site'
+import { Ambiente3D } from '../components/Ambiente3D'
+import { ESTUDIO_BRANCO } from '../three/estudio'
 import { Arrow } from '../components/Arrow'
 import { useParallax } from '../hooks/useParallax'
 
@@ -56,18 +57,18 @@ export function Hero() {
           </div>
 
           <div ref={stage} className="hero-model">
-            {/* Modelo do hero: altere HERO_MODEL em src/config/site.ts. */}
-            <ModelViewer
-              src={HERO_MODEL.src}
-              alt="Sala planejada com painel de carvalho em 3D — arraste para girar"
-              cameraControls
-              cameraOrbit={HERO_MODEL.orbit}
-              minCameraOrbit={HERO_MODEL.min}
-              maxCameraOrbit={HERO_MODEL.max}
-              sway={[10, 70]}
-              exposure={1}
-              shadowIntensity={0.7}
-              controls
+            {/* Sala em 3D com o motor próprio (src/components/Ambiente3D.tsx). */}
+            <Ambiente3D
+              ambiente="sala"
+              className="a3d-hero"
+              tone="light"
+              estudio={ESTUDIO_BRANCO}
+              semPontos
+              tamanho="3 MB"
+              poster={{
+                paisagem: `${import.meta.env.BASE_URL}models/posters/hero.webp`,
+                retrato: `${import.meta.env.BASE_URL}models/posters/hero-retrato.webp`,
+              }}
             />
           </div>
 

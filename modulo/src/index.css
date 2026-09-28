@@ -1823,3 +1823,431 @@ html {
     animation: none;
   }
 }
+
+/* ------------------------------------------------ ambiente 3D (motor próprio) */
+/* Visualizador com pontos de informação (src/components/Ambiente3D.tsx). */
+
+html.trava-rolagem {
+  overflow: hidden;
+}
+.a3d {
+  --a3d-fundo: #0b0b0b;
+  --a3d-linha: #262626;
+  --a3d-texto: var(--paper);
+  --a3d-suave: #a3a3a0;
+  --a3d-painel: rgb(17 17 17 / 0.96);
+  position: relative;
+  color: var(--a3d-texto);
+}
+.a3d-light {
+  --a3d-fundo: #f4f4f2;
+  --a3d-linha: var(--line);
+  --a3d-texto: var(--ink);
+  --a3d-suave: var(--muted);
+  --a3d-painel: rgb(255 255 255 / 0.97);
+}
+.a3d-palco {
+  position: relative;
+  height: clamp(420px, 70vh, 760px);
+  background: var(--a3d-fundo);
+  border: 1px solid var(--a3d-linha);
+  overflow: hidden;
+  isolation: isolate;
+  touch-action: pan-y;
+  outline-offset: -2px;
+}
+.a3d-poster,
+.a3d-canvas,
+.a3d-canvas canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.a3d-poster {
+  object-fit: cover;
+  transition: opacity 0.6s var(--ease);
+}
+.a3d-canvas {
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+.a3d-canvas canvas {
+  touch-action: none;
+  outline: none;
+}
+.a3d[data-estado='ativo'] .a3d-canvas {
+  opacity: 1;
+}
+.a3d[data-estado='ativo'] .a3d-poster {
+  opacity: 0;
+}
+
+/* marcadores numerados sobre o 3D */
+.a3d-marcadores {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+.a3d:not([data-estado='ativo']) .a3d-marcadores {
+  display: none;
+}
+.a3d-marcador {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  pointer-events: auto;
+  box-shadow: 0 0 0 5px rgb(255 255 255 / 0.18), 0 4px 14px rgb(0 0 0 / 0.35);
+  transition:
+    opacity 0.25s var(--ease),
+    background-color 0.25s var(--ease),
+    color 0.25s var(--ease);
+  will-change: transform;
+}
+.a3d-marcador::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+}
+.a3d-marcador:hover,
+.a3d-marcador.is-ativo {
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: 0 0 0 5px rgb(255 255 255 / 0.5), 0 4px 14px rgb(0 0 0 / 0.35);
+}
+.a3d-marcador.is-oculto {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* capa, carregamento, erro */
+.a3d-capa {
+  position: absolute;
+  inset: auto 0 0 0;
+  z-index: 4;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+.a3d-iniciar {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 22px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--paper);
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  transition: transform 0.1s ease-out;
+}
+.a3d-light .a3d-iniciar {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.a3d-iniciar:active {
+  transform: scale(0.97);
+}
+.a3d-tamanho {
+  font-size: 12px;
+  opacity: 0.55;
+  margin-left: 2px;
+}
+.a3d-carregando {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  z-index: 4;
+  translate: -50% 0;
+  display: grid;
+  gap: 10px;
+  width: min(260px, 70%);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--a3d-suave);
+  text-align: center;
+}
+.a3d-barra {
+  --p: 0;
+  display: block;
+  height: 1px;
+  background: var(--a3d-linha);
+  position: relative;
+  overflow: hidden;
+}
+.a3d-barra::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--a3d-texto);
+  transform-origin: left;
+  transform: scaleX(var(--p));
+  transition: transform 0.2s linear;
+}
+.a3d-erro {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 18px;
+  background: var(--a3d-painel);
+  border: 1px solid var(--a3d-linha);
+  font-size: 14px;
+}
+.a3d-erro button {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid currentColor;
+}
+
+/* ferramentas */
+.a3d-ferramentas {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 5;
+  display: grid;
+  border: 1px solid var(--a3d-linha);
+  background: var(--a3d-painel);
+}
+.a3d-ferramentas button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  color: var(--a3d-texto);
+  transition: background-color 0.2s var(--ease);
+}
+.a3d-ferramentas button + button {
+  border-top: 1px solid var(--a3d-linha);
+}
+.a3d-ferramentas button:hover {
+  background: rgb(127 127 127 / 0.14);
+}
+.a3d-fechar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 6;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 16px 0 12px;
+  background: var(--paper);
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ficha do ponto */
+.a3d-ficha {
+  position: absolute;
+  z-index: 5;
+  left: 16px;
+  bottom: 16px;
+  width: min(380px, calc(100% - 96px));
+  max-height: calc(100% - 32px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 22px 22px 16px;
+  background: var(--a3d-painel);
+  border: 1px solid var(--a3d-linha);
+  color: var(--a3d-texto);
+  animation: a3d-sobe 0.45s var(--ease);
+}
+@keyframes a3d-sobe {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+.a3d-ficha header {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.a3d-ficha h3 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+.a3d-num {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.6;
+}
+.a3d-resumo {
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.45;
+}
+.a3d-ficha ul {
+  margin-top: 12px;
+  padding-left: 1.1em;
+  list-style: square;
+  display: grid;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--a3d-suave);
+}
+.a3d-ficha nav {
+  display: flex;
+  gap: 6px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--a3d-linha);
+}
+.a3d-ficha nav button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 12px;
+  border: 1px solid var(--a3d-linha);
+  font-size: 15px;
+}
+.a3d-ficha nav button:hover {
+  border-color: var(--a3d-texto);
+}
+.a3d-fechar-ficha {
+  margin-left: auto;
+}
+
+/* lista de pontos (fichas numeradas) */
+.a3d-pontos {
+  display: flex;
+  flex-wrap: wrap;
+  border-left: 1px solid var(--a3d-linha);
+  border-top: 1px solid var(--a3d-linha);
+}
+.a3d-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 18px;
+  flex: 1 1 auto;
+  border-right: 1px solid var(--a3d-linha);
+  border-bottom: 1px solid var(--a3d-linha);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--a3d-suave);
+  transition:
+    color 0.3s var(--ease),
+    background-color 0.3s var(--ease);
+}
+.a3d-chip:hover {
+  color: var(--a3d-texto);
+}
+.a3d-chip.is-ativo {
+  background: var(--a3d-texto);
+  color: var(--a3d-fundo);
+}
+
+/* celular: tela cheia com painel inferior */
+.a3d.is-imersivo {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  background: var(--a3d-fundo);
+}
+.a3d.is-imersivo .a3d-palco {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
+  border: 0;
+  touch-action: none;
+}
+.a3d.is-imersivo .a3d-ferramentas {
+  top: 12px;
+  right: 12px;
+}
+.a3d.is-imersivo .a3d-pontos {
+  flex: none;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-left: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--a3d-fundo);
+}
+.a3d.is-imersivo .a3d-pontos::-webkit-scrollbar {
+  display: none;
+}
+.a3d.is-imersivo .a3d-chip {
+  flex: none;
+  white-space: nowrap;
+}
+@media (max-width: 899px) {
+  .a3d-palco {
+    height: auto;
+    aspect-ratio: 4 / 5;
+  }
+  .a3d.is-imersivo .a3d-palco {
+    aspect-ratio: auto;
+  }
+  .a3d-ficha {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    max-height: 46%;
+    border-width: 1px 0 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .a3d-ficha {
+    animation: none;
+  }
+}
+
+.showcase-a3d {
+  margin-top: clamp(24px, 4vw, 48px);
+  transition: opacity 0.38s var(--ease-io);
+}
+.showcase-a3d.is-switching {
+  opacity: 0;
+}
+
+/* hero: o 3D ocupa a área da prancha, sem moldura, sobre o branco da página */
+.a3d-hero {
+  position: absolute;
+  inset: 0;
+  --a3d-fundo: transparent;
+}
+.a3d-hero.is-imersivo {
+  --a3d-fundo: #fff;
+}
+.a3d-hero .a3d-palco {
+  height: 100%;
+  aspect-ratio: auto;
+  border: 0;
+}
+.a3d-hero.is-imersivo .a3d-palco {
+  height: auto;
+}

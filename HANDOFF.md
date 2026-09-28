@@ -4,6 +4,19 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-28 — Claude Code. Módulo: cozinha, closet e sala agora usam um motor
+3D próprio (`modulo/src/three/` + `modulo/src/components/Ambiente3D.tsx`),
+trazido do site de móveis planejados "Talhe" (repo sendodonto/talhe-moveis-planejados):
+luz de estúdio, sombras, oclusão de ambiente, pontos HOTSPOT_ numerados
+(clique → câmera aproxima → ficha), portas/gavetas animadas, câmera que não
+atravessa móveis, render sob demanda e qualidade reduzida no celular. Hero
+também usa o motor (sala, estúdio branco transparente, sem pontos). Aba "Casa"
+continua no `<model-viewer>`. Modelos novos (versões melhoradas no Blender,
+compressão meshopt) em `modulo/public/models/`; pôsteres em
+`modulo/public/models/posters/` (capturados do próprio motor). Textos dos
+pontos em `modulo/src/three/conteudo/`. `?qualidade=baixa|media|alta` força o
+nível; `?auto3d` força a carga no celular (usado para gerar pôsteres).
+
 2026-09-28 — Claude Code. Modelos 3D reais na landing da Módulo (vindos do
 release `modelos-3d-2026-09-28`, pacote `modelos_site_para_codex.zip`):
 cozinha, closet, sala e Casa Alameda, otimizados (WebP 1024 + Draco; ver

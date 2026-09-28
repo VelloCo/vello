@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { SHOWCASE_FALLBACK, SHOWCASE_MODELS } from '../config/site'
 import { ModelViewer } from '../components/ModelViewer'
+import { Ambiente3D, type AmbienteId } from '../components/Ambiente3D'
+import { ESTUDIO_ESCURO } from '../three/estudio'
+
+const AMBIENTES_3D: readonly string[] = ['cozinha', 'closet', 'sala']
 
 export function Showcase() {
   const [active, setActive] = useState(0)
@@ -26,6 +30,11 @@ export function Showcase() {
       setSwitching(false)
       return
     }
+    if (AMBIENTES_3D.includes(SHOWCASE_MODELS[i].id)) {
+      setShown(i)
+      setSwitching(false)
+      return
+    }
     setSwitching(true)
     timers.current.push(
       window.setTimeout(() => setShown(i), 380),
@@ -47,33 +56,53 @@ export function Showcase() {
           </p>
         </div>
 
-        <div className="showcase-stage reveal reveal-fade" style={{ '--d': '200ms' } as React.CSSProperties}>
-          <div className="stage-floor" aria-hidden />
-          <div className={`showcase-model ${switching ? 'is-switching' : ''}`}>
-            {/* Modelos da seção: public/models/{cozinha,closet,sala,casa}.glb
-                (lista editável em SHOWCASE_MODELS, src/config/site.ts). */}
-            <ModelViewer
-              key="showcase"
-              src={model.src}
-              fallbackSrc={SHOWCASE_FALLBACK}
-              alt={`${model.label} em 3D — arraste para girar`}
-              cameraOrbit={model.orbit}
-              minCameraOrbit={model.min}
-              maxCameraOrbit={model.max}
-              autoRotate={model.autoRotate}
-              sway={model.autoRotate ? undefined : [10, 70]}
-              rotationSpeed="8deg"
-              environment="neutral"
-              exposure={1.05}
-              shadowIntensity={0.9}
+        {/* Contêiner fixo com a entrada animada; o palco dentro troca com a aba. */}
+        <div className="reveal reveal-fade" style={{ '--d': '200ms' } as React.CSSProperties}>
+        {AMBIENTES_3D.includes(model.id) ? (
+          /* Cozinha, closet e sala: motor próprio com pontos de informação,
+             portas/gavetas animadas e luz de estúdio (src/components/Ambiente3D.tsx). */
+          <div className={`showcase-a3d ${switching ? 'is-switching' : ''}`}>
+            <Ambiente3D
+              key={model.id}
+              ambiente={model.id as AmbienteId}
+              poster={{
+                paisagem: `${import.meta.env.BASE_URL}models/posters/${model.id}.webp`,
+                retrato: `${import.meta.env.BASE_URL}models/posters/${model.id}-retrato.webp`,
+              }}
+              estudio={ESTUDIO_ESCURO}
               tone="dark"
-              controls
-              onLoad={() => setSwitching(false)}
+              tamanho={model.tamanho}
             />
           </div>
-          <div className="stage-meta" aria-hidden>
-            <span>Arraste · Pinça · Ctrl + roda</span>
+        ) : (
+          <div className="showcase-stage">
+            <div className="stage-floor" aria-hidden />
+            <div className={`showcase-model ${switching ? 'is-switching' : ''}`}>
+              <ModelViewer
+                key="showcase"
+                src={model.src}
+                fallbackSrc={SHOWCASE_FALLBACK}
+                alt={`${model.label} em 3D — arraste para girar`}
+                cameraOrbit={model.orbit}
+                minCameraOrbit={model.min}
+                maxCameraOrbit={model.max}
+                autoRotate={model.autoRotate}
+                sway={model.autoRotate ? undefined : [10, 70]}
+                rotationSpeed="8deg"
+                environment="neutral"
+                exposure={1.05}
+                shadowIntensity={0.9}
+                tone="dark"
+                controls
+                onLoad={() => setSwitching(false)}
+              />
+            </div>
+            <div className="stage-meta" aria-hidden>
+              <span>Arraste · Pinça · Ctrl + roda</span>
+            </div>
           </div>
+        )}
+
         </div>
 
         <div className="model-tabs reveal" role="tablist" aria-label="Escolha o ambiente">

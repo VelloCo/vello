@@ -21,18 +21,17 @@ const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//
 // fica limitado para ninguém ver o móvel por trás da parede.
 const ROOM = { orbit: '35deg 65deg auto', min: '-5deg 25deg auto', max: '95deg 85deg auto' }
 
-/** Modelo grande do hero (lado direito, logo na abertura). */
-export const HERO_MODEL = { src: asset('/models/sala.glb'), ...ROOM }
-
-/** Usado na seção 3D quando um dos modelos abaixo não carrega. */
-export const SHOWCASE_FALLBACK = asset('/models/cozinha.glb')
+/** Reserva do <model-viewer> (aba Casa): o próprio arquivo. */
+export const SHOWCASE_FALLBACK = asset('/models/casa.glb')
 
 /** Botões da seção "Seu projeto. De todos os ângulos." — um por modelo. */
 export const SHOWCASE_MODELS = [
-  { id: 'cozinha', label: 'Cozinha', src: asset('/models/cozinha.glb'), ...ROOM, autoRotate: false },
-  { id: 'closet', label: 'Closet', src: asset('/models/closet.glb'), ...ROOM, autoRotate: false },
-  { id: 'sala', label: 'Sala', src: asset('/models/sala.glb'), ...ROOM, autoRotate: false },
-  { id: 'casa', label: 'Casa', src: asset('/models/casa.glb'), orbit: '35deg 62deg auto', min: 'auto 15deg auto', max: 'auto 85deg auto', autoRotate: true },
+  // Cozinha, closet e sala usam o motor próprio (Ambiente3D): pontos de
+  // informação, portas/gavetas animadas. Casa segue no <model-viewer>.
+  { id: 'cozinha', label: 'Cozinha', tamanho: '3 MB', src: asset('/models/cozinha.glb'), ...ROOM, autoRotate: false },
+  { id: 'closet', label: 'Closet', tamanho: '3,6 MB', src: asset('/models/closet.glb'), ...ROOM, autoRotate: false },
+  { id: 'sala', label: 'Sala', tamanho: '3 MB', src: asset('/models/sala.glb'), ...ROOM, autoRotate: false },
+  { id: 'casa', label: 'Casa', tamanho: '11 MB', src: asset('/models/casa.glb'), orbit: '35deg 62deg auto', min: 'auto 15deg auto', max: 'auto 85deg auto', autoRotate: true },
 ] as const
 
 // ---------------------------------------------------------------- portfólio

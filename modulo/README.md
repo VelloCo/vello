@@ -4,7 +4,23 @@ Landing page da Módulo (marketing, sites e presença digital para empresas de
 móveis planejados). Projeto independente do Vello: tem o próprio
 `package.json` e não entra no build da raiz.
 
-React 19 + TypeScript + Vite + Tailwind v4, 3D com Google `<model-viewer>`.
+React 19 + TypeScript + Vite + Tailwind v4. 3D: motor próprio em three.js
+para cozinha, closet e sala (`src/three/`, `src/components/Ambiente3D.tsx`) e
+Google `<model-viewer>` para a casa.
+
+### Motor 3D próprio (cozinha, closet, sala, hero)
+
+- Pontos de informação: nós `HOTSPOT_*` do GLB (título/descrição) + texto
+  complementar e enquadramento em `src/three/conteudo/{cozinha,closet,sala}.ts`.
+- Câmera, limites, volumes que a câmera não atravessa e luzes de LED por
+  ambiente: `src/three/modelos.ts`.
+- Pontos com `animation` no GLB abrem a porta/gaveta ao serem selecionados.
+- Estúdio: `src/three/estudio.ts` (escuro na seção 3D, branco transparente no hero).
+- Pôsteres em `public/models/posters/` (capturados do próprio motor; refaça
+  se mudar modelo ou câmera).
+- O three.js só é baixado quando o 3D abre (chunk `motor-*.js`).
+- Os GLBs destes três vêm do repositório da Talhe (versões refeitas no
+  Blender e otimizadas com meshopt), não do pacote abaixo.
 
 ```bash
 cd modulo
