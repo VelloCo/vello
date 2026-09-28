@@ -43,12 +43,12 @@ export function Hero() {
             <span className="bp-line bp-v" />
             <span className="bp-dim bp-dim-x">
               <i />
-              <b>1380 mm</b>
+              <b>4690 mm</b>
               <i />
             </span>
             <span className="bp-dim bp-dim-y">
               <i />
-              <b>1920 mm</b>
+              <b>2800 mm</b>
               <i />
             </span>
             <span className="bp-tag bp-tag-tl">MOD—01</span>
@@ -56,17 +56,17 @@ export function Hero() {
           </div>
 
           <div ref={stage} className="hero-model">
-            {/* Modelo do hero: troque o arquivo em public/models/hero.glb
-                ou altere HERO_MODEL em src/config/site.ts. */}
+            {/* Modelo do hero: altere HERO_MODEL em src/config/site.ts. */}
             <ModelViewer
-              src={HERO_MODEL}
-              alt="Estante modular planejada em 3D — arraste para girar"
-              autoRotate
+              src={HERO_MODEL.src}
+              alt="Sala planejada com painel de carvalho em 3D — arraste para girar"
               cameraControls
-              cameraOrbit="-32deg 76deg auto"
-              rotationSpeed="9deg"
-              exposure={0.92}
-              shadowIntensity={0.75}
+              cameraOrbit={HERO_MODEL.orbit}
+              minCameraOrbit={HERO_MODEL.min}
+              maxCameraOrbit={HERO_MODEL.max}
+              sway={[10, 70]}
+              exposure={1}
+              shadowIntensity={0.7}
               controls
             />
           </div>

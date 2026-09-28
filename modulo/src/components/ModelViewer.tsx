@@ -31,8 +31,15 @@ declare module 'react' {
 }
 
 // Carrega o web component uma única vez, só quando o primeiro viewer aparece.
+// O decodificador Draco (modelos comprimidos) vem de public/draco/, junto com
+// o site, em vez do CDN do Google.
 let loader: Promise<unknown> | null = null
-const loadModelViewer = () => (loader ??= import('@google/model-viewer'))
+const loadModelViewer = () => {
+  // O model-viewer lê esta configuração global ao criar cada visualizador.
+  const w = window as unknown as { ModelViewerElement?: Record<string, unknown> }
+  w.ModelViewerElement = { ...w.ModelViewerElement, dracoDecoderLocation: new URL(`${import.meta.env.BASE_URL}draco/`, location.href).href }
+  return (loader ??= import('@google/model-viewer'))
+}
 
 export type ModelViewerProps = {
   /** Caminho do .glb/.gltf, ex.: "/models/hero.glb". */
@@ -53,6 +60,15 @@ export type ModelViewerProps = {
   cameraOrbit?: string
   /** Velocidade do giro automático, ex.: "10deg". */
   rotationSpeed?: string
+  /** Limites do giro, ex.: "-5deg 25deg auto" / "95deg 85deg auto". */
+  minCameraOrbit?: string
+  maxCameraOrbit?: string
+  /**
+   * Balanço lento da câmera entre dois ângulos horizontais (graus), no lugar
+   * do giro de 360° — para ambientes com paredes, que não devem ser vistos
+   * por trás. Para quando a pessoa mexe no modelo.
+   */
+  sway?: [number, number]
   /** Modelo alternativo se `src` falhar. */
   fallbackSrc?: string
   /** Mostra os botões minimalistas de zoom e recentralizar. */
@@ -75,6 +91,9 @@ export function ModelViewer({
   shadowIntensity = 0.55,
   cameraOrbit = '-30deg 75deg auto',
   rotationSpeed = '12deg',
+  minCameraOrbit = 'auto 20deg auto',
+  maxCameraOrbit = 'auto 95deg auto',
+  sway,
   fallbackSrc,
   controls = false,
   tone = 'light',
@@ -140,6 +159,34 @@ export function ModelViewer({
     }
   }, [ready, current, fallbackSrc])
 
+  // Balanço da câmera (ver prop `sway`).
+  const swayMin = sway?.[0]
+  const swayMax = sway?.[1]
+  useEffect(() => {
+    const el = ref.current
+    if (!el || !loaded || swayMin === undefined || swayMax === undefined) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const [, phi = '75deg', radius = 'auto'] = cameraOrbit.split(/\s+/)
+    const mid = (swayMin + swayMax) / 2
+    const amp = (swayMax - swayMin) / 2
+    const start = performance.now()
+    let stopped = false
+    const timer = window.setInterval(() => {
+      const t = (performance.now() - start) / 1000
+      el.cameraOrbit = `${(mid + amp * Math.sin((t / 18) * Math.PI * 2)).toFixed(2)}deg ${phi} ${radius}`
+    }, 120)
+    const stop = (e: Event) => {
+      if (stopped || (e as CustomEvent<{ source: string }>).detail?.source !== 'user-interaction') return
+      stopped = true
+      window.clearInterval(timer)
+    }
+    el.addEventListener('camera-change', stop)
+    return () => {
+      window.clearInterval(timer)
+      el.removeEventListener('camera-change', stop)
+    }
+  }, [loaded, swayMin, swayMax, cameraOrbit])
+
   const zoom = (steps: number) => ref.current?.zoom(steps)
   const reset = () => {
     const el = ref.current
@@ -167,8 +214,8 @@ export function ModelViewer({
           shadow-softness="1"
           tone-mapping="neutral"
           camera-orbit={cameraOrbit}
-          min-camera-orbit="auto 20deg auto"
-          max-camera-orbit="auto 95deg auto"
+          min-camera-orbit={minCameraOrbit}
+          max-camera-orbit={maxCameraOrbit}
           interpolation-decay="140"
           rotation-per-second={rotationSpeed}
           auto-rotate={autoRotate && !reducedMotion ? '' : undefined}

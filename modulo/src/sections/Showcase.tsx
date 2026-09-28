@@ -50,15 +50,18 @@ export function Showcase() {
         <div className="showcase-stage reveal reveal-fade" style={{ '--d': '200ms' } as React.CSSProperties}>
           <div className="stage-floor" aria-hidden />
           <div className={`showcase-model ${switching ? 'is-switching' : ''}`}>
-            {/* Modelos da seção: public/models/{cozinha,closet,sala,escritorio}.glb
+            {/* Modelos da seção: public/models/{cozinha,closet,sala,casa}.glb
                 (lista editável em SHOWCASE_MODELS, src/config/site.ts). */}
             <ModelViewer
               key="showcase"
               src={model.src}
               fallbackSrc={SHOWCASE_FALLBACK}
-              alt={`${model.label} planejada em 3D — arraste para girar`}
+              alt={`${model.label} em 3D — arraste para girar`}
               cameraOrbit={model.orbit}
-              autoRotate
+              minCameraOrbit={model.min}
+              maxCameraOrbit={model.max}
+              autoRotate={model.autoRotate}
+              sway={model.autoRotate ? undefined : [10, 70]}
               rotationSpeed="8deg"
               environment="neutral"
               exposure={1.05}

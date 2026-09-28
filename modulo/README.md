@@ -18,18 +18,38 @@ npm run build    # gera dist/
 | O quê | Onde |
 | --- | --- |
 | Contatos (WhatsApp, Instagram, e-mail) | `src/config/site.ts` → `CONTACT` |
-| Modelo 3D do hero | `public/models/hero.glb` (ou `HERO_MODEL`) |
-| Modelos da seção 3D | `public/models/{cozinha,closet,sala,escritorio}.glb` (lista em `SHOWCASE_MODELS`) |
-| Modelo reserva da seção 3D | `public/models/showcase.glb` (usado se algum acima falhar) |
+| Modelo 3D do hero | `HERO_MODEL` (hoje a sala) |
+| Modelos da seção 3D | `public/models/{cozinha,closet,sala,casa}.glb` (lista em `SHOWCASE_MODELS`) |
+| Modelo reserva da seção 3D | `SHOWCASE_FALLBACK` (usado se algum acima falhar) |
 | Projetos do portfólio | `src/config/site.ts` → `PROJECTS` (campo `image` para prints reais) |
 
-Para trocar um modelo, basta sobrescrever o `.glb` com o mesmo nome. Os
-arquivos atuais são provisórios, gerados por
-`scripts/generate-placeholder-models.mjs` (`npm run models`). Rodar o script
-de novo sobrescreve os `.glb` — não rode depois de colocar os definitivos.
+### Modelos
 
-Dicas para os modelos: `.glb` com texturas embutidas, origem no chão, até
-~5–10 MB (comprimir com Draco/Meshopt ajuda: `npx gltf-transform optimize`).
+Vêm do release `modelos-3d-2026-09-28` do repositório
+(`modelos_site_para_codex.zip`), otimizados para a web com
+`@gltf-transform/cli`: texturas até 1024 px em WebP e malha com Draco.
+
+```bash
+npx @gltf-transform/cli resize entrada.glb t1.glb --width 1024 --height 1024
+npx @gltf-transform/cli webp t1.glb t2.glb --quality 82
+npx @gltf-transform/cli draco t2.glb public/models/nome.glb
+```
+
+| Arquivo | Origem | Tamanho |
+| --- | --- | --- |
+| `cozinha.glb` | `cozinha_planejada.glb` (12,7 MB) | 1,2 MB |
+| `closet.glb` | `closet_nogueira_web.glb` (6,6 MB) | 3,7 MB |
+| `sala.glb` | `sala_carvalho_web.glb` (4,5 MB) | 1,7 MB |
+| `casa.glb` | `casa_alameda_web.glb` (17,9 MB) | 11 MB |
+
+O decodificador Draco fica em `public/draco/` (copiado de
+`three/examples/jsm/libs/draco/gltf/`), sem depender do CDN do Google.
+
+Cozinha, closet e sala são ambientes com paredes no fundo e à esquerda: o
+giro fica limitado (`min`/`max` em `site.ts`) e, em vez de girar 360°, a
+câmera balança devagar entre dois ângulos até a pessoa mexer. A casa gira
+livre. As animações (abrir porta/gaveta) e os pontos `HOTSPOT_` dos modelos
+ainda não são usados na página.
 
 ## Componente `<ModelViewer />`
 
@@ -44,7 +64,8 @@ Dicas para os modelos: `.glb` com texturas embutidas, origem no chão, até
 />
 ```
 
-Outras props: `cameraOrbit`, `exposure`, `shadowIntensity`, `rotationSpeed`,
+Outras props: `cameraOrbit`, `minCameraOrbit`, `maxCameraOrbit`, `sway`,
+`exposure`, `shadowIntensity`, `rotationSpeed`,
 `fallbackSrc`, `controls` (botões de zoom/recentralizar), `tone`
 (`light`/`dark`), `onLoad`.
 

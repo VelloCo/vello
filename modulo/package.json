@@ -6,8 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview",
-    "models": "node scripts/generate-placeholder-models.mjs"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@google/model-viewer": "^4.3.1",

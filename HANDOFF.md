@@ -4,6 +4,15 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-28 — Claude Code. Modelos 3D reais na landing da Módulo (vindos do
+release `modelos-3d-2026-09-28`, pacote `modelos_site_para_codex.zip`):
+cozinha, closet, sala e Casa Alameda, otimizados (WebP 1024 + Draco; ver
+`modulo/README.md`). O escritório saiu (não havia modelo); a 4ª aba é "Casa".
+Hero usa a sala. Decodificador Draco em `modulo/public/draco/`. Modelos
+provisórios de caixas e o script gerador foram removidos. Pendente: usar as
+animações e os hotspots dos modelos; testar desempenho da casa (11 MB) em
+celular.
+
 2026-09-28 — Claude Code. Landing da Módulo publicada no GitHub Pages:
 https://velloco.github.io/vello/ — workflow `.github/workflows/modulo-pages.yml`
 (build de `modulo/` com base `/vello/`), roda a cada push na branch
