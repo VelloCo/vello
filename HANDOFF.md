@@ -4,6 +4,13 @@ Atualize este arquivo ao fim de cada sessão (Codex ou Claude).
 
 ## Última atualização
 
+2026-09-28 — Claude Code. Landing da Módulo publicada no GitHub Pages:
+https://velloco.github.io/vello/ — workflow `.github/workflows/modulo-pages.yml`
+(build de `modulo/` com base `/vello/`), roda a cada push na branch
+`claude/modulo-premium-landing-ulpwg4` que mexa em `modulo/` e manualmente.
+Pages configurado pelo usuário com Source = GitHub Actions; o environment
+`github-pages` permite `main` e essa branch. O Vello segue na Vercel.
+
 2026-09-28 — Claude Code. Skills de design instaladas no projeto:
 `apple-design` (`npx skills add emilkowalski/skills`, em `.agents/skills/` com
 link em `.claude/skills/`) e `impeccable` (o `npx impeccable install` falhou
