@@ -14,18 +14,21 @@ export const CONTACT = {
 // .glb com o mesmo nome ou aponte o caminho abaixo para o seu arquivo.
 // Formatos aceitos: .glb (recomendado) ou .gltf.
 
+/** Prefixa o caminho com a base do deploy (funciona fora da raiz do domínio). */
+const asset = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, '')}`
+
 /** Modelo grande do hero (lado direito, logo na abertura). */
-export const HERO_MODEL = '/models/hero.glb'
+export const HERO_MODEL = asset('/models/hero.glb')
 
 /** Usado na seção 3D quando um dos modelos abaixo não carrega. */
-export const SHOWCASE_FALLBACK = '/models/showcase.glb'
+export const SHOWCASE_FALLBACK = asset('/models/showcase.glb')
 
 /** Botões da seção "Seu projeto. De todos os ângulos." — um por modelo. */
 export const SHOWCASE_MODELS = [
-  { id: 'cozinha', label: 'Cozinha', src: '/models/cozinha.glb', orbit: '-28deg 72deg auto' },
-  { id: 'closet', label: 'Closet', src: '/models/closet.glb', orbit: '-22deg 80deg auto' },
-  { id: 'sala', label: 'Sala', src: '/models/sala.glb', orbit: '-30deg 70deg auto' },
-  { id: 'escritorio', label: 'Escritório', src: '/models/escritorio.glb', orbit: '-35deg 72deg auto' },
+  { id: 'cozinha', label: 'Cozinha', src: asset('/models/cozinha.glb'), orbit: '-28deg 72deg auto' },
+  { id: 'closet', label: 'Closet', src: asset('/models/closet.glb'), orbit: '-22deg 80deg auto' },
+  { id: 'sala', label: 'Sala', src: asset('/models/sala.glb'), orbit: '-30deg 70deg auto' },
+  { id: 'escritorio', label: 'Escritório', src: asset('/models/escritorio.glb'), orbit: '-35deg 72deg auto' },
 ] as const
 
 // ---------------------------------------------------------------- portfólio
